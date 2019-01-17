@@ -3,6 +3,19 @@ import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
+  printBtn() {
+    // this.setState({'isPrinting': true})
+    setTimeout(() => {
+      console.log('1');
+        if(window.electron){
+          console.log('2');
+            // window.electron.ipcRenderer.send('printContent');
+            const div_to_be_targeted="test";
+            window.electron.ipcRenderer.send("printPDF", div_to_be_targeted);
+        }
+    })
+  }
+
   render() {
     return (
       <div className="App">
@@ -19,6 +32,10 @@ class App extends Component {
           >
             Learn React
           </a>
+
+          <button className="confirm-btn" onClick={this.printBtn.bind(this)}>
+            Print
+          </button>
         </header>
       </div>
     );
