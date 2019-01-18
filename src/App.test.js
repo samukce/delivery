@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { mount } from 'enzyme';
+import { shallow } from 'enzyme';
 
 
 it('renders without crashing', () => {
@@ -11,22 +11,24 @@ it('renders without crashing', () => {
 });
 
 describe('App component', () => {
-  let spySaveOrder, component, sandbox;
+  let spySaveOrder, wrapperShallow, sandbox;
 
-    beforeEach(() => {
-        sandbox = sinon.sandbox.create();
+  beforeEach(() => {
+    sandbox = sinon.sandbox.create();
 
-        spySaveOrder = sandbox.stub();
+    wrapperShallow = shallow(<App />);
+    const componentRender = wrapperShallow.instance();
 
-        const wrapper = mount(<App />);
-        component = wrapper.find(App);
-    });
+    spySaveOrder = sandbox.stub(componentRender, 'placeOrder');
+    componentRender.forceUpdate()
+  });
 
-    afterEach(() => {
-        sandbox.restore();
-    });
+  afterEach(() => {
+    sandbox.restore();
+  });
 
-    it('should save order', () => {
-        expect(spySaveOrder).to.have.been.calledOnce;
-    });
+  it('should save order', () => {
+    wrapperShallow.find('#place-order-button').simulate('click');
+    expect(spySaveOrder).to.have.been.calledOnce;
+  });
 })
