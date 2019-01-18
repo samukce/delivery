@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {Table, Input, Row, Icon, Col, Button} from 'react-materialize'
 
 class App extends Component {
+  placeOrder = () => { }
+
   render() {
     return (
       <Row>
@@ -49,7 +51,10 @@ class App extends Component {
         <Input s={12} label="Notes"><Icon>speaker_notes</Icon></Input>
 
         <Button className='col s12 m2 offset-m6 grey'>Clean<Icon left>clear_all</Icon></Button>
-        <Button className='col s12 m3 offset-m1'>Place Order<Icon left>motorcycle</Icon></Button>
+        <Button id="place-order-button"
+                onClick={this.placeOrder.bind(this)}
+                className='col s12 m3 offset-m1'>Place Order<Icon left>motorcycle</Icon>
+        </Button>
       </Row>
     );
   }
