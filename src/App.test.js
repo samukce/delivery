@@ -27,8 +27,17 @@ describe('App component', () => {
     sandbox.restore();
   });
 
-  it('should save order', () => {
+  it('should save order with required fields', () => {
+    wrapperShallow.find('#address').simulate('change', { target: { name: 'address', value: '101 Street' } } );
     wrapperShallow.find('#place-order-button').simulate('click');
+
+    expect(wrapperShallow.state('address')).to.equal('101 Street');
     expect(spySaveOrder).to.have.been.calledOnce;
+  });
+
+  it('should not save order if address is empty', () => {
+    wrapperShallow.find('#place-order-button').simulate('click');
+
+    expect(spySaveOrder).to.not.have.been.calledOnce;
   });
 })
