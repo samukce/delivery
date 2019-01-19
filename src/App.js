@@ -37,6 +37,7 @@ class App extends Component {
                id='address'
                name='address'
                label='Address'
+               autoFocus
                required
                validate
                onChange={this.handleInputChange}><Icon>home</Icon></Input>
