@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 
 
 it('renders without crashing', () => {
@@ -10,14 +10,23 @@ it('renders without crashing', () => {
   ReactDOM.unmountComponentAtNode(div);
 });
 
-describe('App component', () => {
-  let spySaveOrder, wrapperShallow, sandbox;
+describe('App component load', () => {
+  it('should focus in the address field', () => {
+    const output = mount(<App />);
+
+    expect(output.find('input#address').getElement().props.id)
+      .to.be.equal(document.activeElement.id);
+  });
+})
+
+describe('App component place order', () => {
+  let spySaveOrder, wrapper, sandbox;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
 
-    wrapperShallow = shallow(<App />);
-    const componentRender = wrapperShallow.instance();
+    wrapper = shallow(<App />);
+    const componentRender = wrapper.instance();
 
     spySaveOrder = sandbox.stub(componentRender, 'placeOrder');
     componentRender.forceUpdate()
@@ -27,16 +36,16 @@ describe('App component', () => {
     sandbox.restore();
   });
 
-  it('should save order with required fields', () => {
-    wrapperShallow.find('#address').simulate('change', { target: { name: 'address', value: '101 Street' } } );
-    wrapperShallow.find('#place-order-button').simulate('click');
+  it('should go if required fields filled', () => {
+    wrapper.find('#address').simulate('change', { target: { name: 'address', value: '101 Street' } } );
+    wrapper.find('#place-order-button').simulate('click');
 
-    expect(wrapperShallow.state('address')).to.equal('101 Street');
+    expect(wrapper.state('address')).to.equal('101 Street');
     expect(spySaveOrder).to.have.been.calledOnce;
   });
 
-  it('should not save order if address is empty', () => {
-    wrapperShallow.find('#place-order-button').simulate('click');
+  it('should not continue if address is empty', () => {
+    wrapper.find('#place-order-button').simulate('click');
 
     expect(spySaveOrder).to.not.have.been.calledOnce;
   });
