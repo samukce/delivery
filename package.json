@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "classnames": "^2.2.6",
     "cross-env": "^5.2.0",
     "electron-is-dev": "^1.0.1",
     "hammerjs": "^2.0.8",
