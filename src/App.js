@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import {Table, Input, Row, Icon, Col, Button} from 'react-materialize';
 import AutocompleteCustom from './components/AutocompleteCustom';
 import PropTypes from 'prop-types';
+import ProductRepository from './repository/ProductRepository';
 
 class App extends Component {
   static propTypes = {
     productRepository: PropTypes.any.isRequired
   };
+
+  static defaultProps = {
+    productRepository: ProductRepository
+  }
 
   constructor(props) {
     super(props);
