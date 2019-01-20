@@ -5,25 +5,17 @@ import { shallow, mount } from 'enzyme';
 
 
 it('renders without crashing', () => {
-  const sandbox = sinon.sandbox.create();
-
   const div = document.createElement('div');
-  ReactDOM.render(<App productRepository={createStubProductRepository(sandbox)} />, div);
+  ReactDOM.render(<App />, div);
   ReactDOM.unmountComponentAtNode(div);
-
-  sandbox.restore();
 });
 
 describe('App component load', () => {
   it('should focus in the address field', () => {
-    const sandbox = sinon.sandbox.create();
-
-    const output = mount(<App productRepository={createStubProductRepository(sandbox)}/>);
+    const output = mount(<App />);
 
     expect(output.find('input#address').getElement().props.id)
       .to.be.equal(document.activeElement.id);
-
-    sandbox.restore();
   });
 })
 
@@ -33,7 +25,7 @@ describe('App place order', () => {
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
 
-    wrapper = shallow(<App productRepository={createStubProductRepository(sandbox)}/>);
+    wrapper = shallow(<App />);
     const componentRender = wrapper.instance();
 
     spyPlaceOrder = sandbox.stub(componentRender, 'placeOrder');
