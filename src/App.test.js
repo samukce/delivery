@@ -5,17 +5,25 @@ import { shallow, mount } from 'enzyme';
 
 
 it('renders without crashing', () => {
+  const sandbox = sinon.sandbox.create();
+
   const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
+  ReactDOM.render(<App productRepository={createStubProductRepository(sandbox)} />, div);
   ReactDOM.unmountComponentAtNode(div);
+
+  sandbox.restore();
 });
 
 describe('App component load', () => {
   it('should focus in the address field', () => {
-    const output = mount(<App />);
+    const sandbox = sinon.sandbox.create();
+
+    const output = mount(<App productRepository={createStubProductRepository(sandbox)}/>);
 
     expect(output.find('input#address').getElement().props.id)
       .to.be.equal(document.activeElement.id);
+
+    sandbox.restore();
   });
 })
 
@@ -25,7 +33,7 @@ describe('App place order', () => {
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
 
-    wrapper = shallow(<App />);
+    wrapper = shallow(<App productRepository={createStubProductRepository(sandbox)}/>);
     const componentRender = wrapper.instance();
 
     spyPlaceOrder = sandbox.stub(componentRender, 'placeOrder');
@@ -53,12 +61,14 @@ describe('App place order', () => {
 })
 
 describe('App add product', () => {
-  let spyAddProduct, wrapper, sandbox;
+  let spyAddProduct, wrapper, sandbox, stubProductRepository;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
 
-    wrapper = shallow(<App />);
+    stubProductRepository = createStubProductRepository(sandbox);
+
+    wrapper = shallow(<App productRepository={stubProductRepository}/>);
     const componentRender = wrapper.instance();
 
     spyAddProduct = sandbox.spy(componentRender, 'addProduct');
@@ -67,6 +77,10 @@ describe('App add product', () => {
 
   afterEach(() => {
     sandbox.restore();
+  });
+
+  it('should load products from repository', () => {
+    expect(stubProductRepository.all).to.have.been.called;
   });
 
   it('should go with product and quantity selected', () => {
@@ -80,3 +94,13 @@ describe('App add product', () => {
       .to.deep.equal([ { product_id: 1, description: 'Product 1', value: 3.50, quantity: 2 } ]);
   });
 })
+
+function createStubProductRepository(sandbox) {
+  const all = sandbox.stub().returns([
+    { id: 1, description: 'Product 1', value: 3.50 },
+    { id: 2, description: 'Product 2', value: 2.50 }
+  ]);
+  return {
+    all: all
+  };
+}
