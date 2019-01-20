@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import {Table, Input, Row, Icon, Col, Button} from 'react-materialize';
+import {Table, Input, Row, Icon, Col, Button, Autocomplete} from 'react-materialize';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      address: ''
+      address: '',
+      quantity: 1,
+      products: []
     };
   }
 
@@ -30,23 +32,59 @@ class App extends Component {
     return this.state.address.length !== 0
   }
 
+  addProduct = () => {
+    const product = { 
+      product_id: this.state.product_id, 
+      description: this.state.product_description,
+      value: this.state.product_value,
+      quantity: this.state.quantity
+    };
+
+    this.setState({
+      products: [...this.state.products, product]
+    });
+
+    console.log(this.state.products);
+  }
+
   render() {
     return (
       <Row>
-        <Input s={12}
-               id='address'
-               name='address'
-               label='Address'
-               autoFocus
-               required
-               validate
-               onChange={this.handleInputChange}><Icon>home</Icon></Input>
+        <Input id='address'
+              name='address'
+              label='Address'
+              autoFocus
+              required
+              validate
+              s={12}
+              onChange={this.handleInputChange}><Icon>home</Icon></Input>
 
         <Input s={12} label='Complement'><Icon>rate_review</Icon></Input>
 
-        <Input s={12} m={6} label='Product'><Icon>local_grocery_store</Icon></Input>
-        <Input s={12} m={4} label='Quantity'><Icon>list_alt</Icon></Input>
-        <Button className='col s12 m2'>Add<Icon left>add_shopping_cart</Icon></Button>
+        <Autocomplete
+          title='Product'
+          data={{
+            'Apple': null,
+            'Microsoft': null,
+            'Google': null
+          }}
+          s={12} m={6}
+          icon='local_grocery_store'
+          iconClassName='prefix' />
+
+        {/* <Input id='product'
+              name='product'
+              label='Product' 
+              s={12} m={6}
+              onChange={this.handleInputChange}><Icon>local_grocery_store</Icon></Input> */}
+        <Input id='quantity'
+              name='quantity'
+              label='Quantity'
+              s={12} m={4}
+              onChange={this.handleInputChange}><Icon>list_alt</Icon></Input>
+        <Button id='add-product-button' 
+              onClick={this.addProduct}
+              className='col s12 m2'>Add<Icon left>add_shopping_cart</Icon></Button>
 
         <Col s={12}>
           <Table>
