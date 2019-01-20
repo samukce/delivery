@@ -69,8 +69,8 @@ describe('App add product', () => {
     sandbox.restore();
   });
 
-  it('should go if product and quantity selected', () => {
-    wrapper.find('#product').simulate('change', { target: { name: 'product', value: 'Product 1' } } );
+  it('should go with product and quantity selected', () => {
+    wrapper.find('.product').simulate('change', { target: { name: 'product', value: 'Product 1' } } );
     wrapper.find('#quantity').simulate('change', { target: { name: 'quantity', value: '2' } } );
 
     wrapper.find('#add-product-button').simulate('click');

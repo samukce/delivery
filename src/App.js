@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import {Table, Input, Row, Icon, Col, Button, Autocomplete} from 'react-materialize';
+import {Table, Input, Row, Icon, Col, Button} from 'react-materialize';
+import AutocompleteCustom from './components/AutocompleteCustom';
+
 
 class App extends Component {
   constructor(props) {
@@ -61,10 +63,12 @@ class App extends Component {
 
         <Input s={12} label='Complement'><Icon>rate_review</Icon></Input>
 
-        <Autocomplete
+        <AutocompleteCustom
           title='Product'
+          className='product'
           data={{
-            'Apple': null,
+            'Apple 1': null,
+            'Apple 2': null,
             'Microsoft': null,
             'Google': null
           }}
