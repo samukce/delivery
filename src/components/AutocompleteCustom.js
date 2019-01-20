@@ -131,7 +131,10 @@ class AutocompleteCustom extends Component {
       evt.preventDefault();
       // liValue is gets text content of item that pressed enter.
       // we can't do innerHTML or innerText because there is <span className="highlight"></span>
-      const liValue = matches[activeItem].textContent;
+      const matcheActive = matches ? matches[activeItem] : null;
+      if (!matcheActive) return;
+
+      const liValue = matcheActive.textContent;
       const value = this._findRealValue(liValue);
       this._onAutocomplete(value);
     }
