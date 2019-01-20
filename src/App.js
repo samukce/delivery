@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import {Table, Input, Row, Icon, Col, Button} from 'react-materialize';
 import AutocompleteCustom from './components/AutocompleteCustom';
-
+import PropTypes from 'prop-types';
 
 class App extends Component {
+  static propTypes = {
+    productRepository: PropTypes.any.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -45,11 +49,18 @@ class App extends Component {
     this.setState({
       products: [...this.state.products, product]
     });
+  }
 
-    console.log(this.state.products);
+  convertProductsToAutocompleteMap = (arr) => {
+    return arr.reduce(function(map, obj) {
+      map[obj.description] = null;
+      return map;
+    }, {});
   }
 
   render() {
+    const products = this.convertProductsToAutocompleteMap(this.props.productRepository.all());
+
     return (
       <Row>
         <Input id='address'
@@ -66,24 +77,15 @@ class App extends Component {
         <AutocompleteCustom
           title='Product'
           className='product'
-          data={{
-            'Apple 1': null,
-            'Apple 2': null,
-            'Microsoft': null,
-            'Google': null
-          }}
+          data={products}
           s={12} m={6}
           icon='local_grocery_store'
           iconClassName='prefix' />
 
-        {/* <Input id='product'
-              name='product'
-              label='Product' 
-              s={12} m={6}
-              onChange={this.handleInputChange}><Icon>local_grocery_store</Icon></Input> */}
         <Input id='quantity'
               name='quantity'
               label='Quantity'
+              defaultValue={this.state.quantity}
               s={12} m={4}
               onChange={this.handleInputChange}><Icon>list_alt</Icon></Input>
         <Button id='add-product-button' 
