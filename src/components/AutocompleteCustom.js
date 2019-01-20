@@ -147,7 +147,7 @@ class AutocompleteCustom extends Component {
 
       const liValue = matcheActive.textContent;
       const value = this._findRealValue(liValue);
-      this._onAutocomplete(value);
+      this._onAutocomplete(value[0]);
     }
   }
 
