@@ -12,13 +12,16 @@ class AutocompleteCustom extends Component {
     this.state = {
       value: props.value || '',
       itemSelected: false,
-      activeItem: 0
+      activeItem: 0,
+      expandItems: false
     };
 
     this.renderIcon = this.renderIcon.bind(this);
     this.renderDropdown = this.renderDropdown.bind(this);
     this._onChange = this._onChange.bind(this);
     this._onKeyDown = this._onKeyDown.bind(this);
+    this._onFocus = this._onFocus.bind(this);
+    this._onBlur = this._onBlur.bind(this);
   }
 
   componentWillReceiveProps({ value }) {
@@ -32,13 +35,19 @@ class AutocompleteCustom extends Component {
   }
 
   renderDropdown(data, minLength, limit) {
-    const { value, itemSelected, activeItem } = this.state;
+    const { value, itemSelected, activeItem, expandItems } = this.state;
 
-    if ((minLength && minLength > value.length) || !value || itemSelected) {
+    if ((minLength && minLength > value.length)
+       || (!expandItems && !value)
+       || itemSelected) {
       return null;
     }
 
-    let matches = this._findRealValue(value);
+    let matches;
+    if (expandItems)
+      matches = this._allValue();
+  else
+      matches = this._findRealValue(value);
 
     if (limit) matches = matches.slice(0, limit);
     if (matches.length === 0) {
@@ -78,13 +87,15 @@ class AutocompleteCustom extends Component {
   }
 
   _onChange(evt) {
-    const { onChange } = this.props;
+    const { onChange, expandOnFocus } = this.props;
     const value = evt.target.value;
     if (onChange) {
       onChange(evt, value);
     }
 
-    this.setState({ value, itemSelected: false, activeItem: 0 });
+    let expandItems = expandOnFocus && value === '';
+
+    this.setState({ value, itemSelected: false, activeItem: 0, expandItems });
   }
 
   _onKeyDown(evt) {
@@ -140,6 +151,22 @@ class AutocompleteCustom extends Component {
     }
   }
 
+  _onFocus(evt) {
+    const { expandOnFocus } = this.props;
+    if (!expandOnFocus) return;
+
+    this.setState({ expandItems: true });
+  }
+
+  _onBlur(evt) {
+    const { expandOnFocus } = this.props;
+    if (!expandOnFocus) return;
+
+    setTimeout(() => {
+      this.setState({ expandItems: false });
+    }, 100);
+  }
+
   _findRealValue(liValue) {
     const { data } = this.props;
 
@@ -150,6 +177,8 @@ class AutocompleteCustom extends Component {
     });
   }
 
+  _allValue = () => Object.keys(this.props.data);
+
   _onAutocomplete(value, evt) {
     const { onChange, onAutocomplete } = this.props;
     if (onAutocomplete) {
@@ -159,7 +188,7 @@ class AutocompleteCustom extends Component {
       onChange(evt, value);
     }
 
-    this.setState({ value, itemSelected: true });
+    this.setState({ value, itemSelected: true, expandItems: false });
   }
 
   render() {
@@ -177,6 +206,7 @@ class AutocompleteCustom extends Component {
       minLength,
       placeholder,
       limit,
+      expandOnFocus,
       // these are mentioned here only to prevent from getting into ...props
       value,
       onChange,
@@ -207,6 +237,8 @@ class AutocompleteCustom extends Component {
           id={_id}
           onChange={this._onChange}
           onKeyDown={this._onKeyDown}
+          onFocus={expandOnFocus && this._onFocus}
+          onBlur={expandOnFocus && this._onBlur}
           type="text"
           value={this.state.value}
         />

@@ -58,7 +58,8 @@ class App extends Component {
 
   convertProductsToAutocompleteMap = (arr) => {
     return arr.reduce(function(map, obj) {
-      map[obj.description] = null;
+      const productDisplay = `${obj.description} R$ ${obj.value}`
+      map[productDisplay] = null;
       return map;
     }, {});
   }
@@ -82,7 +83,9 @@ class App extends Component {
         <AutocompleteCustom
           title='Product'
           className='product'
+          placeholder='Water...'
           data={products}
+          expandOnFocus={true}
           s={12} m={6}
           icon='local_grocery_store'
           iconClassName='prefix' />
