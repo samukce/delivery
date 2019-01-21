@@ -50,7 +50,9 @@ class App extends Component {
   }
 
   addProduct = () => {
-    const product = { 
+    if (!this.state.add_product) return;
+
+    const product = {
       product_id: this.state.add_product.id,
       description: this.state.add_product.description,
       value: this.state.add_product.value,
@@ -58,7 +60,9 @@ class App extends Component {
     };
 
     this.setState({
-      products: [...this.state.products, product]
+      products: [...this.state.products, product],
+      add_product_quantity: 1,
+      add_product: null
     });
   }
 
