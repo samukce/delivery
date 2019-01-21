@@ -48,7 +48,7 @@ describe('App place order', () => {
   it('should not continue if address is empty', () => {
     wrapper.find('#place-order-button').simulate('click');
 
-    expect(spyPlaceOrder).to.not.have.been.calledOnce;
+    expect(spyPlaceOrder).to.not.have.been.called;
   });
 })
 
@@ -64,7 +64,6 @@ describe('App add product', () => {
     componentRender = wrapper.instance();
 
     spyAddProduct = sandbox.spy(componentRender, 'addProduct');
-    spyAddProduct = sandbox.spy(componentRender, 'handleOnAutocompleteProduct');
 
     componentRender.forceUpdate()
   });
@@ -77,15 +76,38 @@ describe('App add product', () => {
     expect(stubProductRepository.all).to.have.been.called;
   });
 
+  it('should not add if no product selected', () => {
+    wrapper.find('#add-product-button').simulate('click');
+
+    expect(wrapper.state('products')).to.eql([]);
+  });
+
   it('should go with product and quantity selected', () => {
     componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
     wrapper.find('#quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
-    wrapper.find('#add-product-button').at(0).simulate('click');
+    wrapper.find('#add-product-button').simulate('click');
 
     expect(spyAddProduct).to.have.been.calledOnce;
     expect(wrapper.state('products'))
       .to.eql([ { product_id: 1, description: 'Product 1', value: 3.5, quantity: 2 } ]);
+  });
+
+  it('should reset product selected after added', () => {
+    componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+
+    wrapper.find('#add-product-button').simulate('click');
+
+    expect(wrapper.state('add_product')).to.be.null;
+  });
+
+  it('should return quantity product after added to be 1', () => {
+    componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+    wrapper.find('#quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
+
+    wrapper.find('#add-product-button').simulate('click');
+
+    expect(wrapper.state('add_product_quantity')).to.be.equal(1);
   });
 })
 
