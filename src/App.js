@@ -17,7 +17,7 @@ class App extends Component {
     super(props);
     this.state = {
       address: '',
-      quantity: 1,
+      add_product_quantity: 1,
       products: []
     };
   }
@@ -29,6 +29,12 @@ class App extends Component {
 
     this.setState({
       [name]: value
+    });
+  }
+
+  handleOnAutocompleteProduct = (value) => {
+    this.setState({
+      add_product: value
     });
   }
 
@@ -45,10 +51,10 @@ class App extends Component {
 
   addProduct = () => {
     const product = { 
-      product_id: this.state.product_id, 
-      description: this.state.product_description,
-      value: this.state.product_value,
-      quantity: this.state.quantity
+      product_id: this.state.add_product.id,
+      description: this.state.add_product.description,
+      value: this.state.add_product.value,
+      quantity: this.state.add_product_quantity
     };
 
     this.setState({
@@ -58,8 +64,8 @@ class App extends Component {
 
   convertProductsToAutocompleteMap = (arr) => {
     return arr.reduce(function(map, obj) {
-      const productDisplay = `${obj.description} R$ ${obj.value}`
-      map[productDisplay] = null;
+      const productDisplay = `${obj.description} (R$ ${obj.value})`
+      map[productDisplay] = obj;
       return map;
     }, {});
   }
@@ -86,14 +92,15 @@ class App extends Component {
           placeholder='Water...'
           data={products}
           expandOnFocus={true}
+          onAutocomplete={this.handleOnAutocompleteProduct}
           s={12} m={6}
           icon='local_grocery_store'
           iconClassName='prefix' />
 
         <Input id='quantity'
-              name='quantity'
+              name='add_product_quantity'
               label='Quantity'
-              defaultValue={this.state.quantity}
+              defaultValue={this.state.add_product_quantity}
               s={12} m={4}
               onChange={this.handleInputChange}><Icon>list_alt</Icon></Input>
         <Button id='add-product-button' 

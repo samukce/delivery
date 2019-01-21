@@ -53,7 +53,7 @@ describe('App place order', () => {
 })
 
 describe('App add product', () => {
-  let spyAddProduct, wrapper, sandbox, stubProductRepository;
+  let spyAddProduct, wrapper, sandbox, stubProductRepository, componentRender;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
@@ -61,9 +61,11 @@ describe('App add product', () => {
     stubProductRepository = createStubProductRepository(sandbox);
 
     wrapper = shallow(<App productRepository={stubProductRepository}/>);
-    const componentRender = wrapper.instance();
+    componentRender = wrapper.instance();
 
     spyAddProduct = sandbox.spy(componentRender, 'addProduct');
+    spyAddProduct = sandbox.spy(componentRender, 'handleOnAutocompleteProduct');
+
     componentRender.forceUpdate()
   });
 
@@ -76,14 +78,14 @@ describe('App add product', () => {
   });
 
   it('should go with product and quantity selected', () => {
-    wrapper.find('.product').simulate('change', { target: { name: 'product', value: 'Product 1' } } );
-    wrapper.find('#quantity').simulate('change', { target: { name: 'quantity', value: '2' } } );
+    componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+    wrapper.find('#quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
-    wrapper.find('#add-product-button').simulate('click');
+    wrapper.find('#add-product-button').at(0).simulate('click');
 
     expect(spyAddProduct).to.have.been.calledOnce;
     expect(wrapper.state('products'))
-      .to.deep.equal([ { product_id: 1, description: 'Product 1', value: 3.50, quantity: 2 } ]);
+      .to.eql([ { product_id: 1, description: 'Product 1', value: 3.5, quantity: 2 } ]);
   });
 })
 
