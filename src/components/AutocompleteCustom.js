@@ -66,11 +66,11 @@ class AutocompleteCustom extends Component {
           return (
             <li
               key={key + '_' + idx}
-              onClick={this._onAutocomplete.bind(this, key)}
+              onClick={this._onAutocomplete.bind(this, key, data[key])}
               className={idx === activeItem ? 'active' : null}
             >
-              {data[key] ? (
-                <img src={data[key]} className="right circle" alt="" />
+              {data[key] && data[key].img ? (
+                <img src={data[key].img} className="right circle" alt="" />
               ) : null}
               <span>
                 {index !== 0 ? key.substring(0, index) : ''}
@@ -145,9 +145,7 @@ class AutocompleteCustom extends Component {
       const matcheActive = matches ? matches[activeItem] : null;
       if (!matcheActive) return;
 
-      const liValue = matcheActive.textContent;
-      const value = this._findRealValue(liValue);
-      this._onAutocomplete(value[0]);
+      matcheActive.click();
     }
   }
 
@@ -179,10 +177,10 @@ class AutocompleteCustom extends Component {
 
   _allValue = () => Object.keys(this.props.data);
 
-  _onAutocomplete(value, evt) {
+  _onAutocomplete(value, object, evt) {
     const { onChange, onAutocomplete } = this.props;
     if (onAutocomplete) {
-      onAutocomplete(value);
+      onAutocomplete(object ? object: value);
     }
     if (onChange) {
       onChange(evt, value);
