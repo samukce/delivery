@@ -24,9 +24,12 @@ class AutocompleteCustom extends Component {
     this._onBlur = this._onBlur.bind(this);
   }
 
-  componentWillReceiveProps({ value }) {
+  componentWillReceiveProps({ value, itemSelected }) {
     if (value !== undefined) {
       this.setState({ value });
+    }
+    if (itemSelected !== undefined) {
+      this.setState({ itemSelected });
     }
   }
 

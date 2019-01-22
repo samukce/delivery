@@ -18,7 +18,8 @@ class App extends Component {
     this.state = {
       address: '',
       add_product_quantity: 1,
-      products: []
+      product_display_description: '',
+      products: [],
     };
   }
 
@@ -35,6 +36,12 @@ class App extends Component {
   handleOnAutocompleteProduct = (value) => {
     this.setState({
       add_product: value
+    });
+  }
+
+  onChangeProductDisplay = (evt, value) => {
+    this.setState({
+      product_display_description: value
     });
   }
 
@@ -62,6 +69,7 @@ class App extends Component {
     this.setState({
       products: [...this.state.products, product],
       add_product_quantity: 1,
+      product_display_description: '',
       add_product: null
     });
   }
@@ -97,6 +105,9 @@ class App extends Component {
           data={products}
           expandOnFocus={true}
           onAutocomplete={this.handleOnAutocompleteProduct}
+          value={this.state.product_display_description}
+          itemSelected={this.state.product_display_description !== ''}
+          onChange={this.onChangeProductDisplay}
           s={12} m={6}
           icon='local_grocery_store'
           iconClassName='prefix' />
@@ -104,7 +115,7 @@ class App extends Component {
         <Input id='quantity'
               name='add_product_quantity'
               label='Quantity'
-              defaultValue={this.state.add_product_quantity}
+              value={this.state.add_product_quantity}
               s={12} m={4}
               onChange={this.handleInputChange}><Icon>list_alt</Icon></Input>
         <Button id='add-product-button' 
