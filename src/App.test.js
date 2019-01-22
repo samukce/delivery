@@ -109,6 +109,16 @@ describe('App add product', () => {
 
     expect(wrapper.state('add_product_quantity')).to.be.equal(1);
   });
+
+  it('should clear product field', () => {
+    componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+    wrapper.setState({ product_display_description: 'Product 1'});
+
+    wrapper.find('#add-product-button').simulate('click');
+
+    expect(wrapper.find('AutocompleteCustom.product').shallow().find('input').props().value)
+      .to.be.equal('');
+  });
 })
 
 function createStubProductRepository(sandbox) {
