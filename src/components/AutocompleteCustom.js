@@ -49,7 +49,7 @@ class AutocompleteCustom extends Component {
     let matches;
     if (expandItems)
       matches = this._allValue();
-  else
+    else
       matches = this._findRealValue(value);
 
     if (limit) matches = matches.slice(0, limit);
