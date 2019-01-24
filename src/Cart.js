@@ -79,6 +79,8 @@ class Cart extends Component {
     }, {});
   }
 
+  getValueFormatted = (value) => `$${value.toLocaleString('en', { minimumFractionDigits: 2 })}`
+
   fillProductTable = () => {
     const { products } = this.state;
 
@@ -90,9 +92,9 @@ class Cart extends Component {
         (
           <tr>
             <td>{product.description}</td>
-            <td>{product.value}</td>
+            <td>{this.getValueFormatted(product.value)}</td>
             <td>{product.quantity}</td>
-            <td>{product.quantity * product.value}</td>
+            <td>{this.getValueFormatted(product.quantity * product.value)}</td>
           </tr>
         )
       )
