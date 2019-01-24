@@ -107,7 +107,7 @@ describe('Cart add product', () => {
     wrapper.find('#add-product-button').simulate('click');
 
     expect(wrapper.find('Table').find('tbody').props().children[0].props.children[1].props.children)
-      .to.be.equal(3.5);
+      .to.be.equal('$3.50');
   });
 
   it('should add the quantity of product on the table', () => {
@@ -126,7 +126,7 @@ describe('Cart add product', () => {
     wrapper.find('#add-product-button').simulate('click');
 
     expect(wrapper.find('Table').find('tbody').props().children[0].props.children[3].props.children)
-      .to.be.equal(7.0);
+      .to.be.equal('$7.00');
   });
 })
 
