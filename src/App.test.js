@@ -50,10 +50,14 @@ describe('App place order', () => {
     expect(spyPlaceOrder).to.not.have.been.called;
   });
 
+  it('should fill the address complement field', () => {
+    wrapper.find('#complement').simulate('change', { target: { name: 'complement', value: 'ap. 202' } } );
+
+    expect(wrapper.state('complement')).to.equal('ap. 202');
+  });
+
   it('should fill the note field', () => {
     wrapper.find('#notes').simulate('change', { target: { name: 'notes', value: 'good customer' } } );
-
-    wrapper.find('#place-order-button').simulate('click');
 
     expect(wrapper.state('notes')).to.equal('good customer');
   });
