@@ -36,18 +36,25 @@ describe('App place order', () => {
     sandbox.restore();
   });
 
-  it('should go if address filled', () => {
+  it('should fill the address field', () => {
     wrapper.find('#address').simulate('change', { target: { name: 'address', value: '101 Street' } } );
 
     wrapper.find('#place-order-button').simulate('click');
 
     expect(wrapper.state('address')).to.equal('101 Street');
-    expect(spyPlaceOrder).to.have.been.calledOnce;
   });
 
   it('should not continue if address is empty', () => {
     wrapper.find('#place-order-button').simulate('click');
 
     expect(spyPlaceOrder).to.not.have.been.called;
+  });
+
+  it('should fill the note field', () => {
+    wrapper.find('#notes').simulate('change', { target: { name: 'notes', value: 'good customer' } } );
+
+    wrapper.find('#place-order-button').simulate('click');
+
+    expect(wrapper.state('notes')).to.equal('good customer');
   });
 })
