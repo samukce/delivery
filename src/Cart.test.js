@@ -15,8 +15,6 @@ describe('Cart add product', () => {
     componentRender = wrapper.instance();
 
     spyAddProduct = sandbox.spy(componentRender, 'addProduct');
-
-    componentRender.forceUpdate()
   });
 
   afterEach(() => {
@@ -61,7 +59,15 @@ describe('Cart add product', () => {
     expect(wrapper.state('add_product_quantity')).to.be.equal(1);
   });
 
-  it('should clear product field', () => {
+  it('should focus the quantity field after choose the product', () => {
+    const focusQuantity = sandbox.stub(componentRender, 'focusQuantity');
+
+    componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+
+    expect(focusQuantity).to.have.have.calledOnce;
+  });
+
+  it('should clear product field after added the product', () => {
     componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
     wrapper.setState({ product_display_description: 'Product 1'});
 
