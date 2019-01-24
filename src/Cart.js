@@ -3,7 +3,8 @@ import {Table, Input, Row, Icon, Col, Button} from 'react-materialize';
 import AutocompleteCustom from './components/AutocompleteCustom';
 import PropTypes from 'prop-types';
 import ProductRepository from './repository/ProductRepository';
-import { handleInputChangeBind } from './utilities/ComponentUtils'
+import { map } from 'lodash';
+import { handleInputChangeBind } from './utilities/ComponentUtils';
 
 
 class Cart extends Component {
@@ -78,6 +79,26 @@ class Cart extends Component {
     }, {});
   }
 
+  fillProductTable = () => {
+    const { products } = this.state;
+
+    if (products.length ===0 )
+      return (<tr>Add a product...</tr>);
+
+    return (
+      map(products, (product, i) =>
+        (
+          <tr>
+            <td>{product.description}</td>
+            <td>{product.value}</td>
+            <td>{product.quantity}</td>
+            <td>{product.quantity * product.value}</td>
+          </tr>
+        )
+      )
+    )
+  }
+
   render() {
     const products = this.convertProductsToAutocompleteMap(this.props.productRepository.all());
 
@@ -120,24 +141,7 @@ class Cart extends Component {
             </thead>
 
             <tbody>
-              <tr>
-                <td>Alvin</td>
-                <td>1</td>
-                <td>$0.87</td>
-                <td>$0.87</td>
-              </tr>
-              <tr>
-                <td>Alan</td>
-                <td>2</td>
-                <td>$3.76</td>
-                <td>$7.52</td>
-              </tr>
-              <tr>
-                <td>Jonathan</td>
-                <td>3</td>
-                <td>$7.00</td>
-                <td>$21.00</td>
-              </tr>
+              {this.fillProductTable()}
             </tbody>
           </Table>
         </Col>
