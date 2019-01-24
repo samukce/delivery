@@ -25,10 +25,19 @@ class Cart extends Component {
     };
   }
 
+  quantityInputRefHandler = (el) => {
+    this.quantityInputField = el;
+  }
+
   handleOnAutocompleteProduct = (value) => {
     this.setState({
       add_product: value
-    });
+    }, () => this.focusQuantity());
+  }
+
+  focusQuantity = () => {
+    if (!this.quantityInputField || !this.quantityInputField.input) return;
+    this.quantityInputField.input.focus();
   }
 
   onChangeProductDisplay = (evt, value) => {
@@ -92,6 +101,7 @@ class Cart extends Component {
               name='add_product_quantity'
               label='Quantity'
               value={this.state.add_product_quantity}
+              ref={this.quantityInputRefHandler}
               s={12} m={4}
               onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>list_alt</Icon></Input>
         <Button id='add-product-button' 
