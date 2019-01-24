@@ -69,12 +69,64 @@ describe('Cart add product', () => {
 
   it('should clear product field after added the product', () => {
     componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
-    wrapper.setState({ product_display_description: 'Product 1'});
 
     wrapper.find('#add-product-button').simulate('click');
 
     expect(wrapper.find('AutocompleteCustom.product').shallow().find('input').props().value)
       .to.be.equal('');
+  });
+
+  it('should have add the product message when empty', () => {
+    expect(wrapper.find('Table').find('tbody').props().children.props.children)
+      .to.be.equal('Add a product...');
+  });
+
+  it('should add the product on the table', () => {
+    componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+    wrapper.find('#add-product-button').simulate('click');
+
+    componentRender.handleOnAutocompleteProduct({ id: 2, description: 'Product 2', value: 4.0 });
+    wrapper.find('#add-product-button').simulate('click');
+
+    expect(wrapper.find('Table').find('tbody').props().children.length)
+      .to.be.equal(2);
+  });
+
+  it('should add the description of product on the table', () => {
+    componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+
+    wrapper.find('#add-product-button').simulate('click');
+
+    expect(wrapper.find('Table').find('tbody').props().children[0].props.children[0].props.children)
+      .to.be.equal('Product 1');
+  });
+
+  it('should add the item price of product on the table', () => {
+    componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+
+    wrapper.find('#add-product-button').simulate('click');
+
+    expect(wrapper.find('Table').find('tbody').props().children[0].props.children[1].props.children)
+      .to.be.equal(3.5);
+  });
+
+  it('should add the quantity of product on the table', () => {
+    componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+
+    wrapper.find('#add-product-button').simulate('click');
+
+    expect(wrapper.find('Table').find('tbody').props().children[0].props.children[2].props.children)
+      .to.be.equal(1);
+  });
+
+  it('should calculate the total amount of the product on the table', () => {
+    componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+    wrapper.find('#quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
+
+    wrapper.find('#add-product-button').simulate('click');
+
+    expect(wrapper.find('Table').find('tbody').props().children[0].props.children[3].props.children)
+      .to.be.equal(7.0);
   });
 })
 
