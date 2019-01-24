@@ -38,20 +38,27 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Input id='address'
-              name='address'
-              label='Address'
-              autoFocus
-              required
-              validate
-              s={12}
-              onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>home</Icon></Input>
+        <Input
+          id='address'
+          name='address'
+          label='Address'
+          autoFocus
+          required
+          validate
+          s={12}
+          onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>home</Icon></Input>
 
         <Input s={12} label='Complement'><Icon>rate_review</Icon></Input>
 
         <Cart onProductsChange={this.onProductsChange}/>
 
-        <Input s={12} label='Notes'><Icon>speaker_notes</Icon></Input>
+        <Input
+          id='notes'
+          s={12}
+          name='notes'
+          label='Notes'
+          onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>speaker_notes</Icon></Input>
+
         <Row>
           <Button className='col s12 m2 offset-m6 grey'>Clean<Icon left>clear_all</Icon></Button>
           <Button
