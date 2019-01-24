@@ -46,9 +46,16 @@ class App extends Component {
           required
           validate
           s={12}
-          onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>home</Icon></Input>
+          onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>home</Icon>
+        </Input>
 
-        <Input s={12} label='Complement'><Icon>rate_review</Icon></Input>
+        <Input
+          id='complement'
+          name='complement'
+          s={12}
+          label='Complement'
+          onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
+        </Input>
 
         <Cart onProductsChange={this.onProductsChange}/>
 
