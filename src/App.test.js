@@ -20,13 +20,13 @@ describe('App component load', () => {
 })
 
 describe('App place order', () => {
-  let spyPlaceOrder, wrapper, sandbox;
+  let spyPlaceOrder, wrapper, sandbox, componentRender;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
 
     wrapper = shallow(<App />);
-    const componentRender = wrapper.instance();
+    componentRender = wrapper.instance();
 
     spyPlaceOrder = sandbox.stub(componentRender, 'placeOrder');
     componentRender.forceUpdate()
@@ -60,5 +60,14 @@ describe('App place order', () => {
     wrapper.find('#notes').simulate('change', { target: { name: 'notes', value: 'good customer' } } );
 
     expect(wrapper.state('notes')).to.equal('good customer');
+  });
+
+  it('should calculate the total order amount', () => {
+    componentRender.onProductsChange([
+      { product_id: 1, description: 'Water', value: 3.50, quantity: 2 },
+      { product_id: 2, description: 'Product', value: 4.00, quantity: 3 }
+    ]);
+
+    expect(wrapper.state('total_amount')).to.equal(19);
   });
 })

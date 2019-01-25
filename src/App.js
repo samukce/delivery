@@ -11,13 +11,8 @@ class App extends Component {
       address: '',
       product_display_description: '',
       products: [],
+      total_amount: 0,
     };
-  }
-
-  handleOnAutocompleteProduct = (value) => {
-    this.setState({
-      add_product: value
-    });
   }
 
   buttonClickPlaceOrder = () => {
@@ -32,7 +27,15 @@ class App extends Component {
   }
 
   onProductsChange = (products) => {
-    this.setState({products});
+    this.setState({ products });
+
+    this.calculateTotalAmount(products);
+  }
+
+  calculateTotalAmount = (products) => {
+    const total_amount = products.reduce((total, prod) => total +  (prod.value * prod.quantity), 0);
+
+    this.setState({ total_amount });
   }
 
   render() {
@@ -58,6 +61,8 @@ class App extends Component {
         </Input>
 
         <Cart onProductsChange={this.onProductsChange}/>
+
+        {this.state.total_amount}
 
         <Input
           id='notes'
