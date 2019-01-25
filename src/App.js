@@ -69,6 +69,7 @@ class App extends Component {
                 className='blue-grey darken-1'
                 textClassName='white-text'
                 title={getValueFormatted(this.state.total_amount)}>
+                Total
               </Card>
           </Col>
         </Row>
