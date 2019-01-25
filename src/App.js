@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {Input, Row, Icon, Button} from 'react-materialize';
+import { Input, Row, Icon, Button, Col, Card } from 'react-materialize';
 import Cart from './Cart'
-import { handleInputChangeBind } from './utilities/ComponentUtils'
+import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentUtils'
 
 
 class App extends Component {
@@ -62,7 +62,16 @@ class App extends Component {
 
         <Cart onProductsChange={this.onProductsChange}/>
 
-        {this.state.total_amount}
+        <Row>
+          <Col m={2} offset='m10' s={12}>
+              <Card
+                id='total_amount'
+                className='blue-grey darken-1'
+                textClassName='white-text'
+                title={getValueFormatted(this.state.total_amount)}>
+              </Card>
+          </Col>
+        </Row>
 
         <Input
           id='notes'
