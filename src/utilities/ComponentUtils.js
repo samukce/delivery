@@ -9,3 +9,7 @@ export function handleInputChangeBind(setState) {
         });
     };
 }
+
+export function getValueFormatted(value)  {
+    return `$${value.toLocaleString('en', { minimumFractionDigits: 2 })}`;
+}

@@ -70,4 +70,12 @@ describe('App place order', () => {
 
     expect(wrapper.state('total_amount')).to.equal(19);
   });
+
+  it('should format the total value with currency', () => {
+    componentRender.onProductsChange([
+      { product_id: 1, description: 'Water', value: 3.5, quantity: 2 },
+    ]);
+
+    expect(wrapper.find('#total_amount').props().title).to.equal('$7.00');
+  });
 })

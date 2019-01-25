@@ -4,7 +4,7 @@ import AutocompleteCustom from './components/AutocompleteCustom';
 import PropTypes from 'prop-types';
 import ProductRepository from './repository/ProductRepository';
 import { map } from 'lodash';
-import { handleInputChangeBind } from './utilities/ComponentUtils';
+import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentUtils';
 
 
 class Cart extends Component {
@@ -79,8 +79,6 @@ class Cart extends Component {
     }, {});
   }
 
-  getValueFormatted = (value) => `$${value.toLocaleString('en', { minimumFractionDigits: 2 })}`
-
   fillProductTable = () => {
     const { products } = this.state;
 
@@ -92,9 +90,9 @@ class Cart extends Component {
         (
           <tr>
             <td>{product.description}</td>
-            <td>{this.getValueFormatted(product.value)}</td>
+            <td>{getValueFormatted(product.value)}</td>
             <td>{product.quantity}</td>
-            <td>{this.getValueFormatted(product.quantity * product.value)}</td>
+            <td>{getValueFormatted(product.quantity * product.value)}</td>
           </tr>
         )
       )
