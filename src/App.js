@@ -75,10 +75,15 @@ class App extends Component {
             title={getValueFormatted(this.state.total_amount)}>
             Total
           </Card>
-          <Input id='change_to'
+          <Input
+            id='change_to'
             name='change_to'
             label='Change to'
             s={12}
+            type='number'
+            min={this.state.total_amount + 0.01}
+            step='0.01'
+            validate
             onChange={handleInputChangeBind(this.setState.bind(this), this.updateChangeDifference)}><Icon>attach_money</Icon></Input>
         </Cart>
 
