@@ -1,31 +1,24 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import Checkout from './Checkout';
 import { shallow, mount } from 'enzyme';
 
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
-});
-
-describe('App component load', () => {
+describe('Checkout component load', () => {
   it('should focus in the address field', () => {
-    const output = mount(<App />);
+    const output = mount(<Checkout />);
 
     expect(output.find('input#address').getElement().props.id)
       .to.be.equal(document.activeElement.id);
   });
 })
 
-describe('App place order', () => {
+describe('Checkout place order', () => {
   let spyPlaceOrder, wrapper, sandbox, componentRender;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
 
-    wrapper = shallow(<App />);
+    wrapper = shallow(<Checkout />);
     componentRender = wrapper.instance();
 
     spyPlaceOrder = sandbox.stub(componentRender, 'placeOrder');
@@ -62,22 +55,24 @@ describe('App place order', () => {
     expect(wrapper.state('notes')).to.equal('good customer');
   });
 
-  it('should calculate the total order amount', () => {
-    componentRender.onProductsChange([
-      { product_id: 1, description: 'Water', value: 3.50, quantity: 2 },
-      { product_id: 2, description: 'Product', value: 4.00, quantity: 3 }
-    ]);
+  describe('calculate total order amount', () => {
+    it('should calculate', () => {
+      componentRender.onProductsChange([
+        { product_id: 1, description: 'Water', value: 3.50, quantity: 2 },
+        { product_id: 2, description: 'Product', value: 4.00, quantity: 3 }
+      ]);
 
-    expect(wrapper.state('total_amount')).to.equal(19);
-  });
+      expect(wrapper.state('total_amount')).to.equal(19);
+    });
 
-  it('should format the total value with currency', () => {
-    componentRender.onProductsChange([
-      { product_id: 1, description: 'Water', value: 3.5, quantity: 2 },
-    ]);
+    it('should format', () => {
+      componentRender.onProductsChange([
+        { product_id: 1, description: 'Water', value: 3.5, quantity: 2 },
+      ]);
 
-    expect(wrapper.find('#total_amount').props().title).to.equal('$7.00');
-  });
+      expect(wrapper.find('#total_amount').props().title).to.equal('$7.00');
+    });
+});
 
   describe('calculate change to value', () => {
     it('should calculate', () => {
