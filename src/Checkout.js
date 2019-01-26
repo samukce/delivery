@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Input, Row, Icon, Button, Col, Card } from 'react-materialize';
+import { Input, Row, Icon, Button, Card } from 'react-materialize';
 import Cart from './Cart'
 import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentUtils'
 
 
-class App extends Component {
+class Checkout extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -107,4 +107,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default Checkout;
