@@ -129,7 +129,7 @@ class Cart extends Component {
               onClick={this.addProduct}
               className='col s12 m2'>Add<Icon left>add_shopping_cart</Icon></Button>
 
-        <Col s={12}>
+        <Col s={12} m={9}>
           <Table>
             <thead>
               <tr>
@@ -144,6 +144,10 @@ class Cart extends Component {
               {this.fillProductTable()}
             </tbody>
           </Table>
+        </Col>
+
+        <Col s={12} m={3}>
+          {this.props.children}
         </Col>
       </Row>
     );

@@ -1,4 +1,4 @@
-export function handleInputChangeBind(setState) {
+export function handleInputChangeBind(setState, callback) {
     return (event) => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -6,7 +6,7 @@ export function handleInputChangeBind(setState) {
 
         setState({
             [name]: value
-        });
+        }, callback);
     };
 }
 
