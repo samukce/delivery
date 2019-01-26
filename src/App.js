@@ -40,7 +40,9 @@ class App extends Component {
 
   updateChangeDifference = () => {
     const { total_amount, change_to } = this.state;
-    this.setState( { change_difference: change_to - total_amount });
+    const change_difference = change_to - total_amount;
+
+    this.setState( { change_difference: change_difference > 0 ? change_difference : null });
   }
 
   render() {
