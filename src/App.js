@@ -38,6 +38,11 @@ class App extends Component {
     this.setState({ total_amount });
   }
 
+  updateChangeDifference = () => {
+    const { total_amount, change_to } = this.state;
+    this.setState( { change_difference: change_to - total_amount });
+  }
+
   render() {
     return (
       <div>
@@ -60,19 +65,20 @@ class App extends Component {
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
         </Input>
 
-        <Cart onProductsChange={this.onProductsChange}/>
-
-        <Row>
-          <Col m={2} offset='m10' s={12}>
-              <Card
-                id='total_amount'
-                className='blue-grey darken-1'
-                textClassName='white-text'
-                title={getValueFormatted(this.state.total_amount)}>
-                Total
-              </Card>
-          </Col>
-        </Row>
+        <Cart onProductsChange={this.onProductsChange}>
+          <Card
+            id='total_amount'
+            className='blue-grey darken-1'
+            textClassName='white-text'
+            title={getValueFormatted(this.state.total_amount)}>
+            Total
+          </Card>
+          <Input id='change_to'
+            name='change_to'
+            label='Change to'
+            s={12}
+            onChange={handleInputChangeBind(this.setState.bind(this), this.updateChangeDifference)}><Icon>attach_money</Icon></Input>
+        </Cart>
 
         <Input
           id='notes'
