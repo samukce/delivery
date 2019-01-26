@@ -124,6 +124,11 @@ class Cart extends Component {
               value={this.state.add_product_quantity}
               ref={this.quantityInputRefHandler}
               s={12} m={4}
+              type='number'
+              required
+              validate
+              min='1'
+              step='1'
               onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>list_alt</Icon></Input>
         <Button id='add-product-button' 
               onClick={this.addProduct}
