@@ -94,7 +94,11 @@ class Cart extends Component {
     const { products } = this.state;
 
     if (products.length ===0 )
-      return (<div>Add a product...</div>);
+      return (
+        <tr>
+          <th colSpan='5'>Add a product...</th>
+        </tr>
+      );
 
     return (
       map(products, (product, i) =>

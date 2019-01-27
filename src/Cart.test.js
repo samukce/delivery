@@ -79,7 +79,7 @@ describe('Cart', () => {
     });
 
     it('should have add the product message when empty', () => {
-      expect(wrapper.find('Table').find('tbody').props().children.props.children)
+      expect(wrapper.find('Table').find('tbody').props().children.props.children.props.children)
         .to.be.equal('Add a product...');
     });
 
