@@ -103,14 +103,14 @@ class Cart extends Component {
     return (
       map(products, (product, i) =>
         (
-          <tr>
+          <tr key={i}>
             <td>{product.description}</td>
             <td className='center-align'>{getValueFormatted(product.value)}</td>
             <td className='center-align'>{product.quantity}</td>
             <td className='center-align'>{getValueFormatted(product.quantity * product.value)}</td>
             <td>
               <a
-                id={`remove-product-${product.product_id}`}
+                id={`remove-product-${i}`}
                 href='#!'
                 className='waves-effect waves-light btn-small'
                 onClick={this.onRemoveProduct.bind(this, product)}>
