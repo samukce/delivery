@@ -147,7 +147,7 @@ describe('Cart', () => {
       wrapper.find('#quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
       wrapper.find('#add-product-button').simulate('click');
-      wrapper.find('#remove-product-1').simulate('click');
+      wrapper.find('#remove-product-0').simulate('click');
 
       expect(wrapper.state('products')).to.eql([]);
     });
@@ -156,7 +156,7 @@ describe('Cart', () => {
       const products = [{ description: "Product 1", product_id: 1, quantity: 2, value: 3.5 }];
       wrapper.setState({ products });
 
-      wrapper.find('#remove-product-1').simulate('click');
+      wrapper.find('#remove-product-0').simulate('click');
 
       expect(spyOnProductChange).to.have.been.calledOnce;
     });
