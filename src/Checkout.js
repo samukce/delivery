@@ -28,7 +28,16 @@ class Checkout extends Component {
   }
 
   clearAllFieds = () => {
-    this.setState(this.getInitialState());
+    this.setState(this.getInitialState(), () => this.triggerCartClear());
+  }
+
+  triggerCartClear = () => {
+    if (!this.cartComponent) return;
+    this.cartComponent.onCartClear();
+  }
+
+  cartRefHandler = (el) => {
+    this.cartComponent = el;
   }
 
   placeOrder = () => {}
@@ -80,7 +89,7 @@ class Checkout extends Component {
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
         </Input>
 
-        <Cart onProductsChange={this.onProductsChange}>
+        <Cart onProductsChange={this.onProductsChange} ref={this.cartRefHandler}>
           <Card
             id='total_amount'
             className='blue-grey darken-1 z-depth-3'
@@ -113,7 +122,7 @@ class Checkout extends Component {
           <Button
             id='clear-button'
             onClick={this.clearAllFieds}
-            className='col s12 m2 offset-m6 grey'>Clean<Icon left>clear_all</Icon>
+            className='col s12 m2 offset-m6 grey clear-button'>Clean<Icon left>clear_all</Icon>
           </Button>
           <Button
             id='place-order-button'

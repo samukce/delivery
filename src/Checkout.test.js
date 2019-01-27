@@ -1,6 +1,8 @@
 import React from 'react';
 import Checkout from './Checkout';
 import { shallow, mount } from 'enzyme';
+import Cart from './Cart';
+import TestUtils from 'react-dom/test-utils';
 
 
 describe('Checkout component load', () => {
@@ -147,6 +149,18 @@ describe('Checkout place order', () => {
 
       expect(wrapper.state('change_to')).to.be.empty;
       expect(wrapper.find('#change_to').shallow().find('input').props().value).to.be.empty;
+    });
+
+    it('should trigger clear action on cart component', () => {
+      const checkout = TestUtils.renderIntoDocument(<Checkout />);
+      const cart = TestUtils.findRenderedComponentWithType(checkout, Cart);
+
+      const spyCartClear= sandbox.spy(cart, 'onCartClear');
+
+      let clearButton = TestUtils.findRenderedDOMComponentWithClass(checkout, 'clear-button');
+      TestUtils.Simulate.click(clearButton);
+
+      expect(spyCartClear).to.have.been.called;
     });
   });
 })
