@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Table, Input, Row, Icon, Col, Button} from 'react-materialize';
+import { Table, Input, Row, Icon, Col, Button } from 'react-materialize';
 import AutocompleteCustom from './components/AutocompleteCustom';
 import PropTypes from 'prop-types';
 import ProductRepository from './repository/ProductRepository';
@@ -71,6 +71,13 @@ class Cart extends Component {
     });
   }
 
+  onRemoveProduct = (product_to_remove) => {
+    this.setState({ products: this.state.products.filter(function(product) {
+        return product !== product_to_remove
+      })}
+    );
+  }
+
   convertProductsToAutocompleteMap = (arr) => {
     return arr.reduce(function(map, obj) {
       const productDisplay = `${obj.description} (R$ ${obj.value})`
@@ -83,16 +90,25 @@ class Cart extends Component {
     const { products } = this.state;
 
     if (products.length ===0 )
-      return (<tr>Add a product...</tr>);
+      return (<div>Add a product...</div>);
 
     return (
       map(products, (product, i) =>
         (
           <tr>
             <td>{product.description}</td>
-            <td>{getValueFormatted(product.value)}</td>
-            <td>{product.quantity}</td>
-            <td>{getValueFormatted(product.quantity * product.value)}</td>
+            <td className='center-align'>{getValueFormatted(product.value)}</td>
+            <td className='center-align'>{product.quantity}</td>
+            <td className='center-align'>{getValueFormatted(product.quantity * product.value)}</td>
+            <td>
+              <a
+                id={`remove-product-${product.product_id}`}
+                href='#!'
+                className='waves-effect waves-light btn-small'
+                onClick={this.onRemoveProduct.bind(this, product)}>
+                <i className='small material-icons red-text text-darken-4'>delete</i>
+              </a>
+            </td>
           </tr>
         )
       )
@@ -135,13 +151,14 @@ class Cart extends Component {
           className='col s12 m2'>Add<Icon left>add_shopping_cart</Icon></Button>
 
         <Col s={12} m={9}>
-          <Table>
+          <Table className='striped'>
             <thead>
               <tr>
                 <th data-field='description'>Description</th>
-                <th data-field='price'>Item Price</th>
-                <th data-field='quantity'>Quantity</th>
-                <th data-field='total'>Item Total</th>
+                <th data-field='price' className='center-align'>Item Price</th>
+                <th data-field='quantity' className='center-align'>Quantity</th>
+                <th data-field='total' className='center-align'>Item Total</th>
+                <th>Action</th>
               </tr>
             </thead>
 
