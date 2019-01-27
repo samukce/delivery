@@ -13,7 +13,8 @@ class AutocompleteCustom extends Component {
       value: props.value || '',
       itemSelected: false,
       activeItem: 0,
-      expandItems: false
+      expandItems: false,
+      data: props.data || [],
     };
 
     this.renderIcon = this.renderIcon.bind(this);
@@ -104,6 +105,7 @@ class AutocompleteCustom extends Component {
 
   _onKeyDown(evt) {
     const { activeItem } = this.state;
+
     const matches = this.autoCompleteContent
       ? this.autoCompleteContent.childNodes
       : null;
@@ -124,32 +126,23 @@ class AutocompleteCustom extends Component {
           activeItem: activeItem + 1
         });
       }
-    }
-
-    // if event is arrow up
-    if (evt.keyCode === 38) {
+    } else if (evt.keyCode === 38) { // if event is arrow up
       evt.preventDefault();
       if (activeItem > 0) {
         this.setState({
           activeItem: activeItem - 1
         });
       }
-    }
-
-    // if event is esc, reset value.
-    if (evt.keyCode === 27) {
+    } else if (evt.keyCode === 27) { // if event is esc, reset value.
       this.setState({ value: '' });
-    }
-
-    // if event is enter
-    if (evt.keyCode === 13) {
+    } else if (evt.keyCode === 13) { // if event is enter
       evt.preventDefault();
       // liValue is gets text content of item that pressed enter.
       // we can't do innerHTML or innerText because there is <span className="highlight"></span>
-      const matcheActive = matches ? matches[activeItem] : null;
-      if (!matcheActive) return;
+      const matchActive = matches ? matches[activeItem] : null;
+      if (!matchActive) return;
 
-      matcheActive.click();
+      matchActive.click();
     }
   }
 
@@ -170,7 +163,7 @@ class AutocompleteCustom extends Component {
   }
 
   _findRealValue(liValue) {
-    const { data } = this.props;
+    const { data } = this.state;
 
     // go and look to data. if you find a key that have same name with value, return it.
     return Object.keys(data).filter(key => {
@@ -179,7 +172,7 @@ class AutocompleteCustom extends Component {
     });
   }
 
-  _allValue = () => Object.keys(this.props.data);
+  _allValue = () => Object.keys(this.state.data);
 
   _onAutocomplete(value, object, evt) {
     const { onChange, onAutocomplete } = this.props;
