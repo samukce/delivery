@@ -35,7 +35,7 @@ describe('Cart', () => {
 
     it('should go with product and quantity selected', () => {
       componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
-      wrapper.find('#quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
+      wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
       wrapper.find('#add-product-button').simulate('click');
 
@@ -54,7 +54,7 @@ describe('Cart', () => {
 
     it('should return quantity product after added to be 1', () => {
       componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
-      wrapper.find('#quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
+      wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
       wrapper.find('#add-product-button').simulate('click');
 
@@ -123,7 +123,7 @@ describe('Cart', () => {
 
     it('should calculate the total amount of the product on the table', () => {
       componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
-      wrapper.find('#quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
+      wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
       wrapper.find('#add-product-button').simulate('click');
 
@@ -133,7 +133,7 @@ describe('Cart', () => {
 
     it('should fire on change product when add a product', () => {
       componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
-      wrapper.find('#quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
+      wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
       wrapper.find('#add-product-button').simulate('click');
 
@@ -144,7 +144,7 @@ describe('Cart', () => {
   describe('remove product', () => {
     it('should be empty after performed', () => {
       componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
-      wrapper.find('#quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
+      wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
       wrapper.find('#add-product-button').simulate('click');
       wrapper.find('#remove-product-0').simulate('click');
@@ -159,6 +159,40 @@ describe('Cart', () => {
       wrapper.find('#remove-product-0').simulate('click');
 
       expect(spyOnProductChange).to.have.been.calledOnce;
+    });
+  });
+
+  describe('clear component', () => {
+    it('should clear product description field', () => {
+      wrapper.find('#product_display_description').shallow().find('input')
+        .simulate('change', { target: { name: 'product_display_description', value: 'Water 1' } } );
+
+      componentRender.onCartClear();
+
+      expect(wrapper.state('product_display_description')).to.be.empty;
+      expect(wrapper.find('#product_display_description').shallow().find('input').props().value).to.be.empty;
+    });
+
+    it('should reset quantity field to initial value 1', () => {
+      wrapper.find('#add_product_quantity')
+        .simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
+
+      componentRender.onCartClear();
+
+      expect(wrapper.state('add_product_quantity')).to.be.equal(1);
+      expect(wrapper.find('#add_product_quantity').shallow().find('input').props().value).to.be.equal(1);
+    });
+
+    it('should reset product table to empty', () => {
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
+
+      wrapper.find('#add-product-button').simulate('click');
+
+      componentRender.onCartClear();
+
+      expect(wrapper.find('Table').find('tbody').props().children.props.children.props.children)
+        .to.be.equal('Add a product...');
     });
   });
 })

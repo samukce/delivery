@@ -19,14 +19,18 @@ class Cart extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = this.getInitialState();
+  }
+
+  getInitialState = () => {
+    return {
       add_product_quantity: 1,
       product_display_description: '',
       products: [],
-    };
+    }
   }
 
-  onCartClear = () => {}
+  onCartClear = () => this.setState(this.getInitialState());
 
   quantityInputRefHandler = (el) => {
     this.quantityInputField = el;
@@ -95,7 +99,7 @@ class Cart extends Component {
   fillProductTable = () => {
     const { products } = this.state;
 
-    if (products.length ===0 )
+    if (products.length === 0 )
       return (
         <tr>
           <th colSpan='5'>Add a product...</th>
@@ -131,6 +135,7 @@ class Cart extends Component {
     return (
       <Row>
         <AutocompleteCustom
+          id='product_display_description'
           title='Product'
           className='product'
           placeholder='Water...'
@@ -144,7 +149,8 @@ class Cart extends Component {
           icon='local_grocery_store'
           iconClassName='prefix' />
 
-        <Input id='quantity'
+        <Input
+          id='add_product_quantity'
           name='add_product_quantity'
           label='Quantity'
           value={this.state.add_product_quantity}
