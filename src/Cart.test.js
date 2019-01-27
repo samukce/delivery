@@ -4,14 +4,15 @@ import { shallow } from 'enzyme';
 
 
 describe('Cart', () => {
-  let spyAddProduct, wrapper, sandbox, stubProductRepository, componentRender;
+  let spyAddProduct, wrapper, sandbox, stubProductRepository, componentRender, spyOnProductChange;
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
     stubProductRepository = createStubProductRepository(sandbox);
+    spyOnProductChange = sandbox.spy();
 
-    wrapper = shallow(<Cart productRepository={stubProductRepository} onProductsChange={sandbox.stub()} />);
+    wrapper = shallow(<Cart productRepository={stubProductRepository} onProductsChange={spyOnProductChange} />);
     componentRender = wrapper.instance();
 
     spyAddProduct = sandbox.spy(componentRender, 'addProduct');
@@ -129,6 +130,15 @@ describe('Cart', () => {
       expect(wrapper.find('Table').find('tbody').props().children[0].props.children[3].props.children)
         .to.be.equal('$7.00');
     });
+
+    it('should fire on change product when add a product', () => {
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      wrapper.find('#quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
+
+      wrapper.find('#add-product-button').simulate('click');
+
+      expect(spyOnProductChange).to.have.been.calledOnce;
+    });
   });
 
   describe('remove product', () => {
@@ -140,6 +150,15 @@ describe('Cart', () => {
       wrapper.find('#remove-product-1').simulate('click');
 
       expect(wrapper.state('products')).to.eql([]);
+    });
+
+    it('should fire on change product when remove a product', () => {
+      const products = [{ description: "Product 1", product_id: 1, quantity: 2, value: 3.5 }];
+      wrapper.setState({ products });
+
+      wrapper.find('#remove-product-1').simulate('click');
+
+      expect(spyOnProductChange).to.have.been.calledOnce;
     });
   });
 })

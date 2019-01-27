@@ -65,16 +65,20 @@ class Cart extends Component {
       product_display_description: '',
       add_product: null
     }, () => {
-      if (onProductsChange) {
-        onProductsChange(this.state.products);
-      }
+      onProductsChange(this.state.products);
     });
   }
 
   onRemoveProduct = (product_to_remove) => {
-    this.setState({ products: this.state.products.filter(function(product) {
-        return product !== product_to_remove
-      })}
+    const { onProductsChange } = this.props;
+    const { products } = this.state;
+
+    this.setState({ products: products.filter(function(product) {
+          return product !== product_to_remove
+        })
+      }, () => {
+        onProductsChange(this.state.products);
+      }
     );
   }
 
