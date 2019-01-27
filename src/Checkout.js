@@ -13,6 +13,9 @@ class Checkout extends Component {
   getInitialState = () => {
     return {
       address: '',
+      complement: '',
+      notes: '',
+      change_to: '',
       product_display_description: '',
       products: [],
       total_amount: 0,
@@ -73,6 +76,7 @@ class Checkout extends Component {
           name='complement'
           s={12}
           label='Complement'
+          value={this.state.complement}
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
         </Input>
 
@@ -90,6 +94,7 @@ class Checkout extends Component {
             label='Change to'
             s={12}
             type='number'
+            value={this.state.change_to}
             min={this.state.total_amount + 0.01}
             step='0.01'
             validate
@@ -101,6 +106,7 @@ class Checkout extends Component {
           s={12}
           name='notes'
           label='Notes'
+          value={this.state.notes}
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>speaker_notes</Icon></Input>
 
         <Row>

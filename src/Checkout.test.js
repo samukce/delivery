@@ -121,5 +121,32 @@ describe('Checkout place order', () => {
       expect(wrapper.find('#address').shallow().find('input').props().value).to.be.empty;
       expect(wrapper.state('address')).to.be.empty;
     });
+
+    it('should complement field be empty', () => {
+      wrapper.find('#complement').simulate('change', { target: { name: 'complement', value: 'ap. 202' } } );
+
+      wrapper.find('#clear-button').simulate('click');
+
+      expect(wrapper.state('complement')).to.be.empty;
+      expect(wrapper.find('#complement').shallow().find('input').props().value).to.be.empty;
+    });
+
+    it('should notes field be empty', () => {
+      wrapper.find('#notes').simulate('change', { target: { name: 'notes', value: 'Missing house number' } } );
+
+      wrapper.find('#clear-button').simulate('click');
+
+      expect(wrapper.state('notes')).to.be.empty;
+      expect(wrapper.find('#notes').shallow().find('input').props().value).to.be.empty;
+    });
+
+    it('should change_to field be null', () => {
+      wrapper.find('#change_to').simulate('change', { target: { name: 'change_to', value: '100' } } );
+
+      wrapper.find('#clear-button').simulate('click');
+
+      expect(wrapper.state('change_to')).to.be.empty;
+      expect(wrapper.find('#change_to').shallow().find('input').props().value).to.be.empty;
+    });
   });
 })
