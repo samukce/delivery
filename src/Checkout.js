@@ -27,9 +27,7 @@ class Checkout extends Component {
     this.placeOrder();
   }
 
-  clearAllFieds = () => {
-    this.setState(this.getInitialState(), () => this.triggerCartClear());
-  }
+  clearAllFieds = () => this.setState(this.getInitialState(), () => this.triggerCartClear());
 
   triggerCartClear = () => {
     if (!this.cartComponent) return;
