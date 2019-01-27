@@ -26,6 +26,8 @@ class Cart extends Component {
     };
   }
 
+  onCartClear = () => {}
+
   quantityInputRefHandler = (el) => {
     this.quantityInputField = el;
   }
