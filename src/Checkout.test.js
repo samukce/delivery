@@ -3,6 +3,7 @@ import Checkout from './Checkout';
 import { shallow, mount } from 'enzyme';
 import Cart from './Cart';
 import TestUtils from 'react-dom/test-utils';
+import OrderRepository from './repository/OrderRepository'
 
 
 describe('Checkout component load', () => {
@@ -15,10 +16,12 @@ describe('Checkout component load', () => {
 })
 
 describe('Checkout place order', () => {
-  let spyPlaceOrder, wrapper, sandbox, componentRender;
+  let spyPlaceOrder, wrapper, sandbox, componentRender, stubOrderRespository;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+
+    stubOrderRespository = sandbox.stub(OrderRepository, 'searchBy');
 
     wrapper = shallow(<Checkout />);
     componentRender = wrapper.instance();
@@ -162,6 +165,25 @@ describe('Checkout place order', () => {
       TestUtils.Simulate.click(clearButton);
 
       expect(spyCartClear).to.have.been.called;
+    });
+  });
+
+  describe('address search', () => {
+    it('should trigger lazy search', () => {
+      const spyLazyAddressSearch = sandbox.spy(componentRender, 'lazyAddressSearch');
+      componentRender.forceUpdate();
+
+      wrapper.find('#address').shallow().find('input')
+        .simulate('change', { target: { name: 'address', value: '101' } } );
+
+      expect(spyLazyAddressSearch).to.have.been.calledWith('101');
+    });
+
+    it('should lazy address search using orderRepository', () => {
+      wrapper.find('#address').shallow().find('input')
+        .simulate('change', { target: { name: 'address', value: '101' } } );
+
+      expect(stubOrderRespository).to.have.been.calledWith('101');
     });
   });
 })
