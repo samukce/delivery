@@ -91,14 +91,18 @@ class AutocompleteCustom extends Component {
   }
 
   _onChange(evt) {
-    const { onChange, expandOnFocus } = this.props;
+    const { onChange, expandOnFocus, lazyData } = this.props;
     const value = evt.target.value;
 
     if (onChange) {
       onChange(evt, value);
     }
 
-    let expandItems = expandOnFocus && value === '';
+    if (lazyData) {
+      lazyData(value);
+    }
+
+    const expandItems = expandOnFocus && value === '';
 
     this.setState({ value, itemSelected: false, activeItem: 0, expandItems });
   }
@@ -205,6 +209,7 @@ class AutocompleteCustom extends Component {
       autoFocus,
       required,
       validate,
+      lazyData,
       // these are mentioned here only to prevent from getting into ...props
       value,
       onChange,
@@ -301,6 +306,7 @@ AutocompleteCustom.propTypes = {
   validate: PropTypes.bool,
   required: PropTypes.bool,
   autoFocus: PropTypes.bool,
+  lazyData: PropTypes.func,
   /**
    * The value of the input
    */

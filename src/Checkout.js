@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Input, Row, Icon, Button, Card } from 'react-materialize';
 import Cart from './Cart'
 import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentUtils'
 import AutocompleteCustom from './components/AutocompleteCustom'
+import OrderRepository from './repository/OrderRepository'
 
 
 class Checkout extends Component {
+  static propTypes = {
+    orderRepository: PropTypes.any.isRequired
+  };
+
+  static defaultProps = {
+    orderRepository: OrderRepository
+  }
+
   constructor(props) {
     super(props);
     this.state = this.getInitialState();
@@ -70,6 +80,10 @@ class Checkout extends Component {
     this.setState( { change_difference: change_difference > 0 ? change_difference : null });
   }
 
+  lazyAddressSearch = (addressSearch) => {
+    this.props.orderRepository.searchBy(addressSearch);
+  }
+
   render() {
     return (
       <div>
@@ -80,9 +94,8 @@ class Checkout extends Component {
           autoFocus
           required
           validate
-          data={[]}
+          lazyData={this.lazyAddressSearch}
           // onAutocomplete={this.handleOnAutocompleteProduct}
-          // itemSelected={this.state.product_display_description !== ''}
           value={this.state.address}
           onChange={this.onChangeAddress}
           s={12}
