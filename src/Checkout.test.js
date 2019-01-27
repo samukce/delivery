@@ -16,7 +16,7 @@ describe('Checkout place order', () => {
   let spyPlaceOrder, wrapper, sandbox, componentRender;
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
     wrapper = shallow(<Checkout />);
     componentRender = wrapper.instance();
@@ -109,6 +109,17 @@ describe('Checkout place order', () => {
       wrapper.find('#change_to').simulate('change', { target: { name: 'change_to', value: "non numeric" } } );
 
       expect(wrapper.state('change_difference')).to.equal(null);
+    });
+  });
+
+  describe('clear button', () => {
+    it('should address field be empty', () => {
+      wrapper.find('#address').simulate('change', { target: { name: 'address', value: '101 Street' } } );
+
+      wrapper.find('#clear-button').simulate('click');
+
+      expect(wrapper.find('#address').shallow().find('input').props().value).to.be.empty;
+      expect(wrapper.state('address')).to.be.empty;
     });
   });
 })

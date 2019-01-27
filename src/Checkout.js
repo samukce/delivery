@@ -7,17 +7,25 @@ import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentU
 class Checkout extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = this.getInitialState();
+  }
+
+  getInitialState = () => {
+    return {
       address: '',
       product_display_description: '',
       products: [],
       total_amount: 0,
-    };
+    }
   }
 
   buttonClickPlaceOrder = () => {
     if (!this.isValid()) return;
     this.placeOrder();
+  }
+
+  clearAllFieds = () => {
+    this.setState(this.getInitialState());
   }
 
   placeOrder = () => {}
@@ -55,6 +63,7 @@ class Checkout extends Component {
           autoFocus
           required
           validate
+          value={this.state.address}
           s={12}
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>home</Icon>
         </Input>
@@ -95,7 +104,11 @@ class Checkout extends Component {
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>speaker_notes</Icon></Input>
 
         <Row>
-          <Button className='col s12 m2 offset-m6 grey'>Clean<Icon left>clear_all</Icon></Button>
+          <Button
+            id='clear-button'
+            onClick={this.clearAllFieds}
+            className='col s12 m2 offset-m6 grey'>Clean<Icon left>clear_all</Icon>
+          </Button>
           <Button
             id='place-order-button'
             onClick={this.buttonClickPlaceOrder}
