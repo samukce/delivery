@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Input, Row, Icon, Button, Card } from 'react-materialize';
 import Cart from './Cart'
 import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentUtils'
+import AutocompleteCustom from './components/AutocompleteCustom'
 
 
 class Checkout extends Component {
@@ -50,6 +51,12 @@ class Checkout extends Component {
     this.calculateTotalAmount(products);
   }
 
+  onChangeAddress = (evt, value) => {
+    this.setState({
+      address: value
+    });
+  }
+
   calculateTotalAmount = (products) => {
     const total_amount = products.reduce((total, prod) => total +  (prod.value * prod.quantity), 0);
 
@@ -66,17 +73,21 @@ class Checkout extends Component {
   render() {
     return (
       <div>
-        <Input
+        <AutocompleteCustom
           id='address'
-          name='address'
-          label='Address'
+          title='Address'
+          className='address'
           autoFocus
           required
           validate
+          data={[]}
+          // onAutocomplete={this.handleOnAutocompleteProduct}
+          // itemSelected={this.state.product_display_description !== ''}
           value={this.state.address}
+          onChange={this.onChangeAddress}
           s={12}
-          onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>home</Icon>
-        </Input>
+          icon='home'
+          iconClassName='prefix' />
 
         <Input
           id='complement'

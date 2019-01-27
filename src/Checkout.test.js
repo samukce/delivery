@@ -32,7 +32,8 @@ describe('Checkout place order', () => {
   });
 
   it('should fill the address field', () => {
-    wrapper.find('#address').simulate('change', { target: { name: 'address', value: '101 Street' } } );
+    wrapper.find('#address').shallow().find('input')
+      .simulate('change', { target: { name: 'address', value: '101 Street' } } );
 
     wrapper.find('#place-order-button').simulate('click');
 

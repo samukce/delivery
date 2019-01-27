@@ -92,6 +92,7 @@ class AutocompleteCustom extends Component {
   _onChange(evt) {
     const { onChange, expandOnFocus } = this.props;
     const value = evt.target.value;
+
     if (onChange) {
       onChange(evt, value);
     }
@@ -208,6 +209,9 @@ class AutocompleteCustom extends Component {
       placeholder,
       limit,
       expandOnFocus,
+      autoFocus,
+      required,
+      validate,
       // these are mentioned here only to prevent from getting into ...props
       value,
       onChange,
@@ -234,13 +238,16 @@ class AutocompleteCustom extends Component {
         {icon && this.renderIcon(icon, iconClassName)}
         <input
           placeholder={placeholder}
-          className="autocomplete"
+          className={`autocomplete ${validate ? 'validate' : ''}`}
           id={_id}
           onChange={this._onChange}
           onKeyDown={this._onKeyDown}
           onFocus={expandOnFocus && this._onFocus}
           onBlur={expandOnFocus && this._onBlur}
           type="text"
+          autoFocus={autoFocus}
+          required={required}
+          validate={validate}
           value={this.state.value}
         />
         <label htmlFor={_id}>{title}</label>
@@ -297,6 +304,10 @@ AutocompleteCustom.propTypes = {
    * Function signature: (value) => ()
    */
   onAutocomplete: PropTypes.func,
+  /**/
+  validate: PropTypes.bool,
+  required: PropTypes.bool,
+  autoFocus: PropTypes.bool,
   /**
    * The value of the input
    */
