@@ -70,7 +70,7 @@ class Checkout extends Component {
         <Cart onProductsChange={this.onProductsChange}>
           <Card
             id='total_amount'
-            className='blue-grey darken-1'
+            className='blue-grey darken-1 z-depth-3'
             textClassName='white-text'
             title={getValueFormatted(this.state.total_amount)}>
             Total

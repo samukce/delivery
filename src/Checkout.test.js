@@ -72,7 +72,7 @@ describe('Checkout place order', () => {
 
       expect(wrapper.find('#total_amount').props().title).to.equal('$7.00');
     });
-});
+  });
 
   describe('calculate change to value', () => {
     it('should calculate', () => {
