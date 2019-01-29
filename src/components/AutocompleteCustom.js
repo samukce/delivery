@@ -154,7 +154,7 @@ class AutocompleteCustom extends Component {
     const { expandOnFocus } = this.props;
     if (!expandOnFocus) return;
 
-    this.setState({ expandItems: true });
+    this.setState({ expandItems: true, itemSelected: false });
   }
 
   _onBlur(evt) {

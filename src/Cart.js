@@ -143,7 +143,6 @@ class Cart extends Component {
           expandOnFocus={true}
           onAutocomplete={this.handleOnAutocompleteProduct}
           value={this.state.product_display_description}
-          itemSelected={this.state.product_display_description !== ''}
           onChange={this.onChangeProductDisplay}
           s={12} m={6}
           icon='local_grocery_store'
