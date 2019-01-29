@@ -81,7 +81,7 @@ class Checkout extends Component {
   }
 
   lazyAddressSearch = (addressSearch) => {
-    this.props.orderRepository.searchBy(addressSearch);
+    return this.props.orderRepository.searchBy(addressSearch);
   }
 
   render() {

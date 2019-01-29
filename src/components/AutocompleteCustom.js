@@ -25,12 +25,9 @@ class AutocompleteCustom extends Component {
     this._onBlur = this._onBlur.bind(this);
   }
 
-  componentWillReceiveProps({ value, itemSelected }) {
+  componentWillReceiveProps({ value }) {
     if (value !== undefined) {
       this.setState({ value });
-    }
-    if (itemSelected !== undefined) {
-      this.setState({ itemSelected });
     }
   }
 
@@ -38,8 +35,8 @@ class AutocompleteCustom extends Component {
     return <Icon className={iconClassName}>{icon}</Icon>;
   }
 
-  renderDropdown(data, minLength, limit) {
-    const { value, itemSelected, activeItem, expandItems } = this.state;
+  renderDropdown(minLength, limit) {
+    const { value, itemSelected, activeItem, expandItems, data } = this.state;
 
     if ((minLength && minLength > value.length)
        || (!expandItems && !value)
@@ -54,7 +51,7 @@ class AutocompleteCustom extends Component {
       matches = this._findRealValue(value);
 
     if (limit) matches = matches.slice(0, limit);
-    if (matches.length === 0) {
+    if (!matches || matches.length === 0) {
       return null;
     }
 
@@ -98,8 +95,9 @@ class AutocompleteCustom extends Component {
       onChange(evt, value);
     }
 
-    if (lazyData) {
-      lazyData(value);
+    if(lazyData) {
+      const dataLazy = lazyData(value);
+      this.setState({ data: dataLazy });
     }
 
     const expandItems = expandOnFocus && value === '';
@@ -249,7 +247,7 @@ class AutocompleteCustom extends Component {
           value={this.state.value}
         />
         <label htmlFor={_id}>{title}</label>
-        {this.renderDropdown(data, minLength, limit)}
+        {this.renderDropdown(minLength, limit)}
       </div>
     );
   }
