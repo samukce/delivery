@@ -21,7 +21,7 @@ describe('Checkout place order', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
 
-    stubOrderRespository = sandbox.stub(OrderRepository, 'searchBy');
+    stubOrderRespository = sandbox.stub(OrderRepository, 'searchBy').returns({});
 
     wrapper = shallow(<Checkout />);
     componentRender = wrapper.instance();
