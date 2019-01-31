@@ -2,6 +2,25 @@
   "name": "delivery",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "name": "Samuel P.",
+    "email": "samuel.p.araujo@gmail.com"
+  },
+  "description": "Simple Delivery system",
+  "build": {
+    "appId": "app.delivery",
+    "win": {
+      "target": [{
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+         ]
+        }
+      ]
+    }
+  },
+  "repository": "github:samukce/delivery",
   "dependencies": {
     "classnames": "^2.2.6",
     "cross-env": "^5.2.0",
@@ -21,6 +40,7 @@
     "react-eject": "react-scripts eject",
     "electron-build": "electron-builder",
     "release": "yarn react-build && electron-builder --publish=always",
+    "release-win": "yarn release --win",
     "build": "yarn react-build && yarn electron-build",
     "start": "concurrently \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electron .\""
   },
