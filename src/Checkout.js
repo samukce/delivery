@@ -13,7 +13,7 @@ class Checkout extends Component {
   };
 
   static defaultProps = {
-    orderRepository: OrderRepository
+    orderRepository: new OrderRepository()
   }
 
   constructor(props) {
