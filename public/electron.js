@@ -13,7 +13,7 @@ require("update-electron-app")({
 });
 
 function createWindow() {
-  mainWindow = new BrowserWindow({ 
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 680,
     minWidth: 900,

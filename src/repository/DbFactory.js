@@ -1,7 +1,9 @@
-const fs = require('fs')
-const low = require('lowdb')
-const FileSync = require('lowdb/adapters/FileSync')
-const Memory = require('lowdb/adapters/Memory')
+const low = require('lowdb');
+const Memory = require('lowdb/adapters/Memory');
+
+let FileSync;
+if (window && window.require)
+    FileSync = window.require('lowdb/adapters/FileSync');
 
 
 export default class DbFactory {
@@ -10,11 +12,11 @@ export default class DbFactory {
             process.env.NODE_ENV === 'test'
               ? new Memory()
               : new FileSync('db.json')
-          )
-          
+        )
+
         db.defaults({ orders: [] })
-          .write()
-        
+          .write();
+
         return db;
     }
 }
