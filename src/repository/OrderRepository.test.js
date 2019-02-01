@@ -60,14 +60,26 @@ describe('OrderRepository', () => {
 
       it('should return the first 2 address', () => {
         dbTest.get('orders')
-            .push({ id: 1, address: 'St Abc Cde Agh' })
-            .push({ id: 2, address: 'St abc yyyyyyy' })
-            .push({ id: 3, address: 'St abc ppppppp' })
+            .push({ id: 1, address: 'St Abc AAAA' })
+            .push({ id: 2, address: 'St abc BBBB' })
+            .push({ id: 3, address: 'St abc CCCC' })
             .write();
 
         expect(orderRepository.searchBy("abc", 2)).to.be.eql({
-          'St Abc Cde Agh': { id: 1, address: 'St Abc Cde Agh'},
-          'St abc yyyyyyy': { id: 2, address: 'St abc yyyyyyy'}
+          'St Abc AAAA': { id: 1, address: 'St Abc AAAA'},
+          'St abc BBBB': { id: 2, address: 'St abc BBBB'}
+        });
+      });
+
+      it('should return sortBy address', () => {
+        dbTest.get('orders')
+            .push({ id: 1, address: 'St abc yyyyyyy' })
+            .push({ id: 2, address: 'Av. Abcxxxxxx' })
+            .write();
+
+        expect(orderRepository.searchBy("abc")).to.be.eql({
+          'Av. Abcxxxxxx': { id: 2, address: 'Av. Abcxxxxxx'},
+          'St abc yyyyyyy': { id: 1, address: 'St abc yyyyyyy'},
         });
       });
     });
