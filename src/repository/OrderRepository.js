@@ -13,6 +13,7 @@ class OrderRepository {
                 const index = order.address.toUpperCase().indexOf(address.toUpperCase());
                 return index !== -1;
             })
+            .sortBy('address')
             .take(takeCount)
             .value()
             .reduce(function(map, order) {
