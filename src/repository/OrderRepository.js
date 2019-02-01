@@ -5,7 +5,7 @@ class OrderRepository {
         this.db = db;
     }
 
-    searchBy(address) {
+    searchBy(address, takeCount = 5) {
         if (!address) return {};
 
         const orders = this.db.get('orders')
@@ -13,6 +13,7 @@ class OrderRepository {
                 const index = order.address.toUpperCase().indexOf(address.toUpperCase());
                 return index !== -1;
             })
+            .take(takeCount)
             .value()
             .reduce(function(map, order) {
                 map[order.address] = order;
