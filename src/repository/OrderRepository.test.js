@@ -27,5 +27,23 @@ describe('OrderRepository', () => {
           'St Abc Cde Agh': { id: 1, address: 'St Abc Cde Agh'}
         });
       });
+
+      it('should return object ended by the street name', () => {
+        expect(orderRepository.searchBy("Agh")).to.be.eql({
+          'St Abc Cde Agh': { id: 1, address: 'St Abc Cde Agh'}
+        });
+      });
+
+      it('should return object with the middle name', () => {
+        expect(orderRepository.searchBy("Cde")).to.be.eql({
+          'St Abc Cde Agh': { id: 1, address: 'St Abc Cde Agh'}
+        });
+      });
+
+      it('should return object ignoring the case', () => {
+        expect(orderRepository.searchBy("cde")).to.be.eql({
+          'St Abc Cde Agh': { id: 1, address: 'St Abc Cde Agh'}
+        });
+      });
     });
 });
