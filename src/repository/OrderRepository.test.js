@@ -11,7 +11,7 @@ describe('OrderRepository', () => {
   
     describe('search by address', () => {
       it('should return empty object if empty address', () => {
-        expect(orderRepository.searchBy("")).to.be.empty;
+        expect(orderRepository.searchBy('')).to.be.empty;
       });
 
       it('should return empty object if null address', () => {
@@ -23,7 +23,7 @@ describe('OrderRepository', () => {
             .push({ id: 1, address: 'St Abc Cde Agh' })
             .write();
 
-        expect(orderRepository.searchBy("St Abc Cde")).to.be.eql({
+        expect(orderRepository.searchBy('St Abc Cde')).to.be.eql({
           'St Abc Cde Agh': { id: 1, address: 'St Abc Cde Agh'}
         });
       });
@@ -33,7 +33,7 @@ describe('OrderRepository', () => {
             .push({ id: 1, address: 'St Abc Cde Agh' })
             .write();
 
-        expect(orderRepository.searchBy("Agh")).to.be.eql({
+        expect(orderRepository.searchBy('Agh')).to.be.eql({
           'St Abc Cde Agh': { id: 1, address: 'St Abc Cde Agh'}
         });
       });
@@ -43,7 +43,7 @@ describe('OrderRepository', () => {
             .push({ id: 1, address: 'St Abc Cde Agh' })
             .write();
 
-        expect(orderRepository.searchBy("Cde")).to.be.eql({
+        expect(orderRepository.searchBy('Cde')).to.be.eql({
           'St Abc Cde Agh': { id: 1, address: 'St Abc Cde Agh'}
         });
       });
@@ -53,7 +53,7 @@ describe('OrderRepository', () => {
             .push({ id: 1, address: 'St Abc Cde Agh' })
             .write();
 
-        expect(orderRepository.searchBy("cde")).to.be.eql({
+        expect(orderRepository.searchBy('cde')).to.be.eql({
           'St Abc Cde Agh': { id: 1, address: 'St Abc Cde Agh'}
         });
       });
@@ -65,7 +65,7 @@ describe('OrderRepository', () => {
             .push({ id: 3, address: 'St abc CCCC' })
             .write();
 
-        expect(orderRepository.searchBy("abc", 2)).to.be.eql({
+        expect(orderRepository.searchBy('abc', 2)).to.be.eql({
           'St Abc AAAA': { id: 1, address: 'St Abc AAAA'},
           'St abc BBBB': { id: 2, address: 'St abc BBBB'}
         });
@@ -77,7 +77,7 @@ describe('OrderRepository', () => {
             .push({ id: 2, address: 'Av. Abcxxxxxx' })
             .write();
 
-        expect(orderRepository.searchBy("abc")).to.be.eql({
+        expect(orderRepository.searchBy('abc')).to.be.eql({
           'Av. Abcxxxxxx': { id: 2, address: 'Av. Abcxxxxxx'},
           'St abc yyyyyyy': { id: 1, address: 'St abc yyyyyyy'},
         });
