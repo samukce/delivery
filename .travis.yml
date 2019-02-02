@@ -16,7 +16,12 @@ cache:
     - $HOME/.cache/electron
     - $HOME/.cache/electron-builder
 
-script: yarn release --mac --win
+jobs:
+  include:
+    - stage: test
+      script: yarn test
+    - stage: release
+      script: yarn release --mac --win
 
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
