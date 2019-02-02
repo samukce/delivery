@@ -7,10 +7,6 @@ const isDev = require("electron-is-dev");
 
 let mainWindow;
 
-require("update-electron-app")({
-  repo: "samukce/delivery",
-  updateInterval: "1 hour"
-});
 
 global.settings = { database_path: `${app.getPath('userData')}/db.json`};
 
