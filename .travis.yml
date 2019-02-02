@@ -1,12 +1,24 @@
+language: node_js
+node_js:
+  - "11"
+  - "stable"
+
+cache: yarn
+
+install: yarn
+script:
+  - yarn test
+
 jobs:
   include:
-    - stage: test
-      language: node_js
+    - stage: release
       node_js:
         - "11"
         - "stable"
-    - stage: deploy
-      node_js:
-        - "11"
-        - "stable"
-      script: yarn release
+      script: yarn build
+      deploy:
+        provider: releases
+          api_key: "$GH_TOKEN"
+          file_glob: true
+          file: dist/*
+          skip_cleanup: true
