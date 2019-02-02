@@ -1,24 +1,16 @@
-language: node_js
-node_js:
-  - "11"
-  - "stable"
-
-cache: yarn
-
-install: yarn
-script:
-  - yarn test
-
-stages:
-  - name: release
-
 jobs:
   include:
-    - stage: release
+    - stage: test
+      language: node_js
       node_js:
         - "11"
         - "stable"
-      script: yarn build
+    - stage: release
+      language: node_js
+      node_js:
+        - "11"
+        - "stable"
+      before_deploy: yarn build
       deploy:
         provider: releases
           api_key: "$GH_TOKEN"
