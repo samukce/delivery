@@ -10,7 +10,8 @@ jobs:
       node_js:
         - "11"
         - "stable"
-      before_deploy: yarn build
+      script: yarn release --mac
+      # before_deploy: yarn build
       # deploy:
       #   provider: releases
       #     api_key: "$GH_TOKEN"
