@@ -1,6 +1,14 @@
-matrix:
+jobs:
   include:
-    - os: osx
+    - stage: test
+      language: node_js
+      node_js:
+        - "11"
+        - "stable"
+
+    - stage: release
+
+      os: osx
       osx_image: xcode9.4
       language: node_js
       node_js:
@@ -10,22 +18,17 @@ matrix:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
-cache:
-  directories:
-    - node_modules
-    - $HOME/.cache/electron
-    - $HOME/.cache/electron-builder
+      cache:
+        directories:
+          - node_modules
+          - $HOME/.cache/electron
+          - $HOME/.cache/electron-builder
 
-jobs:
-  include:
-    - stage: test
-      script: yarn test
-    - stage: release
       script: yarn release --mac --win
 
-before_cache:
-  - rm -rf $HOME/.cache/electron-builder/wine
-
-branches:
-  except:
-    - "/^v\\d+\\.\\d+\\.\\d+$/"
+      before_cache:
+        - rm -rf $HOME/.cache/electron-builder/wine
+      
+      branches:
+        except:
+          - "/^v\\d+\\.\\d+\\.\\d+$/"
