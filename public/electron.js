@@ -12,6 +12,8 @@ require("update-electron-app")({
   updateInterval: "1 hour"
 });
 
+global.settings = { database_path: `${app.getPath('userData')}/db.json`};
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
