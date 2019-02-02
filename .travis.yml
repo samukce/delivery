@@ -9,6 +9,9 @@ install: yarn
 script:
   - yarn test
 
+stages:
+  - name: release
+
 jobs:
   include:
     - stage: release
