@@ -49,10 +49,17 @@ class Checkout extends Component {
     this.cartComponent = el;
   }
 
-  placeOrder = () => {}
+  placeOrder = () => {
+    const { address, complement, notes, change_to, products, total_amount } = this.state;
+    const order = {
+      address, complement, notes, change_to, products, total_amount
+    }
+
+    this.props.orderRepository.save(order);
+  }
 
   isValid = () => {
-    return this.state.address.length !== 0
+    return this.state.address.length !== 0 && this.state.products.length !== 0
   }
 
   onProductsChange = (products) => {

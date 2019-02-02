@@ -23,6 +23,10 @@ class OrderRepository {
 
         return orders;
     }
+
+    save(order) {
+
+    }
 }
 
 export default OrderRepository;

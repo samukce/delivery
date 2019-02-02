@@ -16,17 +16,19 @@ describe('Checkout component load', () => {
 })
 
 describe('Checkout place order', () => {
-  let spyPlaceOrder, wrapper, sandbox, componentRender, stubOrderRespository;
+  let spyPlaceOrder, wrapper, sandbox, componentRender,
+    stubOrderRespositorySearchByAddress, stubOrderRespositorySave;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
 
-    stubOrderRespository = sandbox.stub(OrderRepository.prototype, 'searchBy').returns({});
+    stubOrderRespositorySearchByAddress = sandbox.stub(OrderRepository.prototype, 'searchBy').returns({});
+    stubOrderRespositorySave = sandbox.stub(OrderRepository.prototype, 'save');
 
     wrapper = shallow(<Checkout />);
     componentRender = wrapper.instance();
 
-    spyPlaceOrder = sandbox.stub(componentRender, 'placeOrder');
+    spyPlaceOrder = sandbox.spy(componentRender, 'placeOrder');
     componentRender.forceUpdate()
   });
 
@@ -47,6 +49,28 @@ describe('Checkout place order', () => {
     wrapper.find('#place-order-button').simulate('click');
 
     expect(spyPlaceOrder).to.not.have.been.called;
+  });
+
+  it('should not continue if products is empty', () => {
+    wrapper.find('#address').shallow().find('input')
+      .simulate('change', { target: { name: 'address', value: '101 Street' } } );
+
+    wrapper.find('#place-order-button').simulate('click');
+
+    expect(spyPlaceOrder).to.not.have.been.called;
+  });
+
+  it('should continue if address and products filled', () => {
+    wrapper.find('#address').shallow().find('input')
+      .simulate('change', { target: { name: 'address', value: '101 Street' } } );
+
+    componentRender.onProductsChange([
+        { product_id: 1, description: 'Water', value: 3.50, quantity: 2 }
+      ]);
+
+    wrapper.find('#place-order-button').simulate('click');
+
+    expect(spyPlaceOrder).to.have.been.called;
   });
 
   it('should fill the address complement field', () => {
@@ -183,7 +207,25 @@ describe('Checkout place order', () => {
       wrapper.find('#address').shallow().find('input')
         .simulate('change', { target: { name: 'address', value: '101' } } );
 
-      expect(stubOrderRespository).to.have.been.calledWith('101');
+      expect(stubOrderRespositorySearchByAddress).to.have.been.calledWith('101');
+    });
+  });
+
+  describe('save order', () => {
+    it('should save by order repository', () => {
+      const order = {
+        address: 'address new',
+        complement: '....',
+        notes: 'notes..',
+        change_to: 100,
+        products: [ { product_id: 1, description: '', value: 10, quantity: 1 } ],
+        total_amount: 10
+      };
+      wrapper.setState(order);
+
+      wrapper.find('#place-order-button').simulate('click');
+
+      expect(stubOrderRespositorySave).to.have.been.calledWith(order);
     });
   });
 })
