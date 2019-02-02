@@ -1,4 +1,10 @@
-language: node_js
-node_js:
-  - "11"
-  - "stable"
+jobs:
+  include:
+    - stage: test
+      language: node_js
+      node_js:
+        - "11"
+        - "stable"
+    - stage: deploy
+      node_js: "11"
+      script: yarn release
