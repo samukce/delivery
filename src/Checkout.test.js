@@ -112,7 +112,7 @@ describe('Checkout place order', () => {
       componentRender.onProductsChange([
         { product_id: 1, description: 'Water', value: 3.5, quantity: 2 },
       ]);
-      wrapper.find('#change_to').simulate('change', { target: { name: 'change_to', value: "non numeric" } } );
+      wrapper.find('#change_to').simulate('change', { target: { name: 'change_to', value: 'non numeric' } } );
 
       expect(wrapper.state('change_difference')).to.equal(null);
     });

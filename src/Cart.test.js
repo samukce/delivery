@@ -153,7 +153,7 @@ describe('Cart', () => {
     });
 
     it('should fire on change product when remove a product', () => {
-      const products = [{ description: "Product 1", product_id: 1, quantity: 2, value: 3.5 }];
+      const products = [{ description: 'Product 1', product_id: 1, quantity: 2, value: 3.5 }];
       wrapper.setState({ products });
 
       wrapper.find('#remove-product-0').simulate('click');
