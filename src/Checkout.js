@@ -59,7 +59,8 @@ class Checkout extends Component {
   }
 
   isValid = () => {
-    return this.state.address.length !== 0 && this.state.products.length !== 0
+    const { address, products } = this.state;
+    return address.length !== 0 && products.length !== 0
   }
 
   onProductsChange = (products) => {
@@ -156,6 +157,7 @@ class Checkout extends Component {
           <Button
             id='place-order-button'
             onClick={this.buttonClickPlaceOrder}
+            disabled={!this.isValid()}
             className='col s12 m3 offset-m1'>Place Order<Icon left>motorcycle</Icon>
           </Button>
         </Row>

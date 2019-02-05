@@ -73,6 +73,21 @@ describe('Checkout place order', () => {
     expect(spyPlaceOrder).to.have.been.called;
   });
 
+  it('should disable placeOrder button if not valid', () => {
+    expect(wrapper.find('#place-order-button').props().disabled).to.be.true;
+  });
+
+  it('should enable placeOrder button if valid', () => {
+    wrapper.find('#address').shallow().find('input')
+      .simulate('change', { target: { name: 'address', value: '101 Street' } } );
+
+    componentRender.onProductsChange([
+        { product_id: 1, description: 'Water', value: 3.50, quantity: 2 }
+      ]);
+
+    expect(wrapper.find('#place-order-button').props().disabled).to.be.false;
+  });
+
   it('should fill the address complement field', () => {
     wrapper.find('#complement').simulate('change', { target: { name: 'complement', value: 'ap. 202' } } );
 
@@ -144,7 +159,7 @@ describe('Checkout place order', () => {
 
   describe('clear button', () => {
     it('should address field be empty', () => {
-      wrapper.find('#address').simulate('change', { target: { name: 'address', value: '101 Street' } } );
+      wrapper.find('#address').simulate('change', { target: { name: 'address', value: '101 Street' } }, '101 Street' );
 
       wrapper.find('#clear-button').simulate('click');
 
