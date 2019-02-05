@@ -92,6 +92,10 @@ class Checkout extends Component {
     return this.props.orderRepository.searchBy(addressSearch);
   }
 
+  handleOnAutocompleteAddress = (order) => {
+    this.setState(order);
+  }
+
   render() {
     return (
       <div>
@@ -103,7 +107,7 @@ class Checkout extends Component {
           required
           validate
           lazyData={this.lazyAddressSearch}
-          // onAutocomplete={this.handleOnAutocompleteProduct}
+          onAutocomplete={this.handleOnAutocompleteAddress}
           value={this.state.address}
           onChange={this.onChangeAddress}
           s={12}
