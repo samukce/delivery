@@ -95,7 +95,7 @@ class AutocompleteCustom extends Component {
       onChange(evt, value);
     }
 
-    if(lazyData) {
+    if (lazyData) {
       const dataLazy = lazyData(value);
       this.setState({ data: dataLazy });
     }
