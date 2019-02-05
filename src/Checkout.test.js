@@ -40,8 +40,6 @@ describe('Checkout place order', () => {
     wrapper.find('#address').shallow().find('input')
       .simulate('change', { target: { name: 'address', value: '101 Street' } } );
 
-    wrapper.find('#place-order-button').simulate('click');
-
     expect(wrapper.state('address')).to.equal('101 Street');
   });
 
@@ -223,6 +221,31 @@ describe('Checkout place order', () => {
         .simulate('change', { target: { name: 'address', value: '101' } } );
 
       expect(stubOrderRespositorySearchByAddress).to.have.been.calledWith('101');
+    });
+
+    it('should fill complement fields from the last order', () => {
+      wrapper.find('#address').simulate('autocomplete', { complement: '101 room' } );
+
+      expect(wrapper.state('complement')).to.equal('101 room');
+    });
+
+    it('should fill note field from the last order', () => {
+      wrapper.find('#address').simulate('autocomplete', { notes: 'Fast delivery' } );
+
+      expect(wrapper.state('notes')).to.equal('Fast delivery');
+    });
+
+    it('should trigger refresh products in cart component', () => {
+      fail();
+      const checkout = TestUtils.renderIntoDocument(<Checkout />);
+      const cart = TestUtils.findRenderedComponentWithType(checkout, Cart);
+
+      const spyCartClear= sandbox.spy(cart, 'onCartClear');
+
+      let clearButton = TestUtils.findRenderedDOMComponentWithClass(checkout, 'clear-button');
+      TestUtils.Simulate.click(clearButton);
+
+      expect(spyCartClear).to.have.been.called;
     });
   });
 
