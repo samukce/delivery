@@ -91,5 +91,19 @@ describe('OrderRepository', () => {
 
         expect(dbTest.get(entity).size().value()).to.be.equal(1);
       });
+
+      it('should not save null order', () => {
+        orderRepository.save(null);
+
+        expect(dbTest.get(entity).size().value()).to.be.equal(0);
+      });
+
+      it('should set id when save order', () => {
+        orderRepository.save({ address: '1022 St.'});
+
+        const order = dbTest.get(entity).find({ address: '1022 St.' }).value();
+
+        expect(order.id).to.not.be.empty;
+      });
     });
 });

@@ -27,6 +27,9 @@ class OrderRepository {
     }
 
     save(order) {
+        if (!order) return;
+
+        order.id = DbFactory.getNewId();
         this.db.get(entity)
             .push(order)
             .write();

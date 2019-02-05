@@ -1,5 +1,6 @@
 const low = require('lowdb');
 const Memory = require('lowdb/adapters/Memory');
+const shortid = require('shortid');
 
 let remote;
 let FileSync;
@@ -20,5 +21,9 @@ export default class DbFactory {
           .write();
 
         return db;
+    }
+
+    static getNewId() {
+        return shortid.generate();
     }
 }
