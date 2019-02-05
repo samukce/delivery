@@ -45,7 +45,7 @@ class AutocompleteCustom extends Component {
     }
 
     let matches;
-    if (expandItems)
+    if (expandItems && !value)
       matches = this._allValue();
     else
       matches = this._findRealValue(value);
