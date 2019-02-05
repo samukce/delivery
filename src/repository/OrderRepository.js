@@ -1,5 +1,7 @@
 import DbFactory from './DbFactory';
 
+const entity = 'orders';
+
 class OrderRepository {
     constructor(db = DbFactory.dbAdapter()) {
         this.db = db;
@@ -8,7 +10,7 @@ class OrderRepository {
     searchBy(address, takeCount = 5) {
         if (!address) return {};
 
-        const orders = this.db.get('orders')
+        const orders = this.db.get(entity)
             .filter(order => {
                 const index = order.address.toUpperCase().indexOf(address.toUpperCase());
                 return index !== -1;
@@ -25,7 +27,9 @@ class OrderRepository {
     }
 
     save(order) {
-
+        this.db.get(entity)
+            .push(order)
+            .write();
     }
 }
 

@@ -2,9 +2,10 @@ import OrderRepository from './OrderRepository';
 import DbFactory from './DbFactory';
 
 describe('OrderRepository', () => {
-  let orderRepository, dbTest;
+  let orderRepository, dbTest, entity;
     beforeEach(() => {
       dbTest = DbFactory.dbAdapter();
+      entity = 'orders';
 
       orderRepository = new OrderRepository(dbTest);
     });
@@ -19,7 +20,7 @@ describe('OrderRepository', () => {
       });
 
       it('should return object started by the street name', () => {
-        dbTest.get('orders')
+        dbTest.get(entity)
             .push({ id: 1, address: 'St Abc Cde Agh' })
             .write();
 
@@ -29,7 +30,7 @@ describe('OrderRepository', () => {
       });
 
       it('should return object ended by the street name', () => {
-        dbTest.get('orders')
+        dbTest.get(entity)
             .push({ id: 1, address: 'St Abc Cde Agh' })
             .write();
 
@@ -39,7 +40,7 @@ describe('OrderRepository', () => {
       });
 
       it('should return object with the middle name', () => {
-        dbTest.get('orders')
+        dbTest.get(entity)
             .push({ id: 1, address: 'St Abc Cde Agh' })
             .write();
 
@@ -49,7 +50,7 @@ describe('OrderRepository', () => {
       });
 
       it('should return object ignoring the case', () => {
-        dbTest.get('orders')
+        dbTest.get(entity)
             .push({ id: 1, address: 'St Abc Cde Agh' })
             .write();
 
@@ -59,7 +60,7 @@ describe('OrderRepository', () => {
       });
 
       it('should return the first 2 address', () => {
-        dbTest.get('orders')
+        dbTest.get(entity)
             .push({ id: 1, address: 'St Abc AAAA' })
             .push({ id: 2, address: 'St abc BBBB' })
             .push({ id: 3, address: 'St abc CCCC' })
@@ -72,7 +73,7 @@ describe('OrderRepository', () => {
       });
 
       it('should return sortBy address', () => {
-        dbTest.get('orders')
+        dbTest.get(entity)
             .push({ id: 1, address: 'St abc yyyyyyy' })
             .push({ id: 2, address: 'Av. Abcxxxxxx' })
             .write();
@@ -81,6 +82,14 @@ describe('OrderRepository', () => {
           'Av. Abcxxxxxx': { id: 2, address: 'Av. Abcxxxxxx'},
           'St abc yyyyyyy': { id: 1, address: 'St abc yyyyyyy'},
         });
+      });
+    });
+
+    describe('save order', () => {
+      it('should save order', () => {
+        orderRepository.save({ address: '101 St.'});
+
+        expect(dbTest.get(entity).size().value()).to.be.equal(1);
       });
     });
 });
