@@ -110,6 +110,7 @@ class Checkout extends Component {
           id='address'
           title='Address'
           className='address'
+          placeholder='Address...'
           autoFocus
           required
           validate
@@ -124,6 +125,7 @@ class Checkout extends Component {
         <Input
           id='complement'
           name='complement'
+          placeholder='Complement...'
           s={12}
           label='Complement'
           value={this.state.complement}
@@ -142,6 +144,7 @@ class Checkout extends Component {
             id='change_to'
             name='change_to'
             label='Change to'
+            placeholder='Change to...'
             s={12}
             type='number'
             value={this.state.change_to}
@@ -156,6 +159,7 @@ class Checkout extends Component {
           s={12}
           name='notes'
           label='Notes'
+          placeholder='Notes...'
           value={this.state.notes}
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>speaker_notes</Icon></Input>
 
