@@ -238,7 +238,7 @@ describe('Checkout place order', () => {
     it('should trigger refresh products in cart component', () => {
       const checkout = TestUtils.renderIntoDocument(<Checkout />);
       const cart = TestUtils.findRenderedComponentWithType(checkout, Cart);
-      const spyCartLoad= sandbox.spy(cart, 'onCartLoad');
+      const spyCartLoad= sandbox.stub(cart, 'onCartLoad');
 
       const prouductItem = [ {product_id: 1}];
       checkout.handleOnAutocompleteAddress({ products: [ prouductItem ] });
@@ -249,7 +249,7 @@ describe('Checkout place order', () => {
     it('should trigger on clean before refresh products in cart component', () => {
       const checkout = TestUtils.renderIntoDocument(<Checkout />);
       const cart = TestUtils.findRenderedComponentWithType(checkout, Cart);
-      const spyCartLoad= sandbox.spy(cart, 'onCartLoad');
+      const spyCartLoad= sandbox.stub(cart, 'onCartLoad');
       const spyCartClear= sandbox.spy(cart, 'onCartClear');
 
       checkout.handleOnAutocompleteAddress({ products: [] });
