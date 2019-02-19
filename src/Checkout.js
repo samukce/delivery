@@ -45,6 +45,13 @@ class Checkout extends Component {
     this.cartComponent.onCartClear();
   }
 
+  triggerCartLoad = ({ products }) => {
+    if (!this.cartComponent) return;
+  
+    this.triggerCartClear();
+    this.cartComponent.onCartLoad(products);
+  }
+
   cartRefHandler = (el) => {
     this.cartComponent = el;
   }
@@ -93,7 +100,7 @@ class Checkout extends Component {
   }
 
   handleOnAutocompleteAddress = (order) => {
-    this.setState(order);
+    this.setState(order, this.triggerCartLoad(order));
   }
 
   render() {

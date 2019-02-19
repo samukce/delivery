@@ -32,6 +32,8 @@ class Cart extends Component {
 
   onCartClear = () => this.setState(this.getInitialState());
 
+  onCartLoad = () => {}
+
   quantityInputRefHandler = (el) => {
     this.quantityInputField = el;
   }

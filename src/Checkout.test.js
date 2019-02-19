@@ -236,16 +236,26 @@ describe('Checkout place order', () => {
     });
 
     it('should trigger refresh products in cart component', () => {
-      fail();
       const checkout = TestUtils.renderIntoDocument(<Checkout />);
       const cart = TestUtils.findRenderedComponentWithType(checkout, Cart);
+      const spyCartLoad= sandbox.spy(cart, 'onCartLoad');
 
+      const prouductItem = [ {product_id: 1}];
+      checkout.handleOnAutocompleteAddress({ products: [ prouductItem ] });
+
+      expect(spyCartLoad).to.have.been.calledWith([ prouductItem ]);
+    });
+
+    it('should trigger on clean before refresh products in cart component', () => {
+      const checkout = TestUtils.renderIntoDocument(<Checkout />);
+      const cart = TestUtils.findRenderedComponentWithType(checkout, Cart);
+      const spyCartLoad= sandbox.spy(cart, 'onCartLoad');
       const spyCartClear= sandbox.spy(cart, 'onCartClear');
 
-      let clearButton = TestUtils.findRenderedDOMComponentWithClass(checkout, 'clear-button');
-      TestUtils.Simulate.click(clearButton);
+      checkout.handleOnAutocompleteAddress({ products: [] });
 
       expect(spyCartClear).to.have.been.called;
+      expect(spyCartLoad).to.have.been.calledWith([]);
     });
   });
 
