@@ -195,6 +195,24 @@ describe('Cart', () => {
         .to.be.equal('Add a product...');
     });
   });
+
+  describe('load products', () => {
+    it('should update the products state', () => {
+      const productAdded = { product_id: 1, description: 'Product 1', value: 3.5, quantity: 2 };
+
+      componentRender.onCartLoad([ productAdded ]);
+
+      expect(wrapper.state('products')).to.eql([ productAdded ]);
+    });
+
+    it('should fire on change product when add a product', () => {
+      const productAdded = { product_id: 1, description: 'Product 1', value: 3.5, quantity: 2 };
+
+      componentRender.onCartLoad([ productAdded ]);
+
+      expect(spyOnProductChange).to.have.been.calledWith([ productAdded ]);
+    });
+  });
 })
 
 function createStubProductRepository(sandbox) {

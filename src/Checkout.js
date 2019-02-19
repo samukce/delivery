@@ -47,7 +47,7 @@ class Checkout extends Component {
 
   triggerCartLoad = ({ products }) => {
     if (!this.cartComponent) return;
-  
+
     this.triggerCartClear();
     this.cartComponent.onCartLoad(products);
   }

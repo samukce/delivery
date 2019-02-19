@@ -32,7 +32,11 @@ class Cart extends Component {
 
   onCartClear = () => this.setState(this.getInitialState());
 
-  onCartLoad = () => {}
+  onCartLoad = (products) => {
+    const { onProductsChange } = this.props;
+
+    this.setState({products}, () => onProductsChange(this.state.products));
+  }
 
   quantityInputRefHandler = (el) => {
     this.quantityInputField = el;
