@@ -288,5 +288,19 @@ describe('Checkout place order', () => {
 
       expect(spyClearAllFields).to.have.been.called;
     });
+
+    it('should focus in the address field', () => {
+      const output = mount(<Checkout />);
+      const order = {
+        address: 'address new',
+        products: [ { product_id: 1, description: '', value: 10, quantity: 1 } ],
+      };
+      output.setState(order);
+      output.instance().setFocusOnChargeTo();
+
+      output.instance().buttonClickPlaceOrder();
+
+      expect(document.activeElement.id).to.be.equal('address');
+    });
   });
 })
