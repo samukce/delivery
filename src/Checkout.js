@@ -37,6 +37,7 @@ class Checkout extends Component {
     if (!this.isValid()) return;
     this.placeOrder();
     this.clearAllFieds();
+    this.setFocusOnAddress();
   }
 
   clearAllFieds = () => this.setState(this.getInitialState(), () => this.triggerCartClear());
@@ -51,10 +52,6 @@ class Checkout extends Component {
 
     this.triggerCartClear();
     this.cartComponent.onCartLoad(products);
-  }
-
-  cartRefHandler = (el) => {
-    this.cartComponent = el;
   }
 
   placeOrder = () => {
@@ -104,6 +101,15 @@ class Checkout extends Component {
     this.setState(order, this.triggerCartLoad(order));
   }
 
+  setFocusOnChargeTo = () => {
+    this.inputChargeTo.input.focus();
+  }
+
+  setFocusOnAddress = () => {
+    if (!this.inputAddress) return;
+    this.inputAddress.setFocus();
+  }
+
   render() {
     return (
       <div>
@@ -121,6 +127,7 @@ class Checkout extends Component {
           onChange={this.onChangeAddress}
           s={12}
           icon='home'
+          ref={(el) => this.inputAddress = el}
           iconClassName='prefix' />
 
         <Input
@@ -133,7 +140,7 @@ class Checkout extends Component {
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
         </Input>
 
-        <Cart onProductsChange={this.onProductsChange} ref={this.cartRefHandler}>
+        <Cart onProductsChange={this.onProductsChange} ref={(el) => this.cartComponent = el}>
           <Card
             id='total_amount'
             className='blue-grey darken-1 z-depth-3'
@@ -152,6 +159,7 @@ class Checkout extends Component {
             min={this.state.total_amount + 0.01}
             step='0.01'
             validate
+            ref={(el) => this.inputChargeTo = el}
             onChange={handleInputChangeBind(this.setState.bind(this), this.updateChangeDifference)}><Icon>attach_money</Icon></Input>
         </Cart>
 

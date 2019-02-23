@@ -188,6 +188,8 @@ class AutocompleteCustom extends Component {
     this.setState({ value, itemSelected: true, expandItems: false });
   }
 
+  setFocus = () => this.inputField.focus();
+
   render() {
     const {
       id,
@@ -245,6 +247,7 @@ class AutocompleteCustom extends Component {
           required={required}
           validate={validate}
           value={this.state.value}
+          ref={(el) => this.inputField = el}
         />
         <label htmlFor={_id}>{title}</label>
         {this.renderDropdown(minLength, limit)}
