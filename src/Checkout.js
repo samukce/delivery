@@ -36,6 +36,7 @@ class Checkout extends Component {
   buttonClickPlaceOrder = () => {
     if (!this.isValid()) return;
     this.placeOrder();
+    this.clearAllFieds();
   }
 
   clearAllFieds = () => this.setState(this.getInitialState(), () => this.triggerCartClear());
