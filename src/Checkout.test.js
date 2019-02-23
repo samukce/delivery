@@ -29,7 +29,6 @@ describe('Checkout place order', () => {
     componentRender = wrapper.instance();
 
     spyPlaceOrder = sandbox.spy(componentRender, 'placeOrder');
-    componentRender.forceUpdate()
   });
 
   afterEach(() => {
@@ -274,6 +273,20 @@ describe('Checkout place order', () => {
       wrapper.find('#place-order-button').simulate('click');
 
       expect(stubOrderRespositorySave).to.have.been.calledWith(order);
+    });
+
+    it('should trigger on clean after place order', () => {
+      const order = {
+        address: 'address new',
+        products: [ { product_id: 1, description: '', value: 10, quantity: 1 } ],
+      };
+      wrapper.setState(order);
+
+      const spyClearAllFields = sandbox.spy(componentRender, 'clearAllFieds');
+
+      wrapper.find('#place-order-button').simulate('click');
+
+      expect(spyClearAllFields).to.have.been.called;
     });
   });
 })
