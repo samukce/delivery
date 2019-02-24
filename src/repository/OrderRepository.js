@@ -15,6 +15,7 @@ class OrderRepository {
                 const index = order.address.toUpperCase().indexOf(address.toUpperCase());
                 return index !== -1;
             })
+            .sortBy('created')
             .sortBy('address')
             .take(takeCount)
             .value()
@@ -30,6 +31,7 @@ class OrderRepository {
         if (!order) return;
 
         order.id = DbFactory.getNewId();
+        order.created = new Date().toJSON();
         this.db.get(entity)
             .push(order)
             .write();
