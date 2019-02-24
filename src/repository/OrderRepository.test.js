@@ -76,11 +76,24 @@ describe('OrderRepository', () => {
         dbTest.get(entity)
             .push({ id: 1, address: 'St abc yyyyyyy' })
             .push({ id: 2, address: 'Av. Abcxxxxxx' })
+            .push({ id: 3, address: 'Bv. Abcxxxxxx' })
             .write();
 
         expect(orderRepository.searchBy('abc')).to.be.eql({
           'Av. Abcxxxxxx': { id: 2, address: 'Av. Abcxxxxxx'},
+          'Bv. Abcxxxxxx': { id: 3, address: 'Bv. Abcxxxxxx'},
           'St abc yyyyyyy': { id: 1, address: 'St abc yyyyyyy'},
+        });
+      });
+
+      it('should group By created date desc', () => {
+        dbTest.get(entity)
+            .push({ id: 1, address: 'Abc St.', created: '2019-02-23T23:59:26.919Z' })
+            .push({ id: 2, address: 'Abc St.', created: '2019-02-23T23:50:26.919Z' })
+            .write();
+
+        expect(orderRepository.searchBy('abc')).to.be.eql({
+          'Abc St.': { id: 1, address: 'Abc St.', created: '2019-02-23T23:59:26.919Z'},
         });
       });
     });
@@ -104,6 +117,14 @@ describe('OrderRepository', () => {
         const order = dbTest.get(entity).find({ address: '1022 St.' }).value();
 
         expect(order.id).to.not.be.empty;
+      });
+
+      it('should set created date when save order', () => {
+        orderRepository.save({ address: '1022 St.'});
+
+        const order = dbTest.get(entity).find({ address: '1022 St.' }).value();
+
+        expect(order.created).to.not.be.empty;
       });
     });
 });
