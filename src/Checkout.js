@@ -5,6 +5,8 @@ import Cart from './Cart'
 import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentUtils'
 import AutocompleteCustom from './components/AutocompleteCustom'
 import OrderRepository from './repository/OrderRepository'
+import { I18n } from "@lingui/react"
+import { t } from "@lingui/macro"
 
 
 class Checkout extends Component {
@@ -113,22 +115,26 @@ class Checkout extends Component {
   render() {
     return (
       <div>
-        <AutocompleteCustom
-          id='address'
-          title='Address'
-          className='address'
-          placeholder='Address...'
-          autoFocus
-          required
-          validate
-          lazyData={this.lazyAddressSearch}
-          onAutocomplete={this.handleOnAutocompleteAddress}
-          value={this.state.address}
-          onChange={this.onChangeAddress}
-          s={12}
-          icon='home'
-          ref={(el) => this.inputAddress = el}
-          iconClassName='prefix' />
+        <I18n>
+        {({ i18n }) => 
+          <AutocompleteCustom
+            id='address'
+            title={i18n._(t('checkout.address')`Address`)}
+            className='address'
+            placeholder={i18n._(t('checkout.address')`Address`)}
+            autoFocus
+            required
+            validate
+            lazyData={this.lazyAddressSearch}
+            onAutocomplete={this.handleOnAutocompleteAddress}
+            value={this.state.address}
+            onChange={this.onChangeAddress}
+            s={12}
+            icon='home'
+            ref={(el) => this.inputAddress = el}
+            iconClassName='prefix' />
+        }
+        </I18n>
 
         <Input
           id='complement'

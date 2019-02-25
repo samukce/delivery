@@ -2,8 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Checkout from './Checkout';
 import * as serviceWorker from './serviceWorker';
+import { I18nProvider } from '@lingui/react';
 
-ReactDOM.render(<Checkout />, document.getElementById('root'));
+const App = ({ language} ) => {
+    const localeMessage = require(`./locales/${language}/messages.js`);
+
+    return (
+        <I18nProvider language={language} catalogs={{ [language]: localeMessage }}>
+           <Checkout />
+        </I18nProvider>
+    );
+}
+
+ReactDOM.render(<App language='pt-BR' />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
