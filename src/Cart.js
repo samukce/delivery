@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import ProductRepository from './repository/ProductRepository';
 import { map } from 'lodash';
 import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentUtils';
+import { Trans } from "@lingui/react"
 
 
 class Cart extends Component {
@@ -108,7 +109,7 @@ class Cart extends Component {
     if (products.length === 0 )
       return (
         <tr>
-          <th colSpan='5'>Add a product...</th>
+          <th colSpan='5'>{<Trans id='cart.add_a_product'>Add a product...</Trans>}</th>
         </tr>
       );
 
@@ -142,9 +143,9 @@ class Cart extends Component {
       <Row>
         <AutocompleteCustom
           id='product_display_description'
-          title='Product'
+          title={<Trans id='cart.product'>Product</Trans>}
           className='product'
-          placeholder='Water...'
+          placeholder='...'
           data={products}
           expandOnFocus={true}
           onAutocomplete={this.handleOnAutocompleteProduct}
@@ -157,7 +158,7 @@ class Cart extends Component {
         <Input
           id='add_product_quantity'
           name='add_product_quantity'
-          label='Quantity'
+          label={<Trans id='cart.quantity'>Quantity</Trans>}
           value={this.state.add_product_quantity}
           ref={this.quantityInputRefHandler}
           s={12} m={4}
@@ -169,17 +170,17 @@ class Cart extends Component {
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>list_alt</Icon></Input>
         <Button id='add-product-button' 
           onClick={this.addProduct}
-          className='col s12 m2'>Add<Icon left>add_shopping_cart</Icon></Button>
+          className='col s12 m2'>{<Trans id='cart.add'>Add</Trans>}<Icon left>add_shopping_cart</Icon></Button>
 
         <Col s={12} m={9}>
           <Table className='striped'>
             <thead>
               <tr>
-                <th data-field='description'>Description</th>
-                <th data-field='price' className='center-align'>Item Price</th>
-                <th data-field='quantity' className='center-align'>Quantity</th>
-                <th data-field='total' className='center-align'>Item Total</th>
-                <th>Action</th>
+                <th data-field='description'>{<Trans id='cart.description'>Description</Trans>}</th>
+                <th data-field='price' className='center-align'>{<Trans id='cart.item_price'>Item Price</Trans>}</th>
+                <th data-field='quantity' className='center-align'>{<Trans id='cart.quantity'>Quantity</Trans>}</th>
+                <th data-field='total' className='center-align'>{<Trans id='cart.item_total'>Item Total</Trans>}</th>
+                <th>{<Trans id='cart.action'>Action</Trans>}</th>
               </tr>
             </thead>
 
