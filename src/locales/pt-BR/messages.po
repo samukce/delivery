@@ -13,6 +13,39 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/Cart.js:183
+msgid "cart.action"
+msgstr "Ação"
+
+#: src/Cart.js:173
+msgid "cart.add"
+msgstr "Adicionar"
+
+#: src/Cart.js:112
+msgid "cart.add_a_product"
+msgstr "Adicionar um produto..."
+
+#: src/Cart.js:179
+msgid "cart.description"
+msgstr "Descrição"
+
+#: src/Cart.js:180
+msgid "cart.item_price"
+msgstr "Preço"
+
+#: src/Cart.js:182
+msgid "cart.item_total"
+msgstr "Total"
+
+#: src/Cart.js:146
+msgid "cart.product"
+msgstr "Produto"
+
+#: src/Cart.js:161
+#: src/Cart.js:181
+msgid "cart.quantity"
+msgstr "Quantidade"
+
 #: src/Checkout.js:119
 msgid "checkout.address"
 msgstr "Localização"
