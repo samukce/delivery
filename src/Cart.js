@@ -69,7 +69,7 @@ class Cart extends Component {
       product_id: this.state.add_product.id,
       description: this.state.add_product.description,
       value: this.state.add_product.value,
-      quantity: this.state.add_product_quantity
+      quantity: this.state.add_product_quantity || 1
     };
 
     this.setState({
