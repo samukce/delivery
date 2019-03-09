@@ -13,12 +13,30 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/Checkout.js:122
-#: src/Checkout.js:124
+#: src/Checkout.js:119
 msgid "checkout.address"
 msgstr "Address"
 
-#: src/Checkout.js:144
-#: src/Checkout.js:146
+#: src/Checkout.js:155
+msgid "checkout.change_to"
+msgstr "Change to"
+
+#: src/Checkout.js:180
+msgid "checkout.clean"
+msgstr "Clean"
+
+#: src/Checkout.js:139
 msgid "checkout.complement"
 msgstr "Complement"
+
+#: src/Checkout.js:171
+msgid "checkout.notes"
+msgstr "Notes"
+
+#: src/Checkout.js:186
+msgid "checkout.place_order"
+msgstr "Place Order"
+
+#: src/Checkout.js:150
+msgid "checkout.total"
+msgstr "Total"

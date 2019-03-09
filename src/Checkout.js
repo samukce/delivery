@@ -147,13 +147,13 @@ class Checkout extends Component {
             className='blue-grey darken-1 z-depth-3'
             textClassName='white-text'
             title={getValueFormatted(this.state.total_amount)}>
-            Total
+            {<Trans id='checkout.total'>Total</Trans>}
           </Card>
           <Input
             id='change_to'
             name='change_to'
-            label='Change to'
-            placeholder='Change to...'
+            label={<Trans id='checkout.change_to'>Change to</Trans>}
+            placeholder='...'
             s={12}
             type='number'
             value={this.state.change_to}
@@ -168,8 +168,8 @@ class Checkout extends Component {
           id='notes'
           s={12}
           name='notes'
-          label='Notes'
-          placeholder='Notes...'
+          label={<Trans id='checkout.notes'>Notes</Trans>}
+          placeholder='...'
           value={this.state.notes}
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>speaker_notes</Icon></Input>
 
@@ -177,13 +177,13 @@ class Checkout extends Component {
           <Button
             id='clear-button'
             onClick={this.clearAllFieds}
-            className='col s12 m2 offset-m6 grey clear-button'>Clean<Icon left>clear_all</Icon>
+            className='col s12 m2 offset-m6 grey clear-button'>{<Trans id='checkout.clean'>Clean</Trans>}<Icon left>clear_all</Icon>
           </Button>
           <Button
             id='place-order-button'
             onClick={this.buttonClickPlaceOrder}
             disabled={!this.isValid()}
-            className='col s12 m3 offset-m1'>Place Order<Icon left>motorcycle</Icon>
+            className='col s12 m3 offset-m1'>{<Trans id='checkout.place_order'>Place Order</Trans>}<Icon left>motorcycle</Icon>
           </Button>
         </Row>
       </div>
