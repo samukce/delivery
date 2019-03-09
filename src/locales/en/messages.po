@@ -17,3 +17,8 @@ msgstr ""
 #: src/Checkout.js:124
 msgid "checkout.address"
 msgstr "Address"
+
+#: src/Checkout.js:144
+#: src/Checkout.js:146
+msgid "checkout.complement"
+msgstr "Complement"
