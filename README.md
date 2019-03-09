@@ -1,5 +1,5 @@
 # Delivery System
 
-![](https://travis-ci.com/samukce/delivery.svg?token=y8uRHZpwLkzqg7h6FWcF&branch=master)
+<a href="https://travis-ci.com/samukce/delivery"><img src="https://travis-ci.com/samukce/delivery.svg?branch=master"></a>
 
 Simple delivery control system
