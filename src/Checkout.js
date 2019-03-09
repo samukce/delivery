@@ -5,8 +5,7 @@ import Cart from './Cart'
 import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentUtils'
 import AutocompleteCustom from './components/AutocompleteCustom'
 import OrderRepository from './repository/OrderRepository'
-import { I18n } from "@lingui/react"
-import { t } from "@lingui/macro"
+import { Trans } from "@lingui/react"
 
 
 class Checkout extends Component {
@@ -115,33 +114,29 @@ class Checkout extends Component {
   render() {
     return (
       <div>
-        <I18n>
-        {({ i18n }) => 
-          <AutocompleteCustom
-            id='address'
-            title={i18n._(t('checkout.address')`Address`)}
-            className='address'
-            placeholder={i18n._(t('checkout.address')`Address`)}
-            autoFocus
-            required
-            validate
-            lazyData={this.lazyAddressSearch}
-            onAutocomplete={this.handleOnAutocompleteAddress}
-            value={this.state.address}
-            onChange={this.onChangeAddress}
-            s={12}
-            icon='home'
-            ref={(el) => this.inputAddress = el}
-            iconClassName='prefix' />
-        }
-        </I18n>
+        <AutocompleteCustom
+          id='address'
+          title={<Trans id='checkout.address'>Address</Trans>}
+          placeholder='...'
+          className='address'
+          autoFocus
+          required
+          validate
+          lazyData={this.lazyAddressSearch}
+          onAutocomplete={this.handleOnAutocompleteAddress}
+          value={this.state.address}
+          onChange={this.onChangeAddress}
+          s={12}
+          icon='home'
+          ref={(el) => this.inputAddress = el}
+          iconClassName='prefix' />
 
         <Input
           id='complement'
           name='complement'
-          placeholder='Complement...'
+          placeholder='...'
           s={12}
-          label='Complement'
+          label={<Trans id='checkout.complement'>Complement</Trans>}
           value={this.state.complement}
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
         </Input>
