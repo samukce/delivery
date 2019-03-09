@@ -84,3 +84,4 @@ yarn-error.log*
 
 .python-version
 dist/
+src/locales/_build/
