@@ -3,7 +3,7 @@ jobs:
     - stage: test
       language: node_js
       node_js:
-        - "11"
+        - "10"
         - "stable"
 
     - stage: release
@@ -13,7 +13,7 @@ jobs:
       osx_image: xcode9.4
       language: node_js
       node_js:
-        - "11"
+        - "10"
         - "stable"
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
