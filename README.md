@@ -5,7 +5,7 @@
 Simple application to cover orders made by the call to a small delivery company
 
 <p align="center">
-  <img src="screen_shot_pre_beta.png" alt="Checkout first page"/>
+  <img src="screen_shot_pre_beta.png" alt="Checkout first page" width="650"  />
 </p>
 
 ## MVP
