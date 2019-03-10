@@ -113,7 +113,7 @@ class Checkout extends Component {
 
   render() {
     return (
-      <div>
+      <div className='section'>
         <AutocompleteCustom
           id='address'
           title={<Trans id='checkout.address'>Address</Trans>}
