@@ -180,7 +180,7 @@ class Cart extends Component {
                 <th data-field='price' className='center-align'>{<Trans id='cart.item_price'>Item Price</Trans>}</th>
                 <th data-field='quantity' className='center-align'>{<Trans id='cart.quantity'>Quantity</Trans>}</th>
                 <th data-field='total' className='center-align'>{<Trans id='cart.item_total'>Item Total</Trans>}</th>
-                <th>{<Trans id='cart.action'>Action</Trans>}</th>
+                <th></th>
               </tr>
             </thead>
 

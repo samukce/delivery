@@ -177,13 +177,13 @@ class Checkout extends Component {
           <Button
             id='clear-button'
             onClick={this.clearAllFieds}
-            className='col s12 m2 offset-m6 grey clear-button'>{<Trans id='checkout.clean'>Clean</Trans>}<Icon left>clear_all</Icon>
+            className='col s12 m2 grey clear-button'>{<Trans id='checkout.clean'>Clean</Trans>}<Icon left>clear_all</Icon>
           </Button>
           <Button
             id='place-order-button'
             onClick={this.buttonClickPlaceOrder}
             disabled={!this.isValid()}
-            className='col s12 m3 offset-m1'>{<Trans id='checkout.place_order'>Place Order</Trans>}<Icon left>motorcycle</Icon>
+            className='col s12 m3 offset-m7'>{<Trans id='checkout.place_order'>Place Order</Trans>}<Icon left>motorcycle</Icon>
           </Button>
         </Row>
       </div>

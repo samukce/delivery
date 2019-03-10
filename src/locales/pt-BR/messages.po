@@ -13,10 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/Cart.js:183
-msgid "cart.action"
-msgstr "Ação"
-
 #: src/Cart.js:173
 msgid "cart.add"
 msgstr "Adicionar"
@@ -68,7 +64,7 @@ msgstr "Observações"
 
 #: src/Checkout.js:186
 msgid "checkout.place_order"
-msgstr "Finalizar Pedido"
+msgstr "Finalizar"
 
 #: src/Checkout.js:150
 msgid "checkout.total"
