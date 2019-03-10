@@ -13,10 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/Cart.js:183
-msgid "cart.action"
-msgstr "Action"
-
 #: src/Cart.js:173
 msgid "cart.add"
 msgstr "Add"
