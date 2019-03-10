@@ -4,6 +4,9 @@
 
 Simple application to cover orders made by the call to a small delivery company
 
+<p align="center">
+  <img src="screen_shot_pre_beta.png" alt="Checkout first page"/>
+</p>
 
 ## MVP
 - Open the app in Order page
@@ -25,6 +28,7 @@ Simple application to cover orders made by the call to a small delivery company
 ## Requirements
 - Works in offline mode
 - Windows machine
+- Language pt-BR
 
 
 ## Tech stack
