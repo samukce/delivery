@@ -66,6 +66,10 @@ msgstr "Observações"
 msgid "checkout.place_order"
 msgstr "Finalizar"
 
+#: src/index.js:13
+msgid "checkout.title"
+msgstr "Venda"
+
 #: src/Checkout.js:150
 msgid "checkout.total"
 msgstr "Total"
