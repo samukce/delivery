@@ -8,6 +8,10 @@ Simple application to cover orders made by the call to a small delivery company
   <img src="screen_shot_pre_beta.png" alt="Checkout first page" width="650"  />
 </p>
 
+## Try the App (no-prod version)
+You can download through [releases page](https://github.com/samukce/delivery/releases)
+
+
 ## MVP
 - Open the app in Order page
 - Fields required
@@ -55,3 +59,12 @@ Simple application to cover orders made by the call to a small delivery company
 - Smart organize the delivery routes
 - Customer request order by Internet
 - To get the phone number by modem
+
+
+## Developement
+Run local with:
+```
+nvm use 10.11.0
+yarn install
+yarn start
+```
