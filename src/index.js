@@ -2,14 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Checkout from './Checkout';
 import * as serviceWorker from './serviceWorker';
-import { I18nProvider } from '@lingui/react';
+import { I18nProvider, Trans } from '@lingui/react';
 
 const App = ({ language} ) => {
     const localeMessage = require(`./locales/${language}/messages.js`);
 
     return (
         <I18nProvider language={language} catalogs={{ [language]: localeMessage }}>
-           <Checkout />
+            <div className='container'>
+                <h5>{<Trans id='checkout.title'>Checkout</Trans>}</h5>
+            </div>
+            <div className='divider'/>
+            <div className='container'>
+                <Checkout />
+            </div>
         </I18nProvider>
     );
 }
