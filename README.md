@@ -43,7 +43,7 @@ You can download through [releases page](https://github.com/samukce/delivery/rel
 - i18n -linguijs
 
 
-## Local Database anaslise
+## Local Database analysis
 - Data per year: 
   - Order: 140(orders per day)*262bytes*30*12 = 13,2048 ; 14mb per year
 [lowdb/examples at master · typicode/lowdb · GitHub](https://github.com/typicode/lowdb/tree/master/examples)
