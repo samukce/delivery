@@ -309,5 +309,20 @@ describe('Checkout place order', () => {
 
       expect(document.activeElement.id).to.be.equal('phonenumber');
     });
+
+    it('should start phonenumber field with default prefix', () => {
+      const output = mount(<Checkout />);
+      const order = {
+        address: 'address new',
+        phonenumber: '12311234',
+        products: [ { product_id: 1, description: '', value: 10, quantity: 1 } ],
+      };
+      output.setState(order);
+      output.instance().setFocusOnChargeTo();
+
+      output.instance().buttonClickPlaceOrder();
+
+      expect(document.activeElement.value.trim()).to.equal('+55 85');
+    });
   });
 })

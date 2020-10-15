@@ -170,16 +170,17 @@ class Cart extends Component {
           label={<Trans id='cart.quantity'>Quantity</Trans>}
           value={this.state.add_product_quantity}
           ref={this.quantityInputRefHandler}
-          s={12} m={4}
+          s={12} m={3}
           type='number'
           required
           validate
           min='1'
           step='1'
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>list_alt</Icon></Input>
+        
         <Button id='add-product-button' 
           onClick={this.addProduct}
-          className='col s12 m2'>{<Trans id='cart.add'>Add</Trans>}<Icon left>add_shopping_cart</Icon></Button>
+          className='col s12 m3'>{<Trans id='cart.add'>Add</Trans>}<Icon left>add_shopping_cart</Icon></Button>
 
         <Col s={12} m={9}>
           <Table className='striped'>

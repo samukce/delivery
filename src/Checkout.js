@@ -6,7 +6,11 @@ import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentU
 import AutocompleteCustom from './components/AutocompleteCustom'
 import OrderRepository from './repository/OrderRepository'
 import { Trans } from "@lingui/react"
+import InputMask from 'react-input-mask';
+import Col from 'react-materialize/lib/Col';
 
+
+const phoneNumberDefaultNumber = '+55 85' //TODO: take from settings or based on the orders
 
 class Checkout extends Component {
   static propTypes = {
@@ -24,7 +28,7 @@ class Checkout extends Component {
 
   getInitialState = () => {
     return {
-      phonenumber: '',
+      phonenumber: phoneNumberDefaultNumber,
       address: '',
       complement: '',
       notes: '',
@@ -108,25 +112,37 @@ class Checkout extends Component {
   }
 
   setFocusOnPhonenumber = () => {
-    if (!this.inputPhonenumber || !this.inputPhonenumber.input) return;
-    this.inputPhonenumber.input.focus();
+    if (!this.inputPhonenumber) return;
+    this.inputPhonenumber.focus();
+    this.inputPhonenumber.selectionStart = 0;
+  }
+
+  onChangePhonenumber = (event) => {
+    this.setState({
+      phonenumber: event.target.value
+    });
   }
 
   render() {
     return (
       <div className='section'>
-         <Input
-          id='phonenumber'
-          name='phonenumber'
-          autoFocus
-          ref={(el) => this.inputPhonenumber = el}
-          placeholder='...'
-          s={12}
-          type="number"
-          label={<Trans id='checkout.phonenumber'>Phonenumber</Trans>}
-          value={this.state.phonenumber}
-          onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>phone</Icon>
-        </Input>
+        <Row>
+          <Col s={1}><Icon small>phone</Icon></Col>
+          <Col s={11}>
+            <InputMask
+              id='phonenumber'
+              name='phonenumber'
+              mask="+55 99 9 9999 9999"
+              maskChar=" "
+              label='Telefone'
+              placeholder='Telefone'
+              value={this.state.phonenumber}
+              autoFocus
+              onChange={this.onChangePhonenumber}
+              inputRef={(el) => this.inputPhonenumber = el}
+            />
+          </Col>
+        </Row>
 
         <AutocompleteCustom
           id='address'
