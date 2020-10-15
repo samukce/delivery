@@ -43,10 +43,12 @@ class Checkout extends Component {
     if (!this.isValid()) return;
     this.placeOrder();
     this.clearAllFieds();
-    this.setFocusOnPhonenumber();
   }
 
-  clearAllFieds = () => this.setState(this.getInitialState(), () => this.triggerCartClear());
+  clearAllFieds = () => this.setState(this.getInitialState(), () => {
+    this.triggerCartClear();
+    this.setFocusOnPhonenumber();
+  });
 
   triggerCartClear = () => {
     if (!this.cartComponent) return;
@@ -114,7 +116,6 @@ class Checkout extends Component {
   setFocusOnPhonenumber = () => {
     if (!this.inputPhonenumber) return;
     this.inputPhonenumber.focus();
-    this.inputPhonenumber.selectionStart = 0;
   }
 
   onChangePhonenumber = (event) => {
