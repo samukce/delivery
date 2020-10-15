@@ -39,14 +39,6 @@ class Cart extends Component {
     this.setState({products}, () => onProductsChange(this.state.products));
   }
 
-  productInputRefHandler = (el) => {
-    this.productInputField = el;
-  }
-
-  quantityInputRefHandler = (el) => {
-    this.quantityInputField = el;
-  }
-
   handleOnAutocompleteProduct = (value) => {
     this.setState({
       add_product: value
@@ -59,6 +51,7 @@ class Cart extends Component {
   }
   
   focusProduct = () => {
+    if (!this.productInputField) return;
     this.productInputField.setFocus();
   }
 
@@ -68,8 +61,17 @@ class Cart extends Component {
     });
   }
 
+  handleKeyDownQuantity= (event) => {
+    if (event.key === 'Enter') {
+      this.addProduct();
+    }
+  }
+
   addProduct = () => {
-    if (!this.state.add_product) return;
+    if (!this.state.add_product) {
+      this.focusProduct();
+      return;
+    }
 
     const { onProductsChange } = this.props;
 
@@ -158,7 +160,7 @@ class Cart extends Component {
           expandOnFocus={true}
           onAutocomplete={this.handleOnAutocompleteProduct}
           value={this.state.product_display_description}
-          ref={this.productInputRefHandler}
+          ref={(el) => this.productInputField = el}
           onChange={this.onChangeProductDisplay}
           s={12} m={6}
           icon='local_grocery_store'
@@ -169,13 +171,14 @@ class Cart extends Component {
           name='add_product_quantity'
           label={<Trans id='cart.quantity'>Quantity</Trans>}
           value={this.state.add_product_quantity}
-          ref={this.quantityInputRefHandler}
+          ref={(el) => this.quantityInputField = el}
           s={12} m={3}
           type='number'
           required
           validate
           min='1'
           step='1'
+          onKeyDown={this.handleKeyDownQuantity}
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>list_alt</Icon></Input>
         
         <Button id='add-product-button' 

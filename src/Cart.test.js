@@ -1,6 +1,6 @@
 import React from 'react';
 import Cart from './Cart';
-import { shallow } from 'enzyme';
+import { shallow,  mount } from 'enzyme';
 
 
 describe('Cart', () => {
@@ -33,6 +33,14 @@ describe('Cart', () => {
       expect(wrapper.state('products')).to.eql([]);
     });
 
+    it('should focus product field if not selected product', () => {
+      const output = mount(<Cart />);
+
+      output.instance().addProduct();
+
+      expect(document.activeElement.id).to.be.equal('product_display_description');
+    });
+
     it('should go with product and quantity selected', () => {
       componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
       wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
@@ -48,6 +56,14 @@ describe('Cart', () => {
       componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
 
       wrapper.find('#add-product-button').simulate('click');
+
+      expect(wrapper.state('add_product')).to.be.null;
+    });
+
+    it('should add product selected by Enter', () => {
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+
+      componentRender.handleKeyDownQuantity({ key: 'Enter' });
 
       expect(wrapper.state('add_product')).to.be.null;
     });

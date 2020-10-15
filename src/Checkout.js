@@ -134,7 +134,7 @@ class Checkout extends Component {
               name='phonenumber'
               mask="+55 99 9 9999 9999"
               maskChar=" "
-              label='Telefone'
+              label='Telefone'  //TODO: Resolve i18n
               placeholder='Telefone'
               value={this.state.phonenumber}
               autoFocus
