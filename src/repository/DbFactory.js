@@ -2,11 +2,13 @@ const low = require('lowdb');
 const Memory = require('lowdb/adapters/Memory');
 const shortid = require('shortid');
 
-let remote;
-let FileSync;
+let ProdOrDevDatabase;
 if (window && window.require){
-    FileSync = window.require('lowdb/adapters/FileSync');
-    remote = window.require('electron').remote;
+    let FileSync = window.require('lowdb/adapters/FileSync');
+    let remote = window.require('electron').remote;
+    ProdOrDevDatabase = new FileSync(remote.getGlobal('settings').database_path)
+} else {
+    ProdOrDevDatabase = new Memory()
 }
 
 export default class DbFactory {
@@ -14,7 +16,7 @@ export default class DbFactory {
         const db = low(
             process.env.NODE_ENV === 'test'
               ? new Memory()
-              : new FileSync(remote.getGlobal('settings').database_path)
+              : ProdOrDevDatabase
         )
 
         db.defaults({ orders: [] })
