@@ -7,10 +7,10 @@ import OrderRepository from './repository/OrderRepository'
 
 
 describe('Checkout component load', () => {
-  it('should focus in the address field', () => {
+  it('should focus in the phonenumber field', () => {
     const output = mount(<Checkout />);
 
-    expect(output.find('input#address').getElement().props.id)
+    expect(output.find('input#phonenumber').getElement().props.id)
       .to.be.equal(document.activeElement.id);
   });
 })
@@ -97,6 +97,12 @@ describe('Checkout place order', () => {
     expect(wrapper.state('notes')).to.equal('good customer');
   });
 
+  it('should fill the phonenumber field', () => {
+    wrapper.find('#phonenumber').simulate('change', { target: { name: 'phonenumber', value: '988776655' } } );
+
+    expect(wrapper.state('phonenumber')).to.equal('988776655');
+  });
+
   describe('calculate total order amount', () => {
     it('should calculate', () => {
       componentRender.onProductsChange([
@@ -112,7 +118,7 @@ describe('Checkout place order', () => {
         { product_id: 1, description: 'Water', value: 3.5, quantity: 2 },
       ]);
 
-      expect(wrapper.find('#total_amount').props().title).to.equal('$7.00');
+      expect(wrapper.find('#total_amount').props().title).to.equal('R$ 7.00');
     });
   });
 
@@ -264,6 +270,7 @@ describe('Checkout place order', () => {
         address: 'address new',
         complement: '....',
         notes: 'notes..',
+        phonenumber: '998887766',
         change_to: 100,
         products: [ { product_id: 1, description: '', value: 10, quantity: 1 } ],
         total_amount: 10
@@ -289,7 +296,7 @@ describe('Checkout place order', () => {
       expect(spyClearAllFields).to.have.been.called;
     });
 
-    it('should focus in the address field', () => {
+    it('should focus in the phonenumber field', () => {
       const output = mount(<Checkout />);
       const order = {
         address: 'address new',
@@ -300,7 +307,7 @@ describe('Checkout place order', () => {
 
       output.instance().buttonClickPlaceOrder();
 
-      expect(document.activeElement.id).to.be.equal('address');
+      expect(document.activeElement.id).to.be.equal('phonenumber');
     });
   });
 })

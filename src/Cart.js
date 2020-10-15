@@ -39,6 +39,10 @@ class Cart extends Component {
     this.setState({products}, () => onProductsChange(this.state.products));
   }
 
+  productInputRefHandler = (el) => {
+    this.productInputField = el;
+  }
+
   quantityInputRefHandler = (el) => {
     this.quantityInputField = el;
   }
@@ -52,6 +56,10 @@ class Cart extends Component {
   focusQuantity = () => {
     if (!this.quantityInputField || !this.quantityInputField.input) return;
     this.quantityInputField.input.focus();
+  }
+  
+  focusProduct = () => {
+    this.productInputField.setFocus();
   }
 
   onChangeProductDisplay = (evt, value) => {
@@ -109,7 +117,7 @@ class Cart extends Component {
     if (products.length === 0 )
       return (
         <tr>
-          <th colSpan='5'>{<Trans id='cart.add_a_product'>Add a product...</Trans>}</th>
+          <th colSpan='5' onClick={this.focusProduct}>{<Trans id='cart.add_a_product'>Add a product...</Trans>}</th>
         </tr>
       );
 
@@ -150,6 +158,7 @@ class Cart extends Component {
           expandOnFocus={true}
           onAutocomplete={this.handleOnAutocompleteProduct}
           value={this.state.product_display_description}
+          ref={this.productInputRefHandler}
           onChange={this.onChangeProductDisplay}
           s={12} m={6}
           icon='local_grocery_store'

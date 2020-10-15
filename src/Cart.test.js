@@ -119,7 +119,7 @@ describe('Cart', () => {
       wrapper.find('#add-product-button').simulate('click');
 
       expect(wrapper.find('Table').find('tbody').props().children[0].props.children[1].props.children)
-        .to.be.equal('$3.50');
+        .to.be.equal('R$ 3.50');
     });
 
     it('should add the quantity of product on the table', () => {
@@ -138,7 +138,7 @@ describe('Cart', () => {
       wrapper.find('#add-product-button').simulate('click');
 
       expect(wrapper.find('Table').find('tbody').props().children[0].props.children[3].props.children)
-        .to.be.equal('$7.00');
+        .to.be.equal('R$ 7.00');
     });
 
     it('should fire on change product when add a product', () => {

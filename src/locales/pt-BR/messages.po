@@ -42,34 +42,38 @@ msgstr "Produto"
 msgid "cart.quantity"
 msgstr "Quantidade"
 
-#: src/Checkout.js:119
+#: src/Checkout.js:131
 msgid "checkout.address"
-msgstr "Localização"
+msgstr "Endereço"
 
-#: src/Checkout.js:155
+#: src/Checkout.js:167
 msgid "checkout.change_to"
 msgstr "Troco para"
 
-#: src/Checkout.js:180
+#: src/Checkout.js:192
 msgid "checkout.clean"
 msgstr "Limpar"
 
-#: src/Checkout.js:139
+#: src/Checkout.js:151
 msgid "checkout.complement"
 msgstr "Complemento"
 
-#: src/Checkout.js:171
+#: src/Checkout.js:183
 msgid "checkout.notes"
 msgstr "Observações"
 
-#: src/Checkout.js:186
+#: src/Checkout.js:124
+msgid "checkout.phonenumber"
+msgstr "Telefone"
+
+#: src/Checkout.js:198
 msgid "checkout.place_order"
 msgstr "Finalizar"
 
 #: src/index.js:13
 msgid "checkout.title"
-msgstr "Venda"
+msgstr "Vendas"
 
-#: src/Checkout.js:150
+#: src/Checkout.js:162
 msgid "checkout.total"
 msgstr "Total"

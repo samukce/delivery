@@ -10,10 +10,11 @@ Simple application to cover orders made by the call to a small delivery company
 
 ## MVP
 - Open the app in Order page
-- Fields required
-  - Address
+- Fields
+  - Phone number
+  - Address (required)
   - Complement
-  - Product
+  - Product (required)
     - Item
     - Quantity
     - (Show the unity value)

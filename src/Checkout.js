@@ -24,6 +24,7 @@ class Checkout extends Component {
 
   getInitialState = () => {
     return {
+      phonenumber: '',
       address: '',
       complement: '',
       notes: '',
@@ -38,7 +39,7 @@ class Checkout extends Component {
     if (!this.isValid()) return;
     this.placeOrder();
     this.clearAllFieds();
-    this.setFocusOnAddress();
+    this.setFocusOnPhonenumber();
   }
 
   clearAllFieds = () => this.setState(this.getInitialState(), () => this.triggerCartClear());
@@ -56,9 +57,9 @@ class Checkout extends Component {
   }
 
   placeOrder = () => {
-    const { address, complement, notes, change_to, products, total_amount } = this.state;
+    const { phonenumber, address, complement, notes, change_to, products, total_amount } = this.state;
     const order = {
-      address, complement, notes, change_to, products, total_amount
+      phonenumber, address, complement, notes, change_to, products, total_amount
     }
 
     this.props.orderRepository.save(order);
@@ -106,20 +107,32 @@ class Checkout extends Component {
     this.inputChargeTo.input.focus();
   }
 
-  setFocusOnAddress = () => {
-    if (!this.inputAddress) return;
-    this.inputAddress.setFocus();
+  setFocusOnPhonenumber = () => {
+    if (!this.inputPhonenumber || !this.inputPhonenumber.input) return;
+    this.inputPhonenumber.input.focus();
   }
 
   render() {
     return (
       <div className='section'>
+         <Input
+          id='phonenumber'
+          name='phonenumber'
+          autoFocus
+          ref={(el) => this.inputPhonenumber = el}
+          placeholder='...'
+          s={12}
+          type="number"
+          label={<Trans id='checkout.phonenumber'>Phonenumber</Trans>}
+          value={this.state.phonenumber}
+          onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>phone</Icon>
+        </Input>
+
         <AutocompleteCustom
           id='address'
           title={<Trans id='checkout.address'>Address</Trans>}
           placeholder='...'
           className='address'
-          autoFocus
           required
           validate
           lazyData={this.lazyAddressSearch}
@@ -144,8 +157,6 @@ class Checkout extends Component {
         <Cart onProductsChange={this.onProductsChange} ref={(el) => this.cartComponent = el}>
           <Card
             id='total_amount'
-            className='blue-grey darken-1 z-depth-3'
-            textClassName='white-text'
             title={getValueFormatted(this.state.total_amount)}>
             {<Trans id='checkout.total'>Total</Trans>}
           </Card>

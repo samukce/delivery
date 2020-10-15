@@ -11,5 +11,5 @@ export function handleInputChangeBind(setState, callback) {
 }
 
 export function getValueFormatted(value)  {
-    return `$${value.toLocaleString('en', { minimumFractionDigits: 2 })}`;
+    return `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 }
