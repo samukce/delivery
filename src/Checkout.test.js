@@ -17,12 +17,18 @@ describe('Checkout component load', () => {
 
 describe('Checkout place order', () => {
   let spyPlaceOrder, wrapper, sandbox, componentRender,
-    stubOrderRespositorySearchByAddress, stubOrderRespositorySave;
+    stubOrderRespositorySearchByAddress, stubSearchByPhone, stubOrderRespositorySave;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
 
-    stubOrderRespositorySearchByAddress = sandbox.stub(OrderRepository.prototype, 'searchBy').returns({});
+    stubOrderRespositorySearchByAddress = sandbox.stub(OrderRepository.prototype, 'searchByAddress').returns({});
+    stubSearchByPhone = sandbox.stub(OrderRepository.prototype, 'searchByPhone').returns({
+      phonenumber: '9988',
+      complement: '101 room',
+      notes: 'Fast delivery',
+    });
+
     stubOrderRespositorySave = sandbox.stub(OrderRepository.prototype, 'save');
 
     wrapper = shallow(<Checkout />);
@@ -98,7 +104,8 @@ describe('Checkout place order', () => {
   });
 
   it('should fill the phonenumber field', () => {
-    wrapper.find('#phonenumber').simulate('change', { target: { name: 'phonenumber', value: '988776655' } } );
+    wrapper.find('#phonenumber').shallow().find('input')
+      .simulate('change', { target: { name: 'phonenumber', value: '988776655' } } );
 
     expect(wrapper.state('phonenumber')).to.equal('988776655');
   });
@@ -264,6 +271,44 @@ describe('Checkout place order', () => {
     });
   });
 
+  describe('phonenumber search', () => {
+    it('should trigger lazy search', () => {
+      const spyLazyPhoneSearch = sandbox.spy(componentRender, 'lazyPhoneSearch');
+      componentRender.forceUpdate();
+
+      wrapper.find('#phonenumber').shallow().find('input')
+        .simulate('change', { target: { name: 'phonenumber', value: '9988' } } );
+
+      expect(spyLazyPhoneSearch).to.have.been.calledWith('9988');
+    });
+
+    it('should lazy phonenumber search using orderRepository', () => {
+      wrapper.find('#phonenumber').shallow().find('input')
+        .simulate('change', { target: { name: 'phonenumber', value: '9988' } } );
+
+      expect(stubSearchByPhone).to.have.been.calledWith('9988');
+    });
+    
+    it('should not search phonenumber ...', () => {
+      wrapper.find('#phonenumber').shallow().find('input')
+        .simulate('change', { target: { name: 'phonenumber', value: '998' } } );
+
+      expect(stubSearchByPhone).to.not.have.been.called;
+    });
+
+    it('should fill complement fields from the last order', () => {
+      wrapper.find('#phonenumber').simulate('autocomplete', { complement: '101 room' } );
+
+      expect(wrapper.state('complement')).to.equal('101 room');
+    });
+
+    it('should fill note field from the last order', () => {
+      wrapper.find('#phonenumber').simulate('autocomplete', { notes: 'Fast delivery' } );
+
+      expect(wrapper.state('notes')).to.equal('Fast delivery');
+    });
+  });
+
   describe('save order', () => {
     it('should save by order repository', () => {
       const order = {
@@ -308,21 +353,6 @@ describe('Checkout place order', () => {
       output.instance().buttonClickPlaceOrder();
 
       expect(document.activeElement.id).to.be.equal('phonenumber');
-    });
-
-    it('should start phonenumber field with default prefix', () => {
-      const output = mount(<Checkout />);
-      const order = {
-        address: 'address new',
-        phonenumber: '12311234',
-        products: [ { product_id: 1, description: '', value: 10, quantity: 1 } ],
-      };
-      output.setState(order);
-      output.instance().setFocusOnChargeTo();
-
-      output.instance().buttonClickPlaceOrder();
-
-      expect(document.activeElement.value.trim()).to.equal('+55 85');
     });
   });
 })

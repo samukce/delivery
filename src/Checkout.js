@@ -6,11 +6,9 @@ import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentU
 import AutocompleteCustom from './components/AutocompleteCustom'
 import OrderRepository from './repository/OrderRepository'
 import { Trans } from "@lingui/react"
-import InputMask from 'react-input-mask';
-import Col from 'react-materialize/lib/Col';
 
 
-const phoneNumberDefaultNumber = '+55 85' //TODO: take from settings or based on the orders
+const minPhoneNumberSize = 4
 
 class Checkout extends Component {
   static propTypes = {
@@ -28,7 +26,7 @@ class Checkout extends Component {
 
   getInitialState = () => {
     return {
-      phonenumber: phoneNumberDefaultNumber,
+      phonenumber: '',
       address: '',
       complement: '',
       notes: '',
@@ -88,6 +86,12 @@ class Checkout extends Component {
     });
   }
 
+  onChangePhonenumber = (evt, value) => {
+    this.setState({
+      phonenumber: value
+    });
+  }
+
   calculateTotalAmount = (products) => {
     const total_amount = products.reduce((total, prod) => total +  (prod.value * prod.quantity), 0);
 
@@ -101,8 +105,20 @@ class Checkout extends Component {
     this.setState( { change_difference: change_difference > 0 ? change_difference : null });
   }
 
-  lazyAddressSearch = (addressSearch) => {
-    return this.props.orderRepository.searchBy(addressSearch);
+  lazyAddressSearch = (address) => {
+    return this.props.orderRepository.searchByAddress(address);
+  }
+
+  lazyPhoneSearch = (phonenumber) => {
+    if (!phonenumber) {
+        return [];
+    }
+    
+    let phone_only_digits = phonenumber.replace(/^\D+/g, '').replace(/\s/g, '');
+    if (phone_only_digits.length >= minPhoneNumberSize) {
+      return this.props.orderRepository.searchByPhone(phone_only_digits);
+    }
+    return [];
   }
 
   handleOnAutocompleteAddress = (order) => {
@@ -115,35 +131,26 @@ class Checkout extends Component {
 
   setFocusOnPhonenumber = () => {
     if (!this.inputPhonenumber) return;
-    this.inputPhonenumber.focus();
-  }
-
-  onChangePhonenumber = (event) => {
-    this.setState({
-      phonenumber: event.target.value
-    });
+    this.inputPhonenumber.setFocus();
   }
 
   render() {
     return (
       <div className='section'>
-        <Row>
-          <Col s={1}><Icon small>phone</Icon></Col>
-          <Col s={11}>
-            <InputMask
-              id='phonenumber'
-              name='phonenumber'
-              mask="+55 99 9 9999 9999"
-              maskChar=" "
-              label='Telefone'  //TODO: Resolve i18n
-              placeholder='Telefone'
-              value={this.state.phonenumber}
-              autoFocus
-              onChange={this.onChangePhonenumber}
-              inputRef={(el) => this.inputPhonenumber = el}
-            />
-          </Col>
-        </Row>
+        <AutocompleteCustom
+          id='phonenumber'
+          title={<Trans id='checkout.phonenumber'>Phone number</Trans>}
+          placeholder='...'
+          autoFocus
+          className='phonenumber'
+          lazyData={this.lazyPhoneSearch}
+          onAutocomplete={this.handleOnAutocompleteAddress}
+          value={this.state.phonenumber}
+          onChange={this.onChangePhonenumber}
+          s={12}
+          icon='phone'
+          ref={(el) => this.inputPhonenumber = el}
+          iconClassName='prefix' />
 
         <AutocompleteCustom
           id='address'
