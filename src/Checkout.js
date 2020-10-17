@@ -92,6 +92,14 @@ class Checkout extends Component {
     });
   }
 
+  onKeyPressOnlyNumber = (event) => {
+    const keyCode = event.keyCode || event.which;
+    const keyValue = String.fromCharCode(keyCode);
+    if (!/^\d+$/.test(keyValue)){
+      event.preventDefault();
+    }
+  }
+
   calculateTotalAmount = (products) => {
     const total_amount = products.reduce((total, prod) => total +  (prod.value * prod.quantity), 0);
 
@@ -150,7 +158,9 @@ class Checkout extends Component {
           s={12}
           icon='phone'
           ref={(el) => this.inputPhonenumber = el}
-          iconClassName='prefix' />
+          iconClassName='prefix'
+          onKeyPressCustom={this.onKeyPressOnlyNumber}
+          />
 
         <AutocompleteCustom
           id='address'

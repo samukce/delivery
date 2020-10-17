@@ -21,6 +21,7 @@ class AutocompleteCustom extends Component {
     this.renderDropdown = this.renderDropdown.bind(this);
     this._onChange = this._onChange.bind(this);
     this._onKeyDown = this._onKeyDown.bind(this);
+    this._onKeyPress = this._onKeyPress.bind(this);
     this._onFocus = this._onFocus.bind(this);
     this._onBlur = this._onBlur.bind(this);
   }
@@ -85,6 +86,13 @@ class AutocompleteCustom extends Component {
         })}
       </ul>
     );
+  }
+
+  _onKeyPress(event) {
+    const { onKeyPressCustom } = this.props;
+    if (onKeyPressCustom) {
+      onKeyPressCustom(event);
+    }
   }
 
   _onChange(evt) {
@@ -214,6 +222,7 @@ class AutocompleteCustom extends Component {
       value,
       onChange,
       onAutocomplete,
+      onKeyPressCustom,
       ...props
     } = this.props;
 
@@ -240,6 +249,7 @@ class AutocompleteCustom extends Component {
           id={_id}
           onChange={this._onChange}
           onKeyDown={this._onKeyDown}
+          onKeyPress={this._onKeyPress}
           onFocus={expandOnFocus && this._onFocus}
           onBlur={expandOnFocus && this._onBlur}
           type="text"
@@ -298,6 +308,8 @@ AutocompleteCustom.propTypes = {
    * Function signature: (event, value) => ()
    */
   onChange: PropTypes.func,
+  
+  onKeyPressCustom: PropTypes.func,
   /**
    * Called when auto-completed item is selected.
    * Function signature: (value) => ()
