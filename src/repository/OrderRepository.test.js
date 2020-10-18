@@ -9,6 +9,36 @@ describe('OrderRepository', () => {
 
       orderRepository = new OrderRepository(dbTest);
     });
+
+    describe('save order', () => {
+      it('should save order', () => {
+        orderRepository.save({ address: '101 St.'});
+
+        expect(dbTest.get(entity).size().value()).to.be.equal(1);
+      });
+
+      it('should not save null order', () => {
+        orderRepository.save(null);
+
+        expect(dbTest.get(entity).size().value()).to.be.equal(0);
+      });
+
+      it('should set id when save order', () => {
+        orderRepository.save({ address: '1022 St.'});
+
+        const order = dbTest.get(entity).find({ address: '1022 St.' }).value();
+
+        expect(order.id).to.not.be.empty;
+      });
+
+      it('should set created date when save order', () => {
+        orderRepository.save({ address: '1022 St.'});
+
+        const order = dbTest.get(entity).find({ address: '1022 St.' }).value();
+
+        expect(order.created).to.not.be.empty;
+      });
+    });
   
     describe('search by address', () => {
       it('should return empty object if empty address', () => {
@@ -95,36 +125,6 @@ describe('OrderRepository', () => {
         expect(orderRepository.searchByAddress('abc')).to.be.eql({
           'Abc St.': { id: 1, address: 'Abc St.', created: '2019-02-23T23:59:26.919Z'},
         });
-      });
-    });
-
-    describe('save order', () => {
-      it('should save order', () => {
-        orderRepository.save({ address: '101 St.'});
-
-        expect(dbTest.get(entity).size().value()).to.be.equal(1);
-      });
-
-      it('should not save null order', () => {
-        orderRepository.save(null);
-
-        expect(dbTest.get(entity).size().value()).to.be.equal(0);
-      });
-
-      it('should set id when save order', () => {
-        orderRepository.save({ address: '1022 St.'});
-
-        const order = dbTest.get(entity).find({ address: '1022 St.' }).value();
-
-        expect(order.id).to.not.be.empty;
-      });
-
-      it('should set created date when save order', () => {
-        orderRepository.save({ address: '1022 St.'});
-
-        const order = dbTest.get(entity).find({ address: '1022 St.' }).value();
-
-        expect(order.created).to.not.be.empty;
       });
     });
 });

@@ -7,7 +7,7 @@ class OrderRepository {
         this.db = db;
     }
 
-    searchByAddress(address, takeCount = 25) {
+    searchByAddress(address, takeCount = 5) {
         if (!address) return {};
 
         const orders = this.db.get(entity)
