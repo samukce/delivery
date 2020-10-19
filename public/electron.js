@@ -8,14 +8,16 @@ const isDev = require('electron-is-dev');
 let mainWindow;
 
 
-global.settings = { database_path: `${app.getPath('userData')}/db.json`};
+global.settings = { 
+  database_path: `${app.getPath('userData')}/db.json`,
+};
 
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
-    height: 800,
+    height: 750,
     minWidth: 900,
-    minHeight: 800,
+    minHeight: 750,
     titleBarStyle: 'hidden'
   });
   mainWindow.loadURL(
@@ -24,6 +26,8 @@ function createWindow() {
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
   mainWindow.on('closed', () => (mainWindow = null));
+
+  mainWindow.maximize();
 }
 
 app.on('ready', createWindow);
