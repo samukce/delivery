@@ -127,4 +127,82 @@ describe('OrderRepository', () => {
         });
       });
     });
+
+    describe('search by phone number', () => {
+      it('should return empty object if empty number', () => {
+        expect(orderRepository.searchByPhone('')).to.be.empty;
+      });
+
+      it('should return empty object if null address', () => {
+        expect(orderRepository.searchByPhone(null)).to.be.empty;
+      });
+
+      it('should return object started by the number', () => {
+        dbTest.get(entity)
+            .push({ id: 1, phonenumber: '99887766' })
+            .write();
+
+        expect(orderRepository.searchByPhone('9988')).to.be.eql({
+          '99887766': { id: 1, phonenumber: '99887766'}
+        });
+      });
+
+      it('should return object ended by the number', () => {
+        dbTest.get(entity)
+            .push({ id: 1, phonenumber: '99887766' })
+            .write();
+
+        expect(orderRepository.searchByPhone('7766')).to.be.eql({
+          '99887766': { id: 1, phonenumber: '99887766'}
+        });
+      });
+
+      it('should return object with the middle number', () => {
+        dbTest.get(entity)
+            .push({ id: 1, phonenumber: '99887766' })
+            .write();
+
+        expect(orderRepository.searchByPhone('8877')).to.be.eql({
+          '99887766': { id: 1, phonenumber: '99887766'}
+        });
+      });
+
+      it('should return the first 2 numbers', () => {
+        dbTest.get(entity)
+            .push({ id: 1, phonenumber: '99887766' })
+            .push({ id: 2, phonenumber: '88776699' })
+            .push({ id: 3, phonenumber: '11221122' })
+            .write();
+
+        expect(orderRepository.searchByPhone('7766', 2)).to.be.eql({
+          '99887766': { id: 1, phonenumber: '99887766'},
+          '88776699': { id: 2, phonenumber: '88776699'}
+        });
+      });
+
+      it('should return sortBy address', () => {
+        dbTest.get(entity)
+            .push({ id: 1, phonenumber: '99887766' })
+            .push({ id: 2, phonenumber: '88776699' })
+            .push({ id: 3, phonenumber: '11887722' })
+            .write();
+
+        expect(orderRepository.searchByPhone('8877')).to.be.eql({
+          '11887722': { id: 3, phonenumber: '11887722'},
+          '88776699': { id: 2, phonenumber: '88776699'},
+          '99887766': { id: 1, phonenumber: '99887766'}
+        });
+      });
+
+      it('should group By created date desc', () => {
+        dbTest.get(entity)
+            .push({ id: 1, phonenumber: '99887766', created: '2019-02-23T23:59:26.919Z' })
+            .push({ id: 2, phonenumber: '99887766', created: '2019-02-23T23:50:26.919Z' })
+            .write();
+
+        expect(orderRepository.searchByPhone('998877')).to.be.eql({
+          '99887766': { id: 1, phonenumber: '99887766', created: '2019-02-23T23:59:26.919Z'},
+        });
+      });
+    });
 });

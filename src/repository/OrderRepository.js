@@ -27,8 +27,24 @@ class OrderRepository {
         return orders;
     }
 
-    searchByPhone(phone) {
-        return null;
+    searchByPhone(phonenumber, takeCount = 5) {
+        if (!phonenumber) return {};
+
+        const orders = this.db.get(entity)
+            .filter(order => {
+                const index = order.phonenumber.toUpperCase().indexOf(phonenumber.toUpperCase());
+                return index !== -1;
+            })
+            .sortBy('created')
+            .sortBy('phonenumber')
+            .take(takeCount)
+            .value()
+            .reduce(function(map, order) {
+                map[order.phonenumber] = order;
+                return map;
+            }, {});
+
+        return orders;
     }
 
     save(order) {

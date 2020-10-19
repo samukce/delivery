@@ -13,9 +13,9 @@ global.settings = { database_path: `${app.getPath('userData')}/db.json`};
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
-    height: 680,
+    height: 800,
     minWidth: 900,
-    minHeight: 680,
+    minHeight: 800,
     titleBarStyle: 'hidden'
   });
   mainWindow.loadURL(
