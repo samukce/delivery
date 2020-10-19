@@ -1,5 +1,6 @@
 const low = require('lowdb');
 const Memory = require('lowdb/adapters/Memory');
+const LocalStorage = require('lowdb/adapters/LocalStorage');
 const shortid = require('shortid');
 
 let ProdOrDevDatabase;
@@ -8,7 +9,7 @@ if (window && window.require){
     let remote = window.require('electron').remote;
     ProdOrDevDatabase = new FileSync(remote.getGlobal('settings').database_path)
 } else {
-    ProdOrDevDatabase = new Memory()
+    ProdOrDevDatabase = new LocalStorage('db.json')
 }
 
 export default class DbFactory {
