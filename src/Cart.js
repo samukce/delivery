@@ -15,7 +15,7 @@ class Cart extends Component {
   };
 
   static defaultProps = {
-    productRepository: ProductRepository
+    productRepository: new ProductRepository()
   }
 
   constructor(props) {
@@ -79,7 +79,7 @@ class Cart extends Component {
       product_id: this.state.add_product.id,
       description: this.state.add_product.description,
       value: this.state.add_product.value,
-      quantity: this.state.add_product_quantity || 1
+      quantity: this.state.add_product_quantity > 0 ? this.state.add_product_quantity : 1
     };
 
     this.setState({

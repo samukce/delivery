@@ -87,6 +87,16 @@ describe('Cart', () => {
         .to.eql([ { product_id: 1, description: 'Product 1', value: 3.5, quantity: 1 } ]);
     });
 
+    it('should quantity be 1 if the user set 0 value', () => {
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: '0' } } );
+
+      wrapper.find('#add-product-button').simulate('click');
+
+      expect(wrapper.state('products'))
+        .to.eql([ { product_id: 1, description: 'Product 1', value: 3.5, quantity: 1 } ]);
+    });
+
     it('should focus the quantity field after choose the product', () => {
       const focusQuantity = sandbox.stub(componentRender, 'focusQuantity');
 

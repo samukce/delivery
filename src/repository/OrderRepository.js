@@ -2,7 +2,7 @@ import DbFactory from './DbFactory';
 
 const entity = 'orders';
 
-class OrderRepository {
+export default class OrderRepository {
     constructor(db = DbFactory.dbAdapter()) {
         this.db = db;
     }
@@ -57,5 +57,3 @@ class OrderRepository {
             .write();
     }
 }
-
-export default OrderRepository;

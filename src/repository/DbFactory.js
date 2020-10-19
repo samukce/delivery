@@ -20,7 +20,7 @@ export default class DbFactory {
               : ProdOrDevDatabase
         )
 
-        db.defaults({ orders: [] })
+        db.defaults({ orders: [], products: DbFactory.initialProductsBeta() })
           .write();
 
         return db;
@@ -28,5 +28,18 @@ export default class DbFactory {
 
     static getNewId() {
         return shortid.generate();
+    }
+
+    static initialProductsBeta() { //TODO: initial load sync from server
+        return [
+            { id: 1, description: 'Naturágua', value: 11.00 },
+            { id: 2, description: 'Indaiá', value: 11.00 },
+            { id: 3, description: 'Neblina', value: 10.00 },
+            { id: 4, description: 'Pacoty', value: 9.00 },
+            { id: 5, description: 'Clareza', value: 5.00 },
+            { id: 6, description: 'Fortágua', value: 5.00 },
+            { id: 7, description: 'Serra Grande', value: 10.00 },
+            { id: 8, description: 'Acácia', value: 10.00 },
+        ]
     }
 }
