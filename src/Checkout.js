@@ -58,6 +58,7 @@ class Checkout extends Component {
 
     this.triggerCartClear();
     this.cartComponent.onCartLoad(products);
+    this.setFocusOnChargeTo();
   }
 
   placeOrder = () => {
@@ -70,8 +71,10 @@ class Checkout extends Component {
   }
 
   isValid = () => {
-    const { address, products } = this.state;
-    return address.length !== 0 && products.length !== 0
+    const { address, products, total_amount, change_to } = this.state;
+    const validChange = !change_to || (change_to > total_amount)
+
+    return address.length !== 0 && products.length !== 0 && validChange
   }
 
   onProductsChange = (products) => {
@@ -95,7 +98,8 @@ class Checkout extends Component {
   onKeyPressOnlyNumber = (event) => {
     const keyCode = event.keyCode || event.which;
     const keyValue = String.fromCharCode(keyCode);
-    if (!/^\d+$/.test(keyValue)){
+    const onlyNumbers = /^\d+$/;
+    if (!onlyNumbers.test(keyValue)){
       event.preventDefault();
     }
   }
@@ -122,7 +126,7 @@ class Checkout extends Component {
         return [];
     }
     
-    let phone_only_digits = phonenumber.replace(/^\D+/g, '').replace(/\s/g, '');
+    const phone_only_digits = phonenumber.replace(/^\D+/g, '').replace(/\s/g, '');
     if (phone_only_digits.length >= minPhoneNumberSize) {
       return this.props.orderRepository.searchByPhone(phone_only_digits);
     }

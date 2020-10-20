@@ -165,6 +165,19 @@ describe('Checkout place order', () => {
 
       expect(wrapper.state('change_difference')).to.equal(null);
     });
+
+    it('should not enable placeOrder button if less than total', () => {
+      wrapper.find('#address').shallow().find('input')
+        .simulate('change', { target: { name: 'address', value: '101 Street' } } );
+
+      componentRender.onProductsChange([
+        { product_id: 1, description: 'Water', value: 3.50, quantity: 1 }
+      ]);
+
+      wrapper.find('#change_to').simulate('change', { target: { name: 'change_to', value: 3.0 } } );
+
+      expect(wrapper.find('#place-order-button').props().disabled).to.be.true;
+    });
   });
 
   describe('clear button', () => {
@@ -268,6 +281,14 @@ describe('Checkout place order', () => {
 
       expect(spyCartClear).to.have.been.called;
       expect(spyCartLoad).to.have.been.calledWith([]);
+    });
+
+    it('should focus change field when search complete', () => {
+      const checkout = TestUtils.renderIntoDocument(<Checkout />);
+
+      checkout.handleOnAutocompleteAddress({ products: [] });
+
+      expect(document.activeElement.id).to.be.equal('change_to');
     });
   });
 
