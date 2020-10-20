@@ -40,7 +40,7 @@ export default class OrderRepository {
             .take(takeCount)
             .value()
             .reduce(function(map, order) {
-                map[order.phonenumber] = order;
+                map[`${order.phonenumber} / ${order.address}`] = order;
                 return map;
             }, {});
 

@@ -139,69 +139,81 @@ describe('OrderRepository', () => {
 
       it('should return object started by the number', () => {
         dbTest.get(entity)
-            .push({ id: 1, phonenumber: '99887766' })
+            .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.' })
             .write();
 
         expect(orderRepository.searchByPhone('9988')).to.be.eql({
-          '99887766': { id: 1, phonenumber: '99887766'}
+          '99887766 / 101 Abc St.': { id: 1, phonenumber: '99887766', address: '101 Abc St.'}
         });
       });
 
       it('should return object ended by the number', () => {
         dbTest.get(entity)
-            .push({ id: 1, phonenumber: '99887766' })
+            .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.'})
             .write();
 
         expect(orderRepository.searchByPhone('7766')).to.be.eql({
-          '99887766': { id: 1, phonenumber: '99887766'}
+          '99887766 / 101 Abc St.': { id: 1, phonenumber: '99887766', address: '101 Abc St.'}
         });
       });
 
       it('should return object with the middle number', () => {
         dbTest.get(entity)
-            .push({ id: 1, phonenumber: '99887766' })
+            .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.' })
             .write();
 
         expect(orderRepository.searchByPhone('8877')).to.be.eql({
-          '99887766': { id: 1, phonenumber: '99887766'}
+          '99887766 / 101 Abc St.': { id: 1, phonenumber: '99887766', address: '101 Abc St.'}
         });
       });
 
       it('should return the first 2 numbers', () => {
         dbTest.get(entity)
-            .push({ id: 1, phonenumber: '99887766' })
-            .push({ id: 2, phonenumber: '88776699' })
-            .push({ id: 3, phonenumber: '11221122' })
+            .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.' })
+            .push({ id: 2, phonenumber: '88776699', address: '101 Abc St.' })
+            .push({ id: 3, phonenumber: '11221122', address: '101 Abc St.' })
             .write();
 
         expect(orderRepository.searchByPhone('7766', 2)).to.be.eql({
-          '99887766': { id: 1, phonenumber: '99887766'},
-          '88776699': { id: 2, phonenumber: '88776699'}
+          '99887766 / 101 Abc St.': { id: 1, phonenumber: '99887766', address: '101 Abc St.'},
+          '88776699 / 101 Abc St.': { id: 2, phonenumber: '88776699', address: '101 Abc St.'}
         });
       });
 
-      it('should return sortBy address', () => {
+      it('should return sortBy phonenumber', () => {
         dbTest.get(entity)
-            .push({ id: 1, phonenumber: '99887766' })
-            .push({ id: 2, phonenumber: '88776699' })
-            .push({ id: 3, phonenumber: '11887722' })
+            .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.' })
+            .push({ id: 2, phonenumber: '88776699', address: '101 Abc St.' })
+            .push({ id: 3, phonenumber: '11887722', address: '101 Abc St.' })
             .write();
 
         expect(orderRepository.searchByPhone('8877')).to.be.eql({
-          '11887722': { id: 3, phonenumber: '11887722'},
-          '88776699': { id: 2, phonenumber: '88776699'},
-          '99887766': { id: 1, phonenumber: '99887766'}
+          '11887722 / 101 Abc St.': { id: 3, phonenumber: '11887722', address: '101 Abc St.'},
+          '88776699 / 101 Abc St.': { id: 2, phonenumber: '88776699', address: '101 Abc St.'},
+          '99887766 / 101 Abc St.': { id: 1, phonenumber: '99887766', address: '101 Abc St.'}
         });
       });
 
-      it('should group By created date desc', () => {
+      it('should group By phonenuymber and address', () => {
         dbTest.get(entity)
-            .push({ id: 1, phonenumber: '99887766', created: '2019-02-23T23:59:26.919Z' })
-            .push({ id: 2, phonenumber: '99887766', created: '2019-02-23T23:50:26.919Z' })
+            .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.', created: '2019-02-23T23:59:26.919Z' })
+            .push({ id: 2, phonenumber: '99887766', address: '200 Def St.', created: '2019-02-23T23:50:26.919Z' })
             .write();
 
         expect(orderRepository.searchByPhone('998877')).to.be.eql({
-          '99887766': { id: 1, phonenumber: '99887766', created: '2019-02-23T23:59:26.919Z'},
+          '99887766 / 101 Abc St.': { id: 1, phonenumber: '99887766', address: '101 Abc St.', created: '2019-02-23T23:59:26.919Z'},
+          '99887766 / 200 Def St.': { id: 2, phonenumber: '99887766', address: '200 Def St.', created: '2019-02-23T23:50:26.919Z'},
+        });
+      });
+
+      it('should group By phonenumber and address and take the lastest', () => {
+        dbTest.get(entity)
+            .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.', created: '2019-02-23T23:59:26.919Z' })
+            .push({ id: 2, phonenumber: '99887766', address: '101 Abc St.', created: '2019-02-23T23:50:26.919Z' })
+            .write();
+
+        expect(orderRepository.searchByPhone('998877')).to.be.eql({
+          '99887766 / 101 Abc St.': { id: 1, phonenumber: '99887766', address: '101 Abc St.', created: '2019-02-23T23:59:26.919Z'},
         });
       });
     });
