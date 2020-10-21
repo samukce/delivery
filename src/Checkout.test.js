@@ -276,7 +276,7 @@ describe('Checkout place order', () => {
       const spyCartLoad= sandbox.stub(cart, 'onCartLoad');
 
       const prouductItem = [ {product_id: 1}];
-      checkout.handleOnAutocompleteAddress({ products: [ prouductItem ] });
+      checkout.handleOnAutocompleteLastOrderSearch({ products: [ prouductItem ] });
 
       expect(spyCartLoad).to.have.been.calledWith([ prouductItem ]);
     });
@@ -287,7 +287,7 @@ describe('Checkout place order', () => {
       const spyCartLoad= sandbox.stub(cart, 'onCartLoad');
       const spyCartClear= sandbox.spy(cart, 'onCartClear');
 
-      checkout.handleOnAutocompleteAddress({ products: [] });
+      checkout.handleOnAutocompleteLastOrderSearch({ products: [] });
 
       expect(spyCartClear).to.have.been.called;
       expect(spyCartLoad).to.have.been.calledWith([]);
@@ -296,7 +296,7 @@ describe('Checkout place order', () => {
     it('should focus change field when search complete', () => {
       const checkout = TestUtils.renderIntoDocument(<Checkout />);
 
-      checkout.handleOnAutocompleteAddress({ products: [] });
+      checkout.handleOnAutocompleteLastOrderSearch({ products: [] });
 
       expect(document.activeElement.id).to.be.equal('change_to');
     });

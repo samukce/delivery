@@ -134,7 +134,7 @@ class Checkout extends Component {
     return [];
   }
 
-  handleOnAutocompleteAddress = (order) => {
+  handleOnAutocompleteLastOrderSearch = (order) => {
     this.setState(order, this.triggerCartLoad(order));
   }
 
@@ -158,7 +158,7 @@ class Checkout extends Component {
           autoFocus
           className='phonenumber'
           lazyData={this.lazyPhoneSearch}
-          onAutocomplete={this.handleOnAutocompleteAddress}
+          onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
           value={this.state.phonenumber}
           onChange={this.onChangePhonenumber}
           propertyField='phonenumber'
@@ -177,7 +177,7 @@ class Checkout extends Component {
           required
           validate
           lazyData={this.lazyAddressSearch}
-          onAutocomplete={this.handleOnAutocompleteAddress}
+          onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
           value={this.state.address}
           onChange={this.onChangeAddress}
           s={12}
