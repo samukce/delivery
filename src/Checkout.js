@@ -159,6 +159,7 @@ class Checkout extends Component {
           onAutocomplete={this.handleOnAutocompleteAddress}
           value={this.state.phonenumber}
           onChange={this.onChangePhonenumber}
+          propertyField='phonenumber'
           s={12}
           icon='phone'
           ref={(el) => this.inputPhonenumber = el}

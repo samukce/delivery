@@ -185,12 +185,12 @@ class AutocompleteCustom extends Component {
   _allValue = () => Object.keys(this.state.data);
 
   _onAutocomplete(value, object, evt) {
-    const { onChange, onAutocomplete } = this.props;
+    const { onChange, onAutocomplete, propertyField } = this.props;
     if (onAutocomplete) {
       onAutocomplete(object ? object: value);
     }
     if (onChange) {
-      onChange(evt, value);
+      onChange(evt, object[propertyField] || value);
     }
 
     this.setState({ value, itemSelected: true, expandItems: false });
@@ -308,6 +308,8 @@ AutocompleteCustom.propTypes = {
    * Function signature: (event, value) => ()
    */
   onChange: PropTypes.func,
+
+  propertyField: PropTypes.string,
   
   onKeyPressCustom: PropTypes.func,
   /**
