@@ -81,6 +81,7 @@ class Checkout extends Component {
     this.setState({ products });
 
     this.calculateTotalAmount(products);
+    this.setFocusOnChargeTo();
   }
 
   onChangeAddress = (evt, value) => {
@@ -138,6 +139,7 @@ class Checkout extends Component {
   }
 
   setFocusOnChargeTo = () => {
+    if (!this.inputChargeTo) return;
     this.inputChargeTo.input.focus();
   }
 

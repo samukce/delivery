@@ -80,7 +80,7 @@ describe('Checkout place order', () => {
     expect(wrapper.find('#place-order-button').props().disabled).to.be.true;
   });
 
-  it('should enable placeOrder button if valid', () => {
+  it('should enable placeOrder button if has address and product', () => {
     wrapper.find('#address').shallow().find('input')
       .simulate('change', { target: { name: 'address', value: '101 Street' } } );
 
@@ -108,6 +108,16 @@ describe('Checkout place order', () => {
       .simulate('change', { target: { name: 'phonenumber', value: '988776655' } } );
 
     expect(wrapper.state('phonenumber')).to.equal('988776655');
+  });
+
+  it('should focus change field when choose product', () => {
+    const checkout = TestUtils.renderIntoDocument(<Checkout />);
+
+    checkout.onProductsChange([
+      { product_id: 1, description: 'Water', value: 3.50, quantity: 1 }
+    ]);
+
+    expect(document.activeElement.id).to.be.equal('change_to');
   });
 
   describe('calculate total order amount', () => {
