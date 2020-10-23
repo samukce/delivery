@@ -56,3 +56,13 @@ Simple application to cover orders made by the call to a small delivery company
 - Smart organize the delivery routes
 - Customer request order by Internet
 - To get the phone number by modem
+
+
+## Generating new version
+
+* yarn version
+* git push --tags
+
+Building local
+* export ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true
+* yarn release --mac --win

@@ -70,7 +70,7 @@
     "chai": "^4.2.0",
     "concurrently": "^4.1.0",
     "electron": "^4.0.1",
-    "electron-builder": "^20.38.5",
+    "electron-builder": "^22.9.1",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",
     "mocha": "^5.2.0",
