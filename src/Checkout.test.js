@@ -51,7 +51,7 @@ describe('Checkout place order', () => {
   it('should not continue if address is empty', () => {
     wrapper.find('#place-order-button').simulate('click');
 
-    expect(spyPlaceOrder).to.not.have.been.called;
+    expect(stubOrderRespositorySave).to.not.have.been.called;
   });
 
   it('should not continue if products is empty', () => {
@@ -60,7 +60,7 @@ describe('Checkout place order', () => {
 
     wrapper.find('#place-order-button').simulate('click');
 
-    expect(spyPlaceOrder).to.not.have.been.called;
+    expect(stubOrderRespositorySave).to.not.have.been.called;
   });
 
   it('should continue if address and products filled', () => {
@@ -118,6 +118,29 @@ describe('Checkout place order', () => {
     ]);
 
     expect(document.activeElement.id).to.be.equal('change_to');
+  });
+
+  it('should focus note field when enter in change field', () => {
+    const checkout = TestUtils.renderIntoDocument(<Checkout />);
+
+    checkout.setFocusOnChargeTo();
+
+    checkout.handleKeyDownChange({ key: 'Enter' });
+
+    expect(document.activeElement.id).to.be.equal('notes');
+  });
+
+  it('should place order when enter on notes field', () => {
+    wrapper.find('#address').shallow().find('input')
+      .simulate('change', { target: { name: 'address', value: '101 Street' } } );
+
+    componentRender.onProductsChange([
+        { product_id: 1, description: 'Water', value: 3.50, quantity: 2 }
+      ]);
+
+    componentRender.handleKeyDownNotes({ key: 'Enter' });
+
+    expect(spyPlaceOrder).to.have.been.called;
   });
 
   describe('calculate total order amount', () => {

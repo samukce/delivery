@@ -38,9 +38,7 @@ class Checkout extends Component {
   }
 
   buttonClickPlaceOrder = () => {
-    if (!this.isValid()) return;
     this.placeOrder();
-    this.clearAllFieds();
   }
 
   clearAllFieds = () => this.setState(this.getInitialState(), () => {
@@ -62,6 +60,12 @@ class Checkout extends Component {
   }
 
   placeOrder = () => {
+    if (!this.isValid()) return;
+    this.saveOrder();
+    this.clearAllFieds();
+  }
+
+  saveOrder = () => {
     const { phonenumber, address, complement, notes, change_to, products, total_amount } = this.state;
     const order = {
       phonenumber, address, complement, notes, change_to, products, total_amount
@@ -138,6 +142,18 @@ class Checkout extends Component {
     this.setState(order, this.triggerCartLoad(order));
   }
 
+  handleKeyDownChange = (event) => {
+    if (event.key === 'Enter') {
+      this.setFocusOnNotes();
+    }
+  }
+
+  handleKeyDownNotes = (event) => {
+    if (event.key === 'Enter') {
+      this.placeOrder();
+    }
+  }
+
   setFocusOnChargeTo = () => {
     if (!this.inputChargeTo) return;
     this.inputChargeTo.input.focus();
@@ -146,6 +162,11 @@ class Checkout extends Component {
   setFocusOnPhonenumber = () => {
     if (!this.inputPhonenumber) return;
     this.inputPhonenumber.setFocus();
+  }
+
+  setFocusOnNotes = () => {
+    if (!this.inputNotes) return;
+    this.inputNotes.input.focus();
   }
 
   render() {
@@ -213,6 +234,7 @@ class Checkout extends Component {
             step='0.01'
             validate
             ref={(el) => this.inputChargeTo = el}
+            onKeyDown={this.handleKeyDownChange}
             onChange={handleInputChangeBind(this.setState.bind(this), this.updateChangeDifference)}><Icon>attach_money</Icon></Input>
         </Cart>
 
@@ -223,6 +245,8 @@ class Checkout extends Component {
           label={<Trans id='checkout.notes'>Notes</Trans>}
           placeholder='...'
           value={this.state.notes}
+          ref={(el) => this.inputNotes = el}
+          onKeyDown={this.handleKeyDownNotes}
           onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>speaker_notes</Icon></Input>
 
         <Row>
