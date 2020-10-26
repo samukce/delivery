@@ -1,0 +1,273 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import 'materialize-css';
+import { TextInput, Row, Icon, Button, Card } from 'react-materialize';
+import Cart from './Cart'
+import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentUtils'
+import AutocompleteCustom from './components/AutocompleteCustom'
+import OrderRepository from './repository/OrderRepository'
+import { Trans } from "@lingui/react"
+
+
+const minPhoneNumberSize = 4
+
+class Checkout extends Component {
+  static propTypes = {
+    orderRepository: PropTypes.any.isRequired
+  };
+
+  static defaultProps = {
+    orderRepository: new OrderRepository()
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = this.getInitialState();
+  }
+
+  getInitialState = () => {
+    return {
+      phonenumber: '',
+      address: '',
+      complement: '',
+      notes: '',
+      change_to: '',
+      product_display_description: '',
+      products: [],
+      total_amount: 0,
+    }
+  }
+
+  buttonClickPlaceOrder = () => {
+    this.placeOrder();
+  }
+
+  clearAllFieds = () => this.setState(this.getInitialState(), () => {
+    this.triggerCartClear();
+    this.setFocusOnPhonenumber();
+  });
+
+  triggerCartClear = () => {
+    if (!this.cartComponent) return;
+    this.cartComponent.onCartClear();
+  }
+
+  triggerCartLoad = ({ products }) => {
+    if (!this.cartComponent) return;
+
+    this.triggerCartClear();
+    this.cartComponent.onCartLoad(products);
+    this.setFocusOnChargeTo();
+  }
+
+  placeOrder = () => {
+    if (!this.isValid()) return;
+    this.saveOrder();
+    this.clearAllFieds();
+  }
+
+  saveOrder = () => {
+    const { phonenumber, address, complement, notes, change_to, products, total_amount } = this.state;
+    const order = {
+      phonenumber, address, complement, notes, change_to, products, total_amount
+    }
+
+    this.props.orderRepository.save(order);
+  }
+
+  isValid = () => {
+    const { address, products, total_amount, change_to } = this.state;
+    const validChange = !change_to || (change_to > total_amount)
+
+    return address.length !== 0 && products.length !== 0 && validChange
+  }
+
+  onProductsChange = (products) => {
+    this.setState({ products });
+
+    this.calculateTotalAmount(products);
+    this.setFocusOnChargeTo();
+  }
+
+  onChangeAddress = (evt, value) => {
+    this.setState({
+      address: value
+    });
+  }
+
+  onChangePhonenumber = (evt, value) => {
+    this.setState({
+      phonenumber: value
+    });
+  }
+
+  onKeyPressOnlyNumber = (event) => {
+    const keyCode = event.keyCode || event.which;
+    const keyValue = String.fromCharCode(keyCode);
+    const onlyNumbers = /^\d+$/;
+    if (!onlyNumbers.test(keyValue)){
+      event.preventDefault();
+    }
+  }
+
+  calculateTotalAmount = (products) => {
+    const total_amount = products.reduce((total, prod) => total +  (prod.value * prod.quantity), 0);
+
+    this.setState({ total_amount });
+  }
+
+  updateChangeDifference = () => {
+    const { total_amount, change_to } = this.state;
+    const change_difference = change_to - total_amount;
+
+    this.setState( { change_difference: change_difference > 0 ? change_difference : null });
+  }
+
+  lazyAddressSearch = (address) => {
+    return this.props.orderRepository.searchByAddress(address);
+  }
+
+  lazyPhoneSearch = (phonenumber) => {
+    if (!phonenumber) {
+        return [];
+    }
+
+    const phone_only_digits = phonenumber.replace(/^\D+/g, '').replace(/\s/g, '');
+    if (phone_only_digits.length >= minPhoneNumberSize) {
+      return this.props.orderRepository.searchByPhone(phone_only_digits);
+    }
+    return [];
+  }
+
+  handleOnAutocompleteLastOrderSearch = (order) => {
+    this.setState(order, this.triggerCartLoad(order));
+  }
+
+  handleKeyDownChange = (event) => {
+    if (event.key === 'Enter') {
+      this.setFocusOnNotes();
+    }
+  }
+
+  handleKeyDownNotes = (event) => {
+    if (event.key === 'Enter') {
+      this.placeOrder();
+    }
+  }
+
+  setFocusOnChargeTo = () => {
+    if (!this.inputChargeTo) return;
+    this.inputChargeTo.focus();
+  }
+
+  setFocusOnPhonenumber = () => {
+    if (!this.inputPhonenumber) return;
+    this.inputPhonenumber.setFocus();
+  }
+
+  setFocusOnNotes = () => {
+    if (!this.inputNotes) return;
+    this.inputNotes.focus();
+  }
+
+  render() {
+    return (
+      <div className='section'>
+        <AutocompleteCustom
+          id='phonenumber'
+          title={<Trans id='checkout.phonenumber'>Phone number</Trans>}
+          placeholder='...'
+          autoFocus
+          className='phonenumber'
+          lazyData={this.lazyPhoneSearch}
+          onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
+          value={this.state.phonenumber}
+          onChange={this.onChangePhonenumber}
+          propertyField='phonenumber'
+          s={12}
+          icon='phone'
+          ref={(el) => this.inputPhonenumber = el}
+          iconClassName='prefix'
+          onKeyPressCustom={this.onKeyPressOnlyNumber}
+          />
+
+        <AutocompleteCustom
+          id='address'
+          title={<Trans id='checkout.address'>Address</Trans>}
+          placeholder='...'
+          className='address'
+          required
+          validate
+          lazyData={this.lazyAddressSearch}
+          onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
+          value={this.state.address}
+          onChange={this.onChangeAddress}
+          s={12}
+          icon='home'
+          ref={(el) => this.inputAddress = el}
+          iconClassName='prefix' />
+
+        <TextInput
+          id='complement'
+          name='complement'
+          placeholder='...'
+          s={12}
+          label='Complemento'
+          value={this.state.complement}
+          onChange={handleInputChangeBind(this.setState.bind(this))}
+          icon='rate_review' />
+
+        <Cart onProductsChange={this.onProductsChange} ref={(el) => this.cartComponent = el}>
+          <Card
+            id='total_amount'
+            title={getValueFormatted(this.state.total_amount)}>
+            {<Trans id='checkout.total'>Total</Trans>}
+          </Card>
+          <TextInput
+            id='change_to'
+            name='change_to'
+            label='Troco para'
+            s={12}
+            type='number'
+            value={this.state.change_to}
+            min={this.state.total_amount + 0.01}
+            step='0.01'
+            validate
+            ref={(el) => this.inputChargeTo = el}
+            onKeyDown={this.handleKeyDownChange}
+            onChange={handleInputChangeBind(this.setState.bind(this), this.updateChangeDifference)}
+            icon='attach_money'
+            />
+        </Cart>
+
+        <TextInput
+          id='notes'
+          s={12}
+          name='notes'
+          label='Observações'
+          value={this.state.notes}
+          ref={(el) => this.inputNotes = el}
+          onKeyDown={this.handleKeyDownNotes}
+          onChange={handleInputChangeBind(this.setState.bind(this))}
+          icon='speaker_notes'
+          />
+
+        <Row>
+          <Button
+            id='clear-button'
+            onClick={this.clearAllFieds}
+            className='col s12 m2 grey clear-button'>{<Trans id='checkout.clean'>Clean</Trans>}<Icon left>clear_all</Icon>
+          </Button>
+          <Button
+            id='place-order-button'
+            onClick={this.buttonClickPlaceOrder}
+            disabled={!this.isValid()}
+            className='col s12 m3 offset-m7'>{<Trans id='checkout.place_order'>Place Order</Trans>}<Icon left>motorcycle</Icon>
+          </Button>
+        </Row>
+      </div>
+    );
+  }
+}
+
+export default Checkout;

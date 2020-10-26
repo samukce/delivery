@@ -1,0 +1,33 @@
+{
+  "cart.add_a_product": {
+    "defaults": "Add a product...",
+    "origin": [["app/Cart.js", 112]]
+  },
+  "cart.product": {
+    "defaults": "Product",
+    "origin": [["app/Cart.js", 146]]
+  },
+  "cart.quantity": {
+    "defaults": "Quantity",
+    "origin": [
+      ["app/Cart.js", 161],
+      ["app/Cart.js", 181]
+    ]
+  },
+  "cart.add": {
+    "defaults": "Add",
+    "origin": [["app/Cart.js", 173]]
+  },
+  "cart.description": {
+    "defaults": "Description",
+    "origin": [["app/Cart.js", 179]]
+  },
+  "cart.item_price": {
+    "defaults": "Item Price",
+    "origin": [["app/Cart.js", 180]]
+  },
+  "cart.item_total": {
+    "defaults": "Item Total",
+    "origin": [["app/Cart.js", 182]]
+  }
+}

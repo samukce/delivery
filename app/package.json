@@ -1,0 +1,18 @@
+{
+    "name": "delivery",
+    "productName": "delivery",
+    "version": "0.1.6",
+    "description": "Simple Delivery system",
+    "main": "./main.prod.js",
+    "author": {
+      "name": "Samuel P.",
+      "email": "samuel.p.araujo@gmail.com",
+      "url": "https://github.com/samukce/delivery"
+    },
+    "scripts": {
+      "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",
+      "postinstall": "yarn electron-rebuild"
+    },
+    "license": "MIT",
+    "dependencies": {}
+  }

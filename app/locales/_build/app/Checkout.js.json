@@ -1,0 +1,34 @@
+{
+  "checkout.phonenumber": {
+    "defaults": "Phonenumber",
+    "origin": [["app/Checkout.js", 124]]
+  },
+  "checkout.address": {
+    "defaults": "Address",
+    "origin": [["app/Checkout.js", 131]]
+  },
+  "checkout.complement": {
+    "defaults": "Complement",
+    "origin": [["app/Checkout.js", 151]]
+  },
+  "checkout.total": {
+    "defaults": "Total",
+    "origin": [["app/Checkout.js", 162]]
+  },
+  "checkout.change_to": {
+    "defaults": "Change to",
+    "origin": [["app/Checkout.js", 167]]
+  },
+  "checkout.notes": {
+    "defaults": "Notes",
+    "origin": [["app/Checkout.js", 183]]
+  },
+  "checkout.clean": {
+    "defaults": "Clean",
+    "origin": [["app/Checkout.js", 192]]
+  },
+  "checkout.place_order": {
+    "defaults": "Place Order",
+    "origin": [["app/Checkout.js", 198]]
+  }
+}
