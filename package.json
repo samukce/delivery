@@ -63,6 +63,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@babel/runtime": "^7.12.1",
     "@babel/core": "^7.3.3",
     "@lingui/cli": "^2.7.4",
     "@lingui/macro": "^2.7.4",
