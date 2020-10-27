@@ -1,6 +1,6 @@
 {
   "name": "delivery",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "license": "UNLICENSED",
   "private": true,
   "author": {
@@ -64,12 +64,13 @@
   ],
   "devDependencies": {
     "@babel/core": "^7.3.3",
+    "@babel/runtime": "^7.12.1",
     "@lingui/cli": "^2.7.4",
     "@lingui/macro": "^2.7.4",
     "babel-core": "^7.0.0-bridge.0",
     "chai": "^4.2.0",
     "concurrently": "^4.1.0",
-    "electron": "^4.0.1",
+    "electron": "^10.1.5",
     "electron-builder": "^22.9.1",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",

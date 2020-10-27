@@ -1,4 +1,5 @@
 const electron = require('electron');
+const { Notification } = require('electron')
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
@@ -7,9 +8,9 @@ const isDev = require('electron-is-dev');
 
 let mainWindow;
 
-
+const local_database = `${app.getPath('userData')}/db.json`
 global.settings = { 
-  database_path: `${app.getPath('userData')}/db.json`,
+  database_path: local_database,
 };
 
 function createWindow() {
@@ -26,6 +27,12 @@ function createWindow() {
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
   mainWindow.on('closed', () => (mainWindow = null));
+
+  const notification = {
+    title: 'Database',
+    body: `Local database ${local_database}`
+  }
+  new Notification(notification).show()
 
   mainWindow.maximize();
 }
