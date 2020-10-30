@@ -8,8 +8,6 @@ import OrderRepository from './repository/OrderRepository'
 import { Trans } from "@lingui/react"
 
 
-const minPhoneNumberSize = 4
-
 class Checkout extends Component {
   static propTypes = {
     orderRepository: PropTypes.any.isRequired
@@ -132,10 +130,7 @@ class Checkout extends Component {
     }
     
     const phone_only_digits = phonenumber.replace(/^\D+/g, '').replace(/\s/g, '');
-    if (phone_only_digits.length >= minPhoneNumberSize) {
-      return this.props.orderRepository.searchByPhone(phone_only_digits);
-    }
-    return [];
+    return this.props.orderRepository.searchByPhone(phone_only_digits);
   }
 
   handleOnAutocompleteLastOrderSearch = (order) => {

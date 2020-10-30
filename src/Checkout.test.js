@@ -343,13 +343,6 @@ describe('Checkout place order', () => {
       expect(stubSearchByPhone).to.have.been.calledWith('9988');
     });
     
-    it('should not search phonenumber ...', () => {
-      wrapper.find('#phonenumber').shallow().find('input')
-        .simulate('change', { target: { name: 'phonenumber', value: '998' } } );
-
-      expect(stubSearchByPhone).to.not.have.been.called;
-    });
-
     it('should fill complement fields from the last order', () => {
       wrapper.find('#phonenumber').simulate('autocomplete', { complement: '101 room' } );
 
