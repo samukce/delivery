@@ -167,49 +167,53 @@ class Checkout extends Component {
   render() {
     return (
       <div className='section'>
+        <Row>
         <AutocompleteCustom
-          id='phonenumber'
-          title={<Trans id='checkout.phonenumber'>Phone number</Trans>}
-          placeholder='...'
-          autoFocus
-          className='phonenumber'
-          lazyData={this.lazyPhoneSearch}
-          onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
-          value={this.state.phonenumber}
-          onChange={this.onChangePhonenumber}
-          propertyField='phonenumber'
-          s={12}
-          icon='phone'
-          ref={(el) => this.inputPhonenumber = el}
-          iconClassName='prefix'
-          onKeyPressCustom={this.onKeyPressOnlyNumber}
-          />
+            id='phonenumber'
+            title={<Trans id='checkout.phonenumber'>Phone number</Trans>}
+            placeholder='...'
+            autoFocus
+            className='phonenumber'
+            lazyData={this.lazyPhoneSearch}
+            onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
+            value={this.state.phonenumber}
+            onChange={this.onChangePhonenumber}
+            propertyField='phonenumber'
+            s={12}
+            icon='phone'
+            ref={(el) => this.inputPhonenumber = el}
+            iconClassName='prefix'
+            onKeyPressCustom={this.onKeyPressOnlyNumber}
+            />
 
-        <AutocompleteCustom
-          id='address'
-          title={<Trans id='checkout.address'>Address</Trans>}
-          placeholder='...'
-          className='address'
-          required
-          validate
-          lazyData={this.lazyAddressSearch}
-          onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
-          value={this.state.address}
-          onChange={this.onChangeAddress}
-          s={12}
-          icon='home'
-          ref={(el) => this.inputAddress = el}
-          iconClassName='prefix' />
+          <AutocompleteCustom
+            id='address'
+            title={<Trans id='checkout.address'>Address</Trans>}
+            placeholder='...'
+            className='address'
+            required
+            validate
+            lazyData={this.lazyAddressSearch}
+            onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
+            value={this.state.address}
+            onChange={this.onChangeAddress}
+            s={12}
+            m={7}
+            icon='home'
+            ref={(el) => this.inputAddress = el}
+            iconClassName='prefix' />
 
-        <Input
-          id='complement'
-          name='complement'
-          placeholder='...'
-          s={12}
-          label={<Trans id='checkout.complement'>Complement</Trans>}
-          value={this.state.complement}
-          onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
-        </Input>
+          <Input
+            id='complement'
+            name='complement'
+            placeholder='...'
+            s={12}
+            m={5}
+            label={<Trans id='checkout.complement'>Complement</Trans>}
+            value={this.state.complement}
+            onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
+          </Input>
+        </Row>
 
         <Cart onProductsChange={this.onProductsChange} ref={(el) => this.cartComponent = el}>
           <Card
