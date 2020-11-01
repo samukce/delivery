@@ -8,6 +8,11 @@ import OrderRepository from './repository/OrderRepository'
 import { Trans } from "@lingui/react"
 
 
+let ipcRenderer;
+if (window && window.require){
+  ipcRenderer = window.require('electron').ipcRenderer
+} 
+
 class Checkout extends Component {
   static propTypes = {
     orderRepository: PropTypes.any.isRequired
@@ -70,6 +75,12 @@ class Checkout extends Component {
     }
 
     this.props.orderRepository.save(order);
+    this.sendToPrinter(order);
+  }
+
+  sendToPrinter = (order) => {
+    if (!ipcRenderer) return;
+    ipcRenderer.send('print-order', order)
   }
 
   isValid = () => {
