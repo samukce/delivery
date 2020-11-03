@@ -5,19 +5,11 @@ const BrowserWindow = electron.BrowserWindow;
 
 const path = require('path');
 const isDev = require('electron-is-dev');
-
-const ThermalPrinter = require("node-thermal-printer").printer;
-const PrinterTypes = require("node-thermal-printer").types;
-
 const {ipcMain} = require('electron')
 
+const print = require("./order-printer").print;
 ipcMain.on('print-order', (event, arg) => {
-  // event.sender.send('asynchronous-reply', 'pong')
-  const notification = {
-    title: 'Print',
-    body: `So ${JSON.stringify(arg)}`
-  }
-  new Notification(notification).show();
+  print(arg);
 })
 
 let mainWindow;
