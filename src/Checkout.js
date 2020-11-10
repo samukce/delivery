@@ -32,6 +32,7 @@ class Checkout extends Component {
       product_display_description: '',
       products: [],
       total_amount: 0,
+      credit_card_payment: false,
     }
   }
 
@@ -108,7 +109,7 @@ class Checkout extends Component {
   }
 
   calculateTotalAmount = (products) => {
-    const total_amount = products.reduce((total, prod) => total +  (prod.value * prod.quantity), 0);
+    const total_amount = products.reduce((total, prod) => total +  (prod.cash * prod.quantity), 0);
 
     this.setState({ total_amount });
   }
@@ -168,7 +169,7 @@ class Checkout extends Component {
     return (
       <div className='section'>
         <Row>
-        <AutocompleteCustom
+          <AutocompleteCustom
             id='phonenumber'
             title={<Trans id='checkout.phonenumber'>Phone number</Trans>}
             placeholder='...'
@@ -218,6 +219,14 @@ class Checkout extends Component {
         <Cart onProductsChange={this.onProductsChange} ref={(el) => this.cartComponent = el}>
           <Card
             id='total_amount'
+            actions={[
+              <a key="1" href="#" onClick={() => {this.setState({credit_card_payment: false})}}>
+                <Icon>attach_money</Icon>
+              </a>,
+              <a key="2" href="#" onClick={() => {this.setState({credit_card_payment: true})}}>
+                <Icon>credit_card</Icon>
+              </a>
+            ]}
             title={getValueFormatted(this.state.total_amount)}>
             {<Trans id='checkout.total'>Total</Trans>}
           </Card>
@@ -233,8 +242,11 @@ class Checkout extends Component {
             step='0.01'
             validate
             ref={(el) => this.inputChargeTo = el}
+            disabled={this.state.credit_card_payment}
             onKeyDown={this.handleKeyDownChange}
-            onChange={handleInputChangeBind(this.setState.bind(this), this.updateChangeDifference)}><Icon>attach_money</Icon></Input>
+            onChange={handleInputChangeBind(this.setState.bind(this), this.updateChangeDifference)}>
+            <Icon>attach_money</Icon>
+          </Input>
         </Cart>
 
         <Input

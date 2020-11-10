@@ -42,18 +42,18 @@ describe('Cart', () => {
     });
 
     it('should go with product and quantity selected', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
       wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
       wrapper.find('#add-product-button').simulate('click');
 
       expect(spyAddProduct).to.have.been.calledOnce;
       expect(wrapper.state('products'))
-        .to.eql([ { product_id: 1, description: 'Product 1', value: 3.5, quantity: 2 } ]);
+        .to.eql([ { product_id: 1, description: 'Product 1', cash: 3.5, card: 4.0, quantity: 2 } ]);
     });
 
     it('should reset product selected after added', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
 
       wrapper.find('#add-product-button').simulate('click');
 
@@ -61,7 +61,7 @@ describe('Cart', () => {
     });
 
     it('should add product selected by Enter', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
 
       componentRender.handleKeyDownQuantity({ key: 'Enter' });
 
@@ -69,7 +69,7 @@ describe('Cart', () => {
     });
 
     it('should return quantity product after added to be 1', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
       wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
       wrapper.find('#add-product-button').simulate('click');
@@ -78,35 +78,35 @@ describe('Cart', () => {
     });
 
     it('should quantity be 1 if the user delete value', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
       wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: '' } } );
 
       wrapper.find('#add-product-button').simulate('click');
 
       expect(wrapper.state('products'))
-        .to.eql([ { product_id: 1, description: 'Product 1', value: 3.5, quantity: 1 } ]);
+        .to.eql([ { product_id: 1, description: 'Product 1', cash: 3.5, card: 4.0, quantity: 1 } ]);
     });
 
     it('should quantity be 1 if the user set 0 value', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
       wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: '0' } } );
 
       wrapper.find('#add-product-button').simulate('click');
 
       expect(wrapper.state('products'))
-        .to.eql([ { product_id: 1, description: 'Product 1', value: 3.5, quantity: 1 } ]);
+        .to.eql([ { product_id: 1, description: 'Product 1', cash: 3.5, card: 4.0, quantity: 1 } ]);
     });
 
     it('should focus the quantity field after choose the product', () => {
       const focusQuantity = sandbox.stub(componentRender, 'focusQuantity');
 
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
 
       expect(focusQuantity).to.have.have.calledOnce;
     });
 
     it('should clear product field after added the product', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
 
       wrapper.find('#add-product-button').simulate('click');
 
@@ -120,10 +120,10 @@ describe('Cart', () => {
     });
 
     it('should add the product on the table', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
       wrapper.find('#add-product-button').simulate('click');
 
-      componentRender.handleOnAutocompleteProduct({ id: 2, description: 'Product 2', value: 4.0 });
+      componentRender.handleOnAutocompleteProduct({ id: 2, description: 'Product 2', cash: 4.0, card: 4.5 });
       wrapper.find('#add-product-button').simulate('click');
 
       expect(wrapper.find('Table').find('tbody').props().children.length)
@@ -131,7 +131,7 @@ describe('Cart', () => {
     });
 
     it('should add the description of product on the table', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
 
       wrapper.find('#add-product-button').simulate('click');
 
@@ -140,7 +140,7 @@ describe('Cart', () => {
     });
 
     it('should add the item price of product on the table', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
 
       wrapper.find('#add-product-button').simulate('click');
 
@@ -149,7 +149,7 @@ describe('Cart', () => {
     });
 
     it('should add the quantity of product on the table', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
 
       wrapper.find('#add-product-button').simulate('click');
 
@@ -158,7 +158,7 @@ describe('Cart', () => {
     });
 
     it('should calculate the total amount of the product on the table', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
       wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
       wrapper.find('#add-product-button').simulate('click');
@@ -168,7 +168,7 @@ describe('Cart', () => {
     });
 
     it('should fire on change product when add a product', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
       wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
       wrapper.find('#add-product-button').simulate('click');
@@ -179,7 +179,7 @@ describe('Cart', () => {
 
   describe('remove product', () => {
     it('should be empty after performed', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
       wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
       wrapper.find('#add-product-button').simulate('click');
@@ -189,7 +189,7 @@ describe('Cart', () => {
     });
 
     it('should fire on change product when remove a product', () => {
-      const products = [{ description: 'Product 1', product_id: 1, quantity: 2, value: 3.5 }];
+      const products = [{ description: 'Product 1', product_id: 1, quantity: 2, cash: 3.5, card: 4.0 }];
       wrapper.setState({ products });
 
       wrapper.find('#remove-product-0').simulate('click');
@@ -220,7 +220,7 @@ describe('Cart', () => {
     });
 
     it('should reset product table to empty', () => {
-      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', value: 3.5 });
+      componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
       wrapper.find('#add_product_quantity').simulate('change', { target: { name: 'add_product_quantity', value: 2 } } );
 
       wrapper.find('#add-product-button').simulate('click');
@@ -234,7 +234,7 @@ describe('Cart', () => {
 
   describe('load products', () => {
     it('should update the products state', () => {
-      const productAdded = { product_id: 1, description: 'Product 1', value: 3.5, quantity: 2 };
+      const productAdded = { product_id: 1, description: 'Product 1', cash: 3.5, card: 4.0, quantity: 2 };
 
       componentRender.onCartLoad([ productAdded ]);
 
@@ -242,7 +242,7 @@ describe('Cart', () => {
     });
 
     it('should fire on change product when add a product', () => {
-      const productAdded = { product_id: 1, description: 'Product 1', value: 3.5, quantity: 2 };
+      const productAdded = { product_id: 1, description: 'Product 1', cash: 3.5, card: 4.0, quantity: 2 };
 
       componentRender.onCartLoad([ productAdded ]);
 
@@ -253,8 +253,8 @@ describe('Cart', () => {
 
 function createStubProductRepository(sandbox) {
   const all = sandbox.stub().returns([
-    { id: 1, description: 'Product 1', value: 3.50 },
-    { id: 2, description: 'Product 2', value: 2.50 }
+    { id: 1, description: 'Product 1', cash: 3.5, card: 4.0 },
+    { id: 2, description: 'Product 2', cash: 2.5, card: 3.0 }
   ]);
   return {
     all: all

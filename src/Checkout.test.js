@@ -68,7 +68,7 @@ describe('Checkout place order', () => {
       .simulate('change', { target: { name: 'address', value: '101 Street' } } );
 
     componentRender.onProductsChange([
-        { product_id: 1, description: 'Water', value: 3.50, quantity: 2 }
+        { product_id: 1, description: 'Water', cash: 3.50, quantity: 2 }
       ]);
 
     wrapper.find('#place-order-button').simulate('click');
@@ -85,7 +85,7 @@ describe('Checkout place order', () => {
       .simulate('change', { target: { name: 'address', value: '101 Street' } } );
 
     componentRender.onProductsChange([
-        { product_id: 1, description: 'Water', value: 3.50, quantity: 2 }
+        { product_id: 1, description: 'Water', cash: 3.50, quantity: 2 }
       ]);
 
     expect(wrapper.find('#place-order-button').props().disabled).to.be.false;
@@ -114,7 +114,7 @@ describe('Checkout place order', () => {
     const checkout = TestUtils.renderIntoDocument(<Checkout />);
 
     checkout.onProductsChange([
-      { product_id: 1, description: 'Water', value: 3.50, quantity: 1 }
+      { product_id: 1, description: 'Water', cash: 3.50, quantity: 1 }
     ]);
 
     expect(document.activeElement.id).to.be.equal('change_to');
@@ -135,7 +135,7 @@ describe('Checkout place order', () => {
       .simulate('change', { target: { name: 'address', value: '101 Street' } } );
 
     componentRender.onProductsChange([
-        { product_id: 1, description: 'Water', value: 3.50, quantity: 2 }
+        { product_id: 1, description: 'Water', cash: 3.50, quantity: 2 }
       ]);
 
     componentRender.handleKeyDownNotes({ key: 'Enter' });
@@ -146,8 +146,8 @@ describe('Checkout place order', () => {
   describe('calculate total order amount', () => {
     it('should calculate', () => {
       componentRender.onProductsChange([
-        { product_id: 1, description: 'Water', value: 3.50, quantity: 2 },
-        { product_id: 2, description: 'Product', value: 4.00, quantity: 3 }
+        { product_id: 1, description: 'Water', cash: 3.50, quantity: 2 },
+        { product_id: 2, description: 'Product', cash: 4.00, quantity: 3 }
       ]);
 
       expect(wrapper.state('total_amount')).to.equal(19);
@@ -155,7 +155,7 @@ describe('Checkout place order', () => {
 
     it('should format', () => {
       componentRender.onProductsChange([
-        { product_id: 1, description: 'Water', value: 3.5, quantity: 2 },
+        { product_id: 1, description: 'Water', cash: 3.5, quantity: 2 },
       ]);
 
       expect(wrapper.find('#total_amount').props().title).to.equal('R$ 7.00');
@@ -165,7 +165,7 @@ describe('Checkout place order', () => {
   describe('calculate change to value', () => {
     it('should calculate', () => {
       componentRender.onProductsChange([
-        { product_id: 1, description: 'Water', value: 3.5, quantity: 2 },
+        { product_id: 1, description: 'Water', cash: 3.5, quantity: 2 },
       ]);
       wrapper.find('#change_to').simulate('change', { target: { name: 'change_to', value: 20 } } );
 
@@ -174,7 +174,7 @@ describe('Checkout place order', () => {
 
     it('should be empty if less then total amount', () => {
       componentRender.onProductsChange([
-        { product_id: 1, description: 'Water', value: 3.5, quantity: 2 },
+        { product_id: 1, description: 'Water', cash: 3.5, quantity: 2 },
       ]);
       wrapper.find('#change_to').simulate('change', { target: { name: 'change_to', value: 6.0 } } );
 
@@ -183,7 +183,7 @@ describe('Checkout place order', () => {
 
     it('should be empty if equal to the total amount', () => {
       componentRender.onProductsChange([
-        { product_id: 1, description: 'Water', value: 3.5, quantity: 2 },
+        { product_id: 1, description: 'Water', cash: 3.5, quantity: 2 },
       ]);
       wrapper.find('#change_to').simulate('change', { target: { name: 'change_to', value: 7.0 } } );
 
@@ -192,7 +192,7 @@ describe('Checkout place order', () => {
 
     it('should be empty if non numeric', () => {
       componentRender.onProductsChange([
-        { product_id: 1, description: 'Water', value: 3.5, quantity: 2 },
+        { product_id: 1, description: 'Water', cash: 3.5, quantity: 2 },
       ]);
       wrapper.find('#change_to').simulate('change', { target: { name: 'change_to', value: 'non numeric' } } );
 
@@ -204,7 +204,7 @@ describe('Checkout place order', () => {
         .simulate('change', { target: { name: 'address', value: '101 Street' } } );
 
       componentRender.onProductsChange([
-        { product_id: 1, description: 'Water', value: 3.50, quantity: 1 }
+        { product_id: 1, description: 'Water', cash: 3.50, quantity: 1 }
       ]);
 
       wrapper.find('#change_to').simulate('change', { target: { name: 'change_to', value: 3.0 } } );
@@ -364,7 +364,7 @@ describe('Checkout place order', () => {
         notes: 'notes..',
         phonenumber: '998887766',
         change_to: 100,
-        products: [ { product_id: 1, description: '', value: 10, quantity: 1 } ],
+        products: [ { product_id: 1, description: '', cash: 10, quantity: 1 } ],
         total_amount: 10
       };
       wrapper.setState(order);

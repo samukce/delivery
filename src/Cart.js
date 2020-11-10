@@ -78,7 +78,8 @@ class Cart extends Component {
     const product = {
       product_id: this.state.add_product.id,
       description: this.state.add_product.description,
-      value: this.state.add_product.value,
+      cash: this.state.add_product.cash,
+      card: this.state.add_product.card,
       quantity: this.state.add_product_quantity > 0 ? this.state.add_product_quantity : 1
     };
 
@@ -107,7 +108,7 @@ class Cart extends Component {
 
   convertProductsToAutocompleteMap = (arr) => {
     return arr.reduce(function(map, obj) {
-      const productDisplay = `${obj.description} (R$ ${obj.value})`
+      const productDisplay = `${obj.description} (R$ ${obj.cash})`
       map[productDisplay] = obj;
       return map;
     }, {});
@@ -128,9 +129,9 @@ class Cart extends Component {
         (
           <tr key={i}>
             <td>{product.description}</td>
-            <td className='center-align'>{getValueFormatted(product.value)}</td>
+            <td className='center-align'>{getValueFormatted(product.cash)}</td>
             <td className='center-align'>{product.quantity}</td>
-            <td className='center-align'>{getValueFormatted(product.quantity * product.value)}</td>
+            <td className='center-align'>{getValueFormatted(product.quantity * product.cash)}</td>
             <td>
               <a
                 id={`remove-product-${i}`}
