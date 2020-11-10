@@ -45,6 +45,22 @@ class Checkout extends Component {
     this.setFocusOnPhonenumber();
   });
 
+  buttonClickCashPayment = () => {
+    this.setState({credit_card_payment: false},
+      () => {
+        this.calculateTotalAmount(this.state.products);
+        this.setFocusOnChargeTo();
+      });
+  }
+
+  buttonClickCreditCardPayment = () => {
+    this.setState({credit_card_payment: true},
+      () => {
+        this.calculateTotalAmount(this.state.products);
+        this.setFocusOnNotes();
+      });
+  }
+
   triggerCartClear = () => {
     if (!this.cartComponent) return;
     this.cartComponent.onCartClear();
@@ -65,9 +81,9 @@ class Checkout extends Component {
   }
 
   saveOrder = () => {
-    const { phonenumber, address, complement, notes, change_to, products, total_amount } = this.state;
+    const { phonenumber, address, complement, notes, change_to, products, total_amount, credit_card_payment } = this.state;
     const order = {
-      phonenumber, address, complement, notes, change_to, products, total_amount
+      phonenumber, address, complement, notes, change_to, products, total_amount, credit_card_payment
     }
 
     this.props.orderRepository.save(order);
@@ -109,8 +125,13 @@ class Checkout extends Component {
   }
 
   calculateTotalAmount = (products) => {
-    const total_amount = products.reduce((total, prod) => total +  (prod.cash * prod.quantity), 0);
+    let total_amount = 0;
 
+    if (this.state.credit_card_payment) {
+      total_amount = products.reduce((total, prod) => total +  (prod.card * prod.quantity), 0);
+    } else {
+      total_amount = products.reduce((total, prod) => total +  (prod.cash * prod.quantity), 0);
+    }
     this.setState({ total_amount });
   }
 
@@ -220,33 +241,47 @@ class Checkout extends Component {
           <Card
             id='total_amount'
             actions={[
-              <a key="1" href="#" onClick={() => {this.setState({credit_card_payment: false})}}>
-                <Icon>attach_money</Icon>
-              </a>,
-              <a key="2" href="#" onClick={() => {this.setState({credit_card_payment: true})}}>
-                <Icon>credit_card</Icon>
-              </a>
+              <Row>
+                <Button
+                  id='cash-payment-button'
+                  onClick={this.buttonClickCashPayment}
+                  disabled={!this.state.credit_card_payment}
+                  className='col s12 m6 grey'>
+                  <Icon>attach_money</Icon>
+                </Button>
+                <Button
+                  id='card-payment-button'
+                  onClick={this.buttonClickCreditCardPayment}
+                  disabled={this.state.credit_card_payment}
+                  className='col s12 m6 grey'>
+                  <Icon>credit_card</Icon>
+                </Button>
+              </Row>
             ]}
             title={getValueFormatted(this.state.total_amount)}>
             {<Trans id='checkout.total'>Total</Trans>}
           </Card>
-          <Input
-            id='change_to'
-            name='change_to'
-            label={<Trans id='checkout.change_to'>Change to</Trans>}
-            placeholder='...'
-            s={12}
-            type='number'
-            value={this.state.change_to}
-            min={this.state.total_amount + 0.01}
-            step='0.01'
-            validate
-            ref={(el) => this.inputChargeTo = el}
-            disabled={this.state.credit_card_payment}
-            onKeyDown={this.handleKeyDownChange}
-            onChange={handleInputChangeBind(this.setState.bind(this), this.updateChangeDifference)}>
-            <Icon>attach_money</Icon>
-          </Input>
+
+          { !this.state.credit_card_payment ? 
+            <Input
+              id='change_to'
+              name='change_to'
+              label={<Trans id='checkout.change_to'>Change to</Trans>}
+              placeholder='...'
+              s={12}
+              type='number'
+              value={this.state.change_to}
+              min={this.state.total_amount + 0.01}
+              step='0.01'
+              validate
+              ref={(el) => this.inputChargeTo = el}
+              disabled={this.state.credit_card_payment}
+              onKeyDown={this.handleKeyDownChange}
+              onChange={handleInputChangeBind(this.setState.bind(this), this.updateChangeDifference)}>
+              <Icon>attach_money</Icon>
+            </Input>
+          : null
+          }
         </Cart>
 
         <Input

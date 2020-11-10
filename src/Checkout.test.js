@@ -160,6 +160,17 @@ describe('Checkout place order', () => {
 
       expect(wrapper.find('#total_amount').props().title).to.equal('R$ 7.00');
     });
+
+    it('should calculate total by card', () => {
+      wrapper.setState({credit_card_payment: true});
+
+      componentRender.onProductsChange([
+        { product_id: 1, description: 'Water', cash: 3.50, card: 4.00, quantity: 2 },
+        { product_id: 2, description: 'Product', cash: 4.00, card: 4.50, quantity: 3 }
+      ]);
+
+      expect(wrapper.state('total_amount')).to.equal(21.50);
+    });
   });
 
   describe('calculate change to value', () => {
@@ -361,6 +372,7 @@ describe('Checkout place order', () => {
       const order = {
         address: 'address new',
         complement: '....',
+        credit_card_payment: false,
         notes: 'notes..',
         phonenumber: '998887766',
         change_to: 100,

@@ -13,60 +13,68 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/Cart.js:173
+#: src/Cart.js:187
 msgid "cart.add"
 msgstr "Adicionar"
 
-#: src/Cart.js:112
+#: src/Cart.js:123
 msgid "cart.add_a_product"
 msgstr "Adicionar um produto..."
 
-#: src/Cart.js:179
+#: src/Cart.js:193
 msgid "cart.description"
 msgstr "Descrição"
 
-#: src/Cart.js:180
+#: src/Cart.js:194
 msgid "cart.item_price"
 msgstr "Preço"
 
-#: src/Cart.js:182
+#: src/Cart.js:196
 msgid "cart.item_total"
 msgstr "Total"
 
-#: src/Cart.js:146
+#: src/Cart.js:157
 msgid "cart.product"
 msgstr "Produto"
 
-#: src/Cart.js:161
-#: src/Cart.js:181
+#: src/Cart.js:173
+#: src/Cart.js:195
 msgid "cart.quantity"
 msgstr "Quantidade"
 
-#: src/Checkout.js:131
+#: src/Checkout.js:192
 msgid "checkout.address"
 msgstr "Endereço"
 
-#: src/Checkout.js:167
+#: src/Checkout.js:235
+msgid "checkout.card"
+msgstr "Cartão"
+
+#: src/Checkout.js:229
+msgid "checkout.cash"
+msgstr "Dinheiro"
+
+#: src/Checkout.js:245
 msgid "checkout.change_to"
 msgstr "Troco para"
 
-#: src/Checkout.js:192
+#: src/Checkout.js:276
 msgid "checkout.clean"
 msgstr "Limpar"
 
-#: src/Checkout.js:151
+#: src/Checkout.js:213
 msgid "checkout.complement"
 msgstr "Complemento"
 
-#: src/Checkout.js:183
+#: src/Checkout.js:265
 msgid "checkout.notes"
 msgstr "Observações"
 
-#: src/Checkout.js:124
+#: src/Checkout.js:174
 msgid "checkout.phonenumber"
 msgstr "Telefone"
 
-#: src/Checkout.js:198
+#: src/Checkout.js:282
 msgid "checkout.place_order"
 msgstr "Finalizar"
 
@@ -74,6 +82,6 @@ msgstr "Finalizar"
 msgid "checkout.title"
 msgstr "Vendas"
 
-#: src/Checkout.js:162
+#: src/Checkout.js:240
 msgid "checkout.total"
 msgstr "Total"
