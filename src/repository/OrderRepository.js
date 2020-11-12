@@ -1,16 +1,17 @@
 import DbFactory from './DbFactory';
 
-const entity = 'orders';
 
 export default class OrderRepository {
     constructor(db = DbFactory.dbAdapter()) {
-        this.db = db;
+        this.order_collection = db.defaults({ orders: [] }).get('orders');
+        this.client_last_order_collection = db.defaults({ client_last_orders: [] })
+            .get('client_last_orders');
     }
 
     searchByAddress(address, takeCount = 5) {
         if (!address) return {};
 
-        const orders = this.db.get(entity)
+        const orders = this.order_collection
             .filter(order => {
                 const index = order.address.toUpperCase().indexOf(address.toUpperCase());
                 return index !== -1;
@@ -30,7 +31,7 @@ export default class OrderRepository {
     searchByPhone(phonenumber, takeCount = 5) {
         if (!phonenumber) return {};
 
-        const orders = this.db.get(entity)
+        const orders = this.order_collection
             .filter(order => {
                 const index = order.phonenumber.toUpperCase().indexOf(phonenumber.toUpperCase());
                 return index !== -1;
@@ -52,8 +53,27 @@ export default class OrderRepository {
 
         order.id = DbFactory.getNewId();
         order.created = new Date().toJSON();
-        this.db.get(entity)
+        this.order_collection
             .push(order)
             .write();
+
+        this._saveClientLastOrder(order);
+    }
+
+    _saveClientLastOrder(order) {
+        const last_orders =
+            this.client_last_order_collection
+                .updateWhere({ address: order.address }, { last_order_id: order.id })
+                .write();
+
+        if (!last_orders || last_orders.length === 0) {
+            this.client_last_order_collection
+                .push({
+                    id: DbFactory.getNewId(),
+                    last_order_id: order.id,
+                    address: order.address
+                })
+                .write();
+        }
     }
 }

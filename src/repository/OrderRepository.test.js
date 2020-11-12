@@ -2,10 +2,13 @@ import OrderRepository from './OrderRepository';
 import DbFactory from './DbFactory';
 
 describe('OrderRepository', () => {
-  let orderRepository, dbTest, entity;
+  let orderRepository, dbTest, entity, entityClientLastOrder;
     beforeEach(() => {
       dbTest = DbFactory.dbAdapter();
+      dbTest.defaults({ orders: [] }).write();
+
       entity = 'orders';
+      entityClientLastOrder = 'client_last_orders';
 
       orderRepository = new OrderRepository(dbTest);
     });
@@ -37,6 +40,41 @@ describe('OrderRepository', () => {
         const order = dbTest.get(entity).find({ address: '1022 St.' }).value();
 
         expect(order.created).to.not.be.empty;
+      });
+
+      describe('save client index', () => {
+        it('should save order', () => {
+          orderRepository.save({ address: '101 St.'});
+
+          expect(dbTest.get(entityClientLastOrder).size().value()).to.be.equal(1);
+        });
+
+        it('should not save null order', () => {
+          orderRepository.save(null);
+
+          expect(dbTest.get(entityClientLastOrder).size().value()).to.be.equal(0);
+        });
+
+        it('should save last order reference', () => {
+          orderRepository.save({ address: '1022 St.'});
+
+          const clientLastOrder = dbTest.get(entityClientLastOrder).find({ address: '1022 St.' }).value();
+          const order = dbTest.get(entity).find({ id: clientLastOrder.last_order_id }).value();
+
+          expect(clientLastOrder.address).to.be.equal('1022 St.');
+          expect(order.address).to.be.equal('1022 St.');
+        });
+
+        it('should update last order if address exist', () => {
+          orderRepository.save({ address: '1022 St.', notes: 'order 1'});
+          orderRepository.save({ address: '1022 St.', notes: 'order 2'});
+
+          const clientLastOrder = dbTest.get(entityClientLastOrder).find({ address: '1022 St.' }).value();
+          const order = dbTest.get(entity).find({ id: clientLastOrder.last_order_id }).value();
+
+          expect(dbTest.get(entityClientLastOrder).size().value()).to.be.equal(1);
+          expect(order.notes).to.be.equal('order 2');
+        });
       });
     });
   

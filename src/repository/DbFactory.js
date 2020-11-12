@@ -2,6 +2,7 @@ const low = require('lowdb');
 const Memory = require('lowdb/adapters/Memory');
 const LocalStorage = require('lowdb/adapters/LocalStorage');
 const shortid = require('shortid');
+const lodashId = require('lodash-id')
 
 let ProdOrDevDatabase;
 if (window && window.require){
@@ -20,7 +21,9 @@ export default class DbFactory {
               : ProdOrDevDatabase
         )
 
-        db.defaults({ orders: [], products: DbFactory.initialProductsBeta() })
+        db._.mixin(lodashId);
+
+        db.defaults({ products: DbFactory.initialProductsBeta() })
           .write();
 
         return db;
