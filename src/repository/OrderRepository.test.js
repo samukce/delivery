@@ -75,6 +75,39 @@ describe('OrderRepository', () => {
           expect(dbTest.get(entityClientLastOrder).size().value()).to.be.equal(1);
           expect(order.notes).to.be.equal('order 2');
         });
+
+        it('should create last order even if phonenumber exist', () => {
+          orderRepository.save({ address: '1022 St.', phonenumber: '99887766'});
+          orderRepository.save({ address: '1022 St. #300', phonenumber: '99887766'});
+
+          const clientLastOrder = dbTest.get(entityClientLastOrder).filter({ phonenumber: '99887766' }).value();
+
+          expect(dbTest.get(entityClientLastOrder).size().value()).to.be.equal(2);
+          expect(clientLastOrder[0].address).to.be.equal('1022 St.');
+          expect(clientLastOrder[1].address).to.be.equal('1022 St. #300');
+        });
+
+        it('should update last order if address exist', () => {
+          orderRepository.save({ address: '1022 St.', phonenumber: '9999999'});
+          orderRepository.save({ address: '1022 St.', phonenumber: '8888888'});
+
+          const clientLastOrder = dbTest.get(entityClientLastOrder).filter({ address: '1022 St.' }).value();
+
+          expect(dbTest.get(entityClientLastOrder).size().value()).to.be.equal(2);
+          expect(clientLastOrder[0].phonenumber).to.be.equal('9999999');
+          expect(clientLastOrder[1].phonenumber).to.be.equal('8888888');
+        });
+
+        it('should update last order when phonenumber and address match', () => {
+          orderRepository.save({ address: '1022 St.', phonenumber: '9999999', notes: 'Order 1'});
+          orderRepository.save({ address: '1022 St.', phonenumber: '7777777', notes: 'Order 2'});
+
+          const clientLastOrder = dbTest.get(entityClientLastOrder).find({ phonenumber: '7777777' }).value();
+          const order = dbTest.get(entity).find({ id: clientLastOrder.last_order_id }).value();
+
+          expect(dbTest.get(entityClientLastOrder).size().value()).to.be.equal(2);
+          expect(order.notes).to.be.equal('Order 2');
+        });
       });
     });
   

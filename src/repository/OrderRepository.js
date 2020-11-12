@@ -61,17 +61,20 @@ export default class OrderRepository {
     }
 
     _saveClientLastOrder(order) {
-        const last_orders =
+        const last_orders_by_address_and_phonenumber =
             this.client_last_order_collection
-                .updateWhere({ address: order.address }, { last_order_id: order.id })
+                .updateWhere(
+                    { address: order.address, phonenumber: order.phonenumber }, 
+                    { last_order_id: order.id })
                 .write();
 
-        if (!last_orders || last_orders.length === 0) {
+        if ((!last_orders_by_address_and_phonenumber || last_orders_by_address_and_phonenumber.length === 0)) {
             this.client_last_order_collection
                 .push({
                     id: DbFactory.getNewId(),
                     last_order_id: order.id,
-                    address: order.address
+                    address: order.address,
+                    phonenumber: order.phonenumber
                 })
                 .write();
         }
