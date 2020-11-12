@@ -11,17 +11,18 @@ export default class OrderRepository {
     searchByAddress(address, takeCount = 5) {
         if (!address) return {};
 
-        const orders = this.order_collection
-            .filter(order => {
-                const index = order.address.toUpperCase().indexOf(address.toUpperCase());
+        const order_collection = this.order_collection;
+        const orders = this.client_last_order_collection
+            .filter(last_order => {
+                const index = last_order.address.toUpperCase().indexOf(address.toUpperCase());
                 return index !== -1;
             })
             .sortBy('created')
             .sortBy('address')
             .take(takeCount)
             .value()
-            .reduce(function(map, order) {
-                map[order.address] = order;
+            .reduce(function(map, last_order) {
+                map[last_order.address] = order_collection.getById(last_order.last_order_id).value();
                 return map;
             }, {});
 
@@ -65,7 +66,7 @@ export default class OrderRepository {
             this.client_last_order_collection
                 .updateWhere(
                     { address: order.address, phonenumber: order.phonenumber }, 
-                    { last_order_id: order.id })
+                    { last_order_id: order.id, updated: new Date().toJSON() })
                 .write();
 
         if ((!last_orders_by_address_and_phonenumber || last_orders_by_address_and_phonenumber.length === 0)) {
@@ -74,7 +75,8 @@ export default class OrderRepository {
                     id: DbFactory.getNewId(),
                     last_order_id: order.id,
                     address: order.address,
-                    phonenumber: order.phonenumber
+                    phonenumber: order.phonenumber,
+                    created: new Date().toJSON()
                 })
                 .write();
         }

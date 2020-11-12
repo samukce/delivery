@@ -5,7 +5,7 @@ describe('OrderRepository', () => {
   let orderRepository, dbTest, entity, entityClientLastOrder;
     beforeEach(() => {
       dbTest = DbFactory.dbAdapter();
-      dbTest.defaults({ orders: [] }).write();
+      dbTest.defaults({ orders: [], client_last_orders: [] }).write();
 
       entity = 'orders';
       entityClientLastOrder = 'client_last_orders';
@@ -124,6 +124,9 @@ describe('OrderRepository', () => {
         dbTest.get(entity)
             .push({ id: 1, address: 'St Abc Cde Agh' })
             .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, address: 'St Abc Cde Agh', last_order_id: 1 })
+            .write();
 
         expect(orderRepository.searchByAddress('St Abc Cde')).to.be.eql({
           'St Abc Cde Agh': { id: 1, address: 'St Abc Cde Agh'}
@@ -133,6 +136,9 @@ describe('OrderRepository', () => {
       it('should return object ended by the street name', () => {
         dbTest.get(entity)
             .push({ id: 1, address: 'St Abc Cde Agh' })
+            .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, address: 'St Abc Cde Agh', last_order_id: 1 })
             .write();
 
         expect(orderRepository.searchByAddress('Agh')).to.be.eql({
@@ -144,6 +150,9 @@ describe('OrderRepository', () => {
         dbTest.get(entity)
             .push({ id: 1, address: 'St Abc Cde Agh' })
             .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, address: 'St Abc Cde Agh', last_order_id: 1 })
+            .write();
 
         expect(orderRepository.searchByAddress('Cde')).to.be.eql({
           'St Abc Cde Agh': { id: 1, address: 'St Abc Cde Agh'}
@@ -153,6 +162,9 @@ describe('OrderRepository', () => {
       it('should return object ignoring the case', () => {
         dbTest.get(entity)
             .push({ id: 1, address: 'St Abc Cde Agh' })
+            .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, address: 'St Abc Cde Agh', last_order_id: 1 })
             .write();
 
         expect(orderRepository.searchByAddress('cde')).to.be.eql({
@@ -165,6 +177,11 @@ describe('OrderRepository', () => {
             .push({ id: 1, address: 'St Abc AAAA' })
             .push({ id: 2, address: 'St abc BBBB' })
             .push({ id: 3, address: 'St abc CCCC' })
+            .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, address: 'St Abc AAAA', last_order_id: 1 })
+            .push({ id: 888, address: 'St abc BBBB', last_order_id: 2 })
+            .push({ id: 999, address: 'St abc CCCC', last_order_id: 3 })
             .write();
 
         expect(orderRepository.searchByAddress('abc', 2)).to.be.eql({
@@ -179,6 +196,11 @@ describe('OrderRepository', () => {
             .push({ id: 2, address: 'Av. Abcxxxxxx' })
             .push({ id: 3, address: 'Bv. Abcxxxxxx' })
             .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, address: 'St abc yyyyyyy', last_order_id: 1 })
+            .push({ id: 888, address: 'Av. Abcxxxxxx', last_order_id: 2 })
+            .push({ id: 999, address: 'Bv. Abcxxxxxx', last_order_id: 3 })
+            .write();
 
         expect(orderRepository.searchByAddress('abc')).to.be.eql({
           'Av. Abcxxxxxx': { id: 2, address: 'Av. Abcxxxxxx'},
@@ -191,6 +213,9 @@ describe('OrderRepository', () => {
         dbTest.get(entity)
             .push({ id: 1, address: 'Abc St.', created: '2019-02-23T23:59:26.919Z' })
             .push({ id: 2, address: 'Abc St.', created: '2019-02-23T23:50:26.919Z' })
+            .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, address: 'Abc St.', last_order_id: 1 })
             .write();
 
         expect(orderRepository.searchByAddress('abc')).to.be.eql({
