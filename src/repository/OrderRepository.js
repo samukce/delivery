@@ -32,17 +32,19 @@ export default class OrderRepository {
     searchByPhone(phonenumber, takeCount = 5) {
         if (!phonenumber) return {};
 
-        const orders = this.order_collection
-            .filter(order => {
-                const index = order.phonenumber.toUpperCase().indexOf(phonenumber.toUpperCase());
+        const order_collection = this.order_collection;
+        const orders = this.client_last_order_collection
+            .filter(last_order => {
+                const index = last_order.phonenumber.toUpperCase().indexOf(phonenumber.toUpperCase());
                 return index !== -1;
             })
             .sortBy('created')
             .sortBy('phonenumber')
             .take(takeCount)
             .value()
-            .reduce(function(map, order) {
-                map[`${order.phonenumber} / ${order.address}`] = order;
+            .reduce(function(map, last_order) {
+                map[`${last_order.phonenumber} / ${last_order.address}`] = 
+                    order_collection.getById(last_order.last_order_id).value();
                 return map;
             }, {});
 

@@ -237,6 +237,9 @@ describe('OrderRepository', () => {
         dbTest.get(entity)
             .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.' })
             .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, phonenumber: '99887766', address: '101 Abc St.', last_order_id: 1 })
+            .write();
 
         expect(orderRepository.searchByPhone('9988')).to.be.eql({
           '99887766 / 101 Abc St.': { id: 1, phonenumber: '99887766', address: '101 Abc St.'}
@@ -247,6 +250,9 @@ describe('OrderRepository', () => {
         dbTest.get(entity)
             .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.'})
             .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, phonenumber: '99887766', address: '101 Abc St.', last_order_id: 1 })
+            .write();
 
         expect(orderRepository.searchByPhone('7766')).to.be.eql({
           '99887766 / 101 Abc St.': { id: 1, phonenumber: '99887766', address: '101 Abc St.'}
@@ -256,6 +262,9 @@ describe('OrderRepository', () => {
       it('should return object with the middle number', () => {
         dbTest.get(entity)
             .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.' })
+            .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, phonenumber: '99887766', address: '101 Abc St.', last_order_id: 1 })
             .write();
 
         expect(orderRepository.searchByPhone('8877')).to.be.eql({
@@ -268,6 +277,11 @@ describe('OrderRepository', () => {
             .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.' })
             .push({ id: 2, phonenumber: '88776699', address: '101 Abc St.' })
             .push({ id: 3, phonenumber: '11221122', address: '101 Abc St.' })
+            .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, phonenumber: '99887766', address: '101 Abc St.', last_order_id: 1 })
+            .push({ id: 888, phonenumber: '88776699', address: '101 Abc St.', last_order_id: 2 })
+            .push({ id: 999, phonenumber: '11221122', address: '101 Abc St.', last_order_id: 3 })
             .write();
 
         expect(orderRepository.searchByPhone('7766', 2)).to.be.eql({
@@ -282,6 +296,11 @@ describe('OrderRepository', () => {
             .push({ id: 2, phonenumber: '88776699', address: '101 Abc St.' })
             .push({ id: 3, phonenumber: '11887722', address: '101 Abc St.' })
             .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, phonenumber: '99887766', address: '101 Abc St.', last_order_id: 1 })
+            .push({ id: 888, phonenumber: '88776699', address: '101 Abc St.', last_order_id: 2 })
+            .push({ id: 999, phonenumber: '11887722', address: '101 Abc St.', last_order_id: 3 })
+            .write();
 
         expect(orderRepository.searchByPhone('8877')).to.be.eql({
           '11887722 / 101 Abc St.': { id: 3, phonenumber: '11887722', address: '101 Abc St.'},
@@ -295,6 +314,10 @@ describe('OrderRepository', () => {
             .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.', created: '2019-02-23T23:59:26.919Z' })
             .push({ id: 2, phonenumber: '99887766', address: '200 Def St.', created: '2019-02-23T23:50:26.919Z' })
             .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 777, phonenumber: '99887766', address: '101 Abc St.', created: '2019-02-23T23:59:26.919Z', last_order_id: 1 })
+            .push({ id: 888, phonenumber: '99887766', address: '200 Def St.', created: '2019-02-23T23:50:26.919Z', last_order_id: 2 })
+            .write();
 
         expect(orderRepository.searchByPhone('998877')).to.be.eql({
           '99887766 / 101 Abc St.': { id: 1, phonenumber: '99887766', address: '101 Abc St.', created: '2019-02-23T23:59:26.919Z'},
@@ -306,6 +329,9 @@ describe('OrderRepository', () => {
         dbTest.get(entity)
             .push({ id: 1, phonenumber: '99887766', address: '101 Abc St.', created: '2019-02-23T23:59:26.919Z' })
             .push({ id: 2, phonenumber: '99887766', address: '101 Abc St.', created: '2019-02-23T23:50:26.919Z' })
+            .write();
+        dbTest.get(entityClientLastOrder)
+            .push({ id: 888, phonenumber: '99887766', address: '101 Abc St.', created: '2019-02-23T23:50:26.919Z', last_order_id: 1 })
             .write();
 
         expect(orderRepository.searchByPhone('998877')).to.be.eql({

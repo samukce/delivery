@@ -71,7 +71,7 @@ class Checkout extends Component {
 
     this.triggerCartClear();
     this.cartComponent.onCartLoad(products);
-    this.setFocusOnChargeTo();
+    this.setFocusNextField();
   }
 
   placeOrder = () => {
@@ -97,10 +97,10 @@ class Checkout extends Component {
   }
 
   onProductsChange = (products) => {
-    this.setState({ products });
-
-    this.calculateTotalAmount(products);
-    this.setFocusOnChargeTo();
+    this.setState({ products }, () => {
+      this.calculateTotalAmount(products);
+      this.setFocusNextField();
+    });
   }
 
   onChangeAddress = (evt, value) => {
@@ -156,7 +156,7 @@ class Checkout extends Component {
   }
 
   handleOnAutocompleteLastOrderSearch = (order) => {
-    this.setState(order, this.triggerCartLoad(order));
+    this.setState(order, () => this.triggerCartLoad(order));
   }
 
   handleKeyDownChange = (event) => {
@@ -171,8 +171,18 @@ class Checkout extends Component {
     }
   }
 
+  setFocusNextField = () => {
+    if (this.state.credit_card_payment) {
+      this.setFocusOnNotes();
+    } else {
+      this.setFocusOnChargeTo();
+    }
+  }
+
   setFocusOnChargeTo = () => {
-    if (!this.inputChargeTo) return;
+    if (!this.inputChargeTo) {
+      return;
+    }
     this.inputChargeTo.input.focus();
   }
 
@@ -246,20 +256,20 @@ class Checkout extends Component {
                   id='cash-payment-button'
                   onClick={this.buttonClickCashPayment}
                   disabled={!this.state.credit_card_payment}
-                  className='col s12 m6 grey'>
+                  className='col s12 m6 blue'>
                   <Icon>attach_money</Icon>
                 </Button>
                 <Button
                   id='card-payment-button'
                   onClick={this.buttonClickCreditCardPayment}
                   disabled={this.state.credit_card_payment}
-                  className='col s12 m6 grey'>
+                  className='col s12 m6 blue'>
                   <Icon>credit_card</Icon>
                 </Button>
               </Row>
             ]}
             title={getValueFormatted(this.state.total_amount)}>
-            {<Trans id='checkout.total'>Total</Trans>}
+            {<Trans id={this.state.credit_card_payment ? 'checkout.card' : 'checkout.cash'}>Total</Trans>}
           </Card>
 
           { !this.state.credit_card_payment ? 

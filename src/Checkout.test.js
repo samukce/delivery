@@ -334,6 +334,15 @@ describe('Checkout place order', () => {
 
       expect(document.activeElement.id).to.be.equal('change_to');
     });
+
+    it('should focus note field when search complete if payment is credit card', () => {
+      const checkout = TestUtils.renderIntoDocument(<Checkout />);
+
+      checkout.setState({credit_card_payment: true});
+      checkout.handleOnAutocompleteLastOrderSearch({ products: [] });
+
+      expect(document.activeElement.id).to.be.equal('notes');
+    });
   });
 
   describe('phonenumber search', () => {
