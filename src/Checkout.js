@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Input, Row, Icon, Button, Card } from 'react-materialize';
 import Cart from './Cart'
-import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentUtils'
+import { handleInputChangeBind, handleInputUpperCaseChangeBind, getValueFormatted } from './utilities/ComponentUtils'
 import AutocompleteCustom from './components/AutocompleteCustom'
 import OrderRepository from './repository/OrderRepository'
 import { Trans } from "@lingui/react"
@@ -103,10 +103,18 @@ class Checkout extends Component {
     });
   }
 
-  onChangeAddress = (evt, value) => {
-    this.setState({
-      address: value
-    });
+  _autoCompleteChangeUpperCase = (event, value, field) => {
+    const input = event.target;
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+
+    this.setState({ [field]: value.toUpperCase() },
+      () => {
+        if (input.setSelectionRange) {
+          input.setSelectionRange(start, end)
+        }
+      }
+    );
   }
 
   onChangePhonenumber = (evt, value) => {
@@ -265,7 +273,7 @@ class Checkout extends Component {
             onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
             onKeyDown={this.handleKeyDownAddress}
             value={this.state.address}
-            onChange={this.onChangeAddress}
+            onChange={(event, value) => this._autoCompleteChangeUpperCase(event, value, 'address')}
             s={12}
             m={7}
             icon='home'
@@ -282,7 +290,7 @@ class Checkout extends Component {
             value={this.state.complement}
             ref={(el) => this.inputComplement = el}
             onKeyDown={this.handleKeyDownComplement}
-            onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
+            onChange={handleInputUpperCaseChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
           </Input>
         </Row>
 
@@ -341,7 +349,7 @@ class Checkout extends Component {
           value={this.state.notes}
           ref={(el) => this.inputNotes = el}
           onKeyDown={this.handleKeyDownNotes}
-          onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>speaker_notes</Icon></Input>
+          onChange={handleInputUpperCaseChangeBind(this.setState.bind(this))}><Icon>speaker_notes</Icon></Input>
 
         <Row>
           <Button

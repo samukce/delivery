@@ -130,13 +130,13 @@ describe('Cart', () => {
         .to.be.equal(2);
     });
 
-    it('should add the description of product on the table', () => {
+    it('should add the description of product on the table in uppercase', () => {
       componentRender.handleOnAutocompleteProduct({ id: 1, description: 'Product 1', cash: 3.5, card: 4.0 });
 
       wrapper.find('#add-product-button').simulate('click');
 
       expect(wrapper.find('Table').find('tbody').props().children[0].props.children[0].props.children)
-        .to.be.equal('Product 1');
+        .to.be.equal('PRODUCT 1');
     });
 
     it('should add the item price of product on the table', () => {

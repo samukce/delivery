@@ -112,7 +112,7 @@ class Cart extends Component {
 
   convertProductsToAutocompleteMap = (arr) => {
     return arr.reduce(function(map, obj) {
-      const productDisplay = `${obj.description} (R$ ${obj.cash})`
+      const productDisplay = `${obj.description.toUpperCase()} (R$ ${obj.cash})`
       map[productDisplay] = obj;
       return map;
     }, {});
@@ -132,7 +132,7 @@ class Cart extends Component {
       map(products, (product, i) =>
         (
           <tr key={i}>
-            <td>{product.description}</td>
+            <td>{product.description.toUpperCase()}</td>
             <td className='center-align'>{getValueFormatted(product.cash)}</td>
             <td className='center-align'>{product.quantity}</td>
             <td className='center-align'>{getValueFormatted(product.quantity * product.cash)}</td>

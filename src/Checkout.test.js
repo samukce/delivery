@@ -41,11 +41,11 @@ describe('Checkout place order', () => {
     sandbox.restore();
   });
 
-  it('should fill the address field', () => {
+  it('should fill the address field in uppercase', () => {
     wrapper.find('#address').shallow().find('input')
       .simulate('change', { target: { name: 'address', value: '101 Street' } } );
 
-    expect(wrapper.state('address')).to.equal('101 Street');
+    expect(wrapper.state('address')).to.equal('101 STREET');
   });
 
   it('should not continue if address is empty', () => {
@@ -91,16 +91,16 @@ describe('Checkout place order', () => {
     expect(wrapper.find('#place-order-button').props().disabled).to.be.false;
   });
 
-  it('should fill the address complement field', () => {
+  it('should fill the address complement field in uppercase', () => {
     wrapper.find('#complement').simulate('change', { target: { name: 'complement', value: 'ap. 202' } } );
 
-    expect(wrapper.state('complement')).to.equal('ap. 202');
+    expect(wrapper.state('complement')).to.equal('AP. 202');
   });
 
-  it('should fill the note field', () => {
+  it('should fill the note field in uppercase', () => {
     wrapper.find('#notes').simulate('change', { target: { name: 'notes', value: 'good customer' } } );
 
-    expect(wrapper.state('notes')).to.equal('good customer');
+    expect(wrapper.state('notes')).to.equal('GOOD CUSTOMER');
   });
 
   it('should fill the phonenumber field', () => {
