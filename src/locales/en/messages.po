@@ -85,3 +85,13 @@ msgstr "Checkout"
 #: src/Checkout.js:240
 msgid "checkout.total"
 msgstr "Total"
+
+msgid "checkout.order_summary"
+msgstr "Order summary"
+
+msgid "checkout.back"
+msgstr "Back"
+
+#: src/Checkout.js:245
+msgid "checkout.change_difference"
+msgstr "Cash change"

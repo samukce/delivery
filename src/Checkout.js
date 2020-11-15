@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Input, Row, Icon, Button, Card } from 'react-materialize';
+import { Input, Row, Icon, Button, Card, Modal, Col } from 'react-materialize';
 import Cart from './Cart'
 import { handleInputChangeBind, handleInputUpperCaseChangeBind, getValueFormatted } from './utilities/ComponentUtils'
 import AutocompleteCustom from './components/AutocompleteCustom'
@@ -33,6 +33,8 @@ class Checkout extends Component {
       products: [],
       total_amount: 0,
       credit_card_payment: false,
+      change_difference: null,
+      modal_opened: false,
     }
   }
 
@@ -54,7 +56,7 @@ class Checkout extends Component {
   }
 
   buttonClickCreditCardPayment = () => {
-    this.setState({credit_card_payment: true},
+    this.setState({credit_card_payment: true, change_difference: null, change_to: ''},
       () => {
         this.calculateTotalAmount(this.state.products);
         this.setFocusOnNotes();
@@ -76,14 +78,24 @@ class Checkout extends Component {
 
   placeOrder = () => {
     if (!this.isValid()) return;
+    if (!this.summaryOrderModal) return;
+
+    this.summaryOrderModal.showModal();
+  }
+
+  saveValidOrder = () => {
+    if (!this.isValid()) return;
     this.saveOrder();
     this.clearAllFieds();
+
+    if (!this.summaryOrderModal) return;
+    this.summaryOrderModal.hideModal();
   }
 
   saveOrder = () => {
-    const { phonenumber, address, complement, notes, change_to, products, total_amount, credit_card_payment } = this.state;
+    const { phonenumber, address, complement, notes, change_to, products, total_amount, credit_card_payment, change_difference } = this.state;
     const order = {
-      phonenumber, address, complement, notes, change_to, products, total_amount, credit_card_payment
+      phonenumber, address, complement, notes, change_to, products, total_amount, credit_card_payment, change_difference
     }
 
     this.props.orderRepository.save(order);
@@ -193,7 +205,11 @@ class Checkout extends Component {
 
   handleKeyDownNotes = (event) => {
     if (event.key === 'Enter') {
-      this.placeOrder();
+      if (this.state.modal_opened) {
+        this.saveValidOrder();
+      } else {
+        this.placeOrder();
+      }
     }
   }
 
@@ -241,7 +257,7 @@ class Checkout extends Component {
 
   render() {
     return (
-      <div className='section'>
+      <div className='section' ref={(el) => this.checkoutSection = el}>
         <Row>
           <AutocompleteCustom
             id='phonenumber'
@@ -355,12 +371,83 @@ class Checkout extends Component {
             onClick={this.clearAllFieds}
             className='col s12 m2 grey clear-button'>{<Trans id='checkout.clean'>Clean</Trans>}<Icon left>clear_all</Icon>
           </Button>
-          <Button
-            id='place-order-button'
-            onClick={this.buttonClickPlaceOrder}
-            disabled={!this.isValid()}
-            className='col s12 m3 offset-m7'>{<Trans id='checkout.place_order'>Place Order</Trans>}<Icon left>motorcycle</Icon>
-          </Button>
+
+          <Modal
+            actions={[
+              <Button flat modal="close" node="button" waves="green">{<Trans id='checkout.back'>Voltar</Trans>}</Button>,
+              <Button
+                id='place-order-button'
+                onClick={this.saveValidOrder}
+                disabled={!this.isValid()}
+                ref={(el) => this.buttonPlaceOrderFinal = el}
+                className='col s12 m3 offset-m7'>{<Trans id='checkout.place_order'>Place Order</Trans>}<Icon left>motorcycle</Icon>
+              </Button>
+            ]}
+            fixedFooter
+            header={<Trans id='checkout.order_summary'>Order Summary</Trans>}
+            id="modal-order-summary"
+            ref={(el) => this.summaryOrderModal = el}
+            modalOptions={{
+              ready: () => this.setState({ modal_opened: true }),
+              complete: () => this.setState({ modal_opened: false }),
+            }}
+            root={[this.checkoutSection]}
+            trigger={
+            <Button id="modal-open-modal" node="button" className='col s12 m3 offset-m7' disabled={!this.isValid()}>
+              {<Trans id='checkout.place_order'>Place Order</Trans>}<Icon left>motorcycle</Icon>
+            </Button>}
+          >
+            <Row>
+              <Row></Row>
+              <Col s={12} m={6}>
+                <Row>
+                  <Col s={12} m={12}><Icon small left>phone</Icon>{this.state.phonenumber}</Col>
+                </Row>
+                <Row>
+                  <Col s={12} m={12}><Icon small left>home</Icon>{this.state.address} {this.state.complement}</Col>
+                </Row>
+                <Row>
+                  {this.state.notes.trim() === "" ? null : <Col s={12} m={12}><Icon small left>speaker_notes</Icon>{this.state.notes}</Col>}
+                </Row>
+
+                {this.state.products.map(product => (
+                  <Row>
+                    <Col s={1} m={1}><Icon tinny left>local_grocery_store</Icon></Col>
+                    <Col s={11} m={11}>{product.quantity} x {product.description ? product.description.toUpperCase() : ""}</Col>
+                  </Row>
+                ))}
+
+                <Row>
+                  <Col s={1}><Icon>attach_money</Icon></Col>
+                  <Col s={11}>
+                    {<Trans id={this.state.credit_card_payment ? 'checkout.payment_with_card' : 'checkout.payment_with_cash'}>Total</Trans>}
+                    {` ${getValueFormatted(this.state.total_amount)}`}
+                  </Col>
+                </Row>
+
+                {this.state.change_to === '' ? null :
+                <Row>
+                  <Col s={1} m={1}><Icon>attach_money</Icon></Col>
+                  <Col s={11} m={11}>
+                    {<Trans id={'checkout.change_to'}>Change to</Trans>}
+                    {` ${getValueFormatted(this.state.change_to)}`}
+                  </Col>
+                </Row>
+                }
+
+                {this.state.change_difference == null ? null :
+                  <Row>
+                    <Col s={1} m={1}><Icon>attach_money</Icon></Col>
+                    <Col s={11}>
+                      {<Trans id={'checkout.change_difference'}>Cash change</Trans>}
+                      {` ${getValueFormatted(this.state.change_difference)}`}
+                    </Col>
+                  </Row>
+                }
+              </Col>
+            </Row>
+          </Modal>
+
         </Row>
       </div>
     );

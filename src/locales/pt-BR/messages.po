@@ -85,3 +85,19 @@ msgstr "Vendas"
 #: src/Checkout.js:240
 msgid "checkout.total"
 msgstr "Total"
+
+msgid "checkout.order_summary"
+msgstr "Resumo do pedido"
+
+msgid "checkout.back"
+msgstr "Voltar"
+
+#: src/Checkout.js:245
+msgid "checkout.change_difference"
+msgstr "Levar"
+
+msgid "checkout.payment_with_cash"
+msgstr "Pagamento em Dinheiro"
+
+msgid "checkout.payment_with_card"
+msgstr "Pagamento em Cartão"

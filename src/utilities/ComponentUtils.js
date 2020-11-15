@@ -28,5 +28,6 @@ export function handleInputUpperCaseChangeBind(setState) {
 }
 
 export function getValueFormatted(value)  {
+    if (!value) return 0.0;
     return `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 }
