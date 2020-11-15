@@ -302,15 +302,13 @@ class Checkout extends Component {
                 <Button
                   id='cash-payment-button'
                   onClick={this.buttonClickCashPayment}
-                  disabled={!this.state.credit_card_payment}
-                  className='col s12 m6 blue'>
+                  className={`col s12 m6 blue ${this.state.credit_card_payment ? "lighten-4" : ""}`}>
                   <Icon>attach_money</Icon>
                 </Button>
                 <Button
                   id='card-payment-button'
                   onClick={this.buttonClickCreditCardPayment}
-                  disabled={this.state.credit_card_payment}
-                  className='col s12 m6 blue'>
+                  className={`col s12 m6 blue ${!this.state.credit_card_payment ? "lighten-4" : ""}`}>
                   <Icon>credit_card</Icon>
                 </Button>
               </Row>
