@@ -120,6 +120,36 @@ describe('Checkout place order', () => {
     expect(document.activeElement.id).to.be.equal('change_to');
   });
 
+  it('should focus address field when press enter in phonenumber field', () => {
+    const checkout = TestUtils.renderIntoDocument(<Checkout />);
+
+    checkout.setFocusOnChargeTo();
+
+    checkout.handleKeyDownPhonenumber({ key: 'Enter' });
+
+    expect(document.activeElement.id).to.be.equal('address');
+  });
+
+  it('should focus complement field when press enter in address field', () => {
+    const checkout = TestUtils.renderIntoDocument(<Checkout />);
+
+    checkout.setFocusOnChargeTo();
+
+    checkout.handleKeyDownAddress({ key: 'Enter' });
+
+    expect(document.activeElement.id).to.be.equal('complement');
+  });
+
+  it('should focus product field when press enter in complement field', () => {
+    const checkout = TestUtils.renderIntoDocument(<Checkout />);
+
+    checkout.setFocusOnChargeTo();
+
+    checkout.handleKeyDownComplement({ key: 'Enter' });
+
+    expect(document.activeElement.id).to.be.equal('product_display_description');
+  });
+
   it('should focus note field when enter in change field', () => {
     const checkout = TestUtils.renderIntoDocument(<Checkout />);
 

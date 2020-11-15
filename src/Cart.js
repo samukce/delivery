@@ -55,6 +55,10 @@ class Cart extends Component {
     this.productInputField.setFocus();
   }
 
+  focus = () => {
+    this.focusProduct();
+  }
+
   onChangeProductDisplay = (evt, value) => {
     this.setState({
       product_display_description: value

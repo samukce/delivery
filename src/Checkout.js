@@ -159,6 +159,24 @@ class Checkout extends Component {
     this.setState(order, () => this.triggerCartLoad(order));
   }
 
+  handleKeyDownPhonenumber = (event) => {
+    if (event.key === 'Enter') {
+      this.setFocusOnAddress();
+    }
+  }
+
+  handleKeyDownAddress = (event) => {
+    if (event.key === 'Enter') {
+      this.setFocusOnComplement();
+    }
+  }
+
+  handleKeyDownComplement = (event) => {
+    if (event.key === 'Enter') {
+      this.setFocusOnProduct();
+    }
+  }
+
   handleKeyDownChange = (event) => {
     if (event.key === 'Enter') {
       this.setFocusOnNotes();
@@ -186,14 +204,31 @@ class Checkout extends Component {
     this.inputChargeTo.input.focus();
   }
 
+  setFocusOnComplement = () => {
+    if (!this.inputComplement) {
+      return;
+    }
+    this.inputComplement.input.focus();
+  }
+
   setFocusOnPhonenumber = () => {
     if (!this.inputPhonenumber) return;
     this.inputPhonenumber.setFocus();
   }
 
+  setFocusOnAddress = () => {
+    if (!this.inputAddress) return;
+    this.inputAddress.setFocus();
+  }
+
   setFocusOnNotes = () => {
     if (!this.inputNotes) return;
     this.inputNotes.input.focus();
+  }
+
+  setFocusOnProduct = () => {
+    if (!this.cartComponent) return;
+    this.cartComponent.focus();
   }
 
   render() {
@@ -214,6 +249,7 @@ class Checkout extends Component {
             s={12}
             icon='phone'
             ref={(el) => this.inputPhonenumber = el}
+            onKeyDown={this.handleKeyDownPhonenumber}
             iconClassName='prefix'
             onKeyPressCustom={this.onKeyPressOnlyNumber}
             />
@@ -227,6 +263,7 @@ class Checkout extends Component {
             validate
             lazyData={this.lazyAddressSearch}
             onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
+            onKeyDown={this.handleKeyDownAddress}
             value={this.state.address}
             onChange={this.onChangeAddress}
             s={12}
@@ -243,6 +280,8 @@ class Checkout extends Component {
             m={5}
             label={<Trans id='checkout.complement'>Complement</Trans>}
             value={this.state.complement}
+            ref={(el) => this.inputComplement = el}
+            onKeyDown={this.handleKeyDownComplement}
             onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
           </Input>
         </Row>
@@ -272,7 +311,7 @@ class Checkout extends Component {
             {<Trans id={this.state.credit_card_payment ? 'checkout.card' : 'checkout.cash'}>Total</Trans>}
           </Card>
 
-          { !this.state.credit_card_payment ? 
+          { this.state.credit_card_payment ? null :
             <Input
               id='change_to'
               name='change_to'
@@ -284,13 +323,12 @@ class Checkout extends Component {
               min={this.state.total_amount + 0.01}
               step='0.01'
               validate
-              ref={(el) => this.inputChargeTo = el}
               disabled={this.state.credit_card_payment}
+              ref={(el) => this.inputChargeTo = el}
               onKeyDown={this.handleKeyDownChange}
               onChange={handleInputChangeBind(this.setState.bind(this), this.updateChangeDifference)}>
               <Icon>attach_money</Icon>
             </Input>
-          : null
           }
         </Cart>
 
