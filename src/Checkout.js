@@ -6,6 +6,7 @@ import { handleInputChangeBind, handleInputUpperCaseChangeBind, getValueFormatte
 import AutocompleteCustom from './components/AutocompleteCustom'
 import OrderRepository from './repository/OrderRepository'
 import { Trans } from "@lingui/react"
+import { NotificationManager } from 'react-notifications';
 
 
 class Checkout extends Component {
@@ -85,11 +86,18 @@ class Checkout extends Component {
 
   saveValidOrder = () => {
     if (!this.isValid()) return;
+    const address = this.state.address;
     this.saveOrder();
     this.clearAllFieds();
 
     if (!this.summaryOrderModal) return;
     this.summaryOrderModal.hideModal();
+
+    //TODO: add translation
+    NotificationManager.success(
+      `Pronto pra ser separado e enviado para ${address}`,
+      'Pedido salvo'
+    , 5000);
   }
 
   saveOrder = () => {

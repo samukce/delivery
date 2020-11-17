@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import Checkout from './Checkout';
 import * as serviceWorker from './serviceWorker';
 import { I18nProvider, Trans } from '@lingui/react';
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer } from 'react-notifications';
 
 const App = ({ language} ) => {
     const localeMessage = require(`./locales/${language}/messages.js`);
@@ -16,6 +18,8 @@ const App = ({ language} ) => {
             <div className='container'>
                 <Checkout />
             </div>
+
+            <NotificationContainer/>
         </I18nProvider>
     );
 }
