@@ -300,6 +300,7 @@ class Checkout extends Component {
             id='complement'
             name='complement'
             placeholder='...'
+            autocomplete="off"
             s={12}
             m={5}
             label={<Trans id='checkout.complement'>Complement</Trans>}

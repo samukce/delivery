@@ -253,6 +253,7 @@ class AutocompleteCustom extends Component {
           onFocus={expandOnFocus && this._onFocus}
           onBlur={expandOnFocus && this._onBlur}
           type="text"
+          autocomplete="off"
           autoFocus={autoFocus}
           required={required}
           validate={validate}
