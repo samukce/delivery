@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Checkout from './Checkout';
+import OrderRepository from './repository/OrderRepository';
 import * as serviceWorker from './serviceWorker';
 import { I18nProvider, Trans } from '@lingui/react';
 import 'react-notifications/lib/notifications.css';
@@ -23,6 +24,124 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import { getValueFormatted } from './utilities/ComponentUtils'
+
+
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Box from '@material-ui/core/Box';
+import PropTypes from 'prop-types';
+import { GridList } from '@material-ui/core';
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+  
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`scrollable-auto-tabpanel-${index}`}
+        aria-labelledby={`scrollable-auto-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box p={3}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  }
+  
+  TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.any.isRequired,
+    value: PropTypes.any.isRequired,
+  };
+
+
+const useStylesCard = makeStyles({
+  root: {
+    minWidth: 275,
+  },
+  bullet: {
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
+});
+
+export default function SimpleCard(props) {
+  const classes = useStylesCard();
+
+  function _getMinutesOnQueue(utcDate) {
+    var today = new Date();
+    var utcDateToCompare = new Date(utcDate);
+    var diffMs = (today - utcDateToCompare); // milliseconds
+
+    var diffDays = Math.floor(diffMs / 86400000); // days
+    if (diffDays >= 1) {
+        return `${diffDays}dia(s)`;
+    }
+    
+    var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+    var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+    if (diffHrs >= 1) {
+        return `${diffHrs}h ${diffMins}min`;
+    }
+
+    return `${diffMins}min`;
+  }
+
+  function _getLocalDate(utcDate){
+    var localDate = new Date(utcDate)
+    return localDate.toLocaleString();
+  }
+
+  return (
+    <Card className={classes.root} variant="outlined">
+      <CardContent>
+        <Typography className={classes.title} color="textSecondary" gutterBottom>
+            {_getLocalDate(props.order.created)} ({_getMinutesOnQueue(props.order.created)})
+        </Typography>
+        <Typography variant="h7" component="h7">
+            {props.order.address} {props.order.complement}
+        </Typography>
+        {props.order.products.map((prod) => 
+            <Typography color="textSecondary">
+                {prod.quantity} {prod.description}
+            </Typography>)}
+
+        <Typography variant="body2" component="p">
+          Total em {<Trans id={props.order.credit_card_payment ? 'checkout.card' : 'checkout.cash'}>Total</Trans>}: {getValueFormatted(props.order.total_amount)}
+        </Typography>
+
+        {props.order.change_difference == null ? null :
+        <Typography variant="body2" component="p">
+            Levar troco de {getValueFormatted(props.order.change_difference)}
+        </Typography>
+        }
+      </CardContent>
+      <CardActions>
+        <Button size="small" ariant="outlined">Cancelar</Button>
+        <Button size="small" color="primary" variant="outlined">Entregar</Button>
+      </CardActions>
+    </Card>
+  );
+}
+
+
 
 const drawerWidth = 350;
 
@@ -83,12 +202,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const App = ({ language } ) => {
+function App(props) {
+// const App = ({ language } ) => {
+    const { window, language } = props;
     const localeMessage = require(`./locales/${language}/messages.js`);
     const classes = useStyles();
     const theme = useTheme();
     const open = true;
+    const [value, setValue] = React.useState(0);
 
+    const orderRepository = new OrderRepository()
+    
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+      };
+
+    const container = window !== undefined ? () => window().document.body : undefined;
 
     return (
         <I18nProvider language={language} catalogs={{ [language]: localeMessage }}>
@@ -108,35 +237,44 @@ const App = ({ language } ) => {
             </AppBar>
 
             <Drawer
+                container={container}
                 className={classes.drawer}
                 variant="persistent"
                 anchor="right"
                 open={open}
                 classes={{
-                paper: classes.drawerPaper,
+                    paper: classes.drawerPaper,
+                }}
+                ModalProps={{
+                    keepMounted: true, // Better open performance on mobile.
                 }}
                 >
-                <div className={classes.drawerHeader}>
-                    
-                </div>
-                <Divider />
-                <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem button key={text}>
-                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                    <ListItemText primary={text} />
-                    </ListItem>
-                ))}
-                </List>
-                <Divider />
-                <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem button key={text}>
-                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                    <ListItemText primary={text} />
-                    </ListItem>
-                ))}
-                </List>
+                
+                <Paper square>
+                    <Tabs
+                        value={value}
+                        indicatorColor="primary"
+                        textColor="primary"
+                        variant="scrollable"
+                        scrollButtons="auto"
+                        onChange={handleChange}
+                    >
+                        <Tab label="Fila" />
+                        <Tab label="Rota" />
+                        <Tab label="Entregue" />
+                    </Tabs>
+                    <TabPanel value={value} index={0}>
+                        {orderRepository.allInTheQueue().map((order) => <SimpleCard order={order}/>)}
+                    </TabPanel>
+                    <TabPanel value={value} index={1}>
+                        <SimpleCard />
+                    </TabPanel>
+                    <TabPanel value={value} index={2}>
+                        <SimpleCard />
+                        <SimpleCard />
+                        <SimpleCard />
+                    </TabPanel>
+                </Paper>
             </Drawer>
 
             <main

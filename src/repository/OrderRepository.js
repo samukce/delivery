@@ -83,4 +83,16 @@ export default class OrderRepository {
                 .write();
         }
     }
+
+    allInTheQueue() {
+        const orders = this.order_collection
+            .filter(order => {
+                return order.status == null || order.status === 'QUEUE';
+            })
+            .sortBy('created')
+            .reverse()
+            .value();
+
+        return orders;
+    }
 }
