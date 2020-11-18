@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Checkout from './Checkout';
 import OrderRepository from './repository/OrderRepository';
@@ -36,7 +36,12 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
-import { GridList } from '@material-ui/core';
+import { Badge, GridList } from '@material-ui/core';
+
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -82,21 +87,32 @@ const useStylesCard = makeStyles({
   },
 });
 
-export default function SimpleCard(props) {
+const useStylesAccordion = makeStyles((theme) => ({
+    root: {
+      width: '100%',
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      fontWeight: theme.typography.fontWeightRegular,
+    },
+  }));
+
+export default function OrderCard(props) {
   const classes = useStylesCard();
+  const classesAccordion = useStylesAccordion();
 
   function _getMinutesOnQueue(utcDate) {
     var today = new Date();
     var utcDateToCompare = new Date(utcDate);
-    var diffMs = (today - utcDateToCompare); // milliseconds
+    var diffMs = (today - utcDateToCompare);
 
-    var diffDays = Math.floor(diffMs / 86400000); // days
+    var diffDays = Math.floor(diffMs / 86400000);
     if (diffDays >= 1) {
-        return `${diffDays}dia(s)`;
+        return `${diffDays}d`;
     }
     
-    var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
-    var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+    var diffHrs = Math.floor((diffMs % 86400000) / 3600000);
+    var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
     if (diffHrs >= 1) {
         return `${diffHrs}h ${diffMins}min`;
     }
@@ -110,47 +126,61 @@ export default function SimpleCard(props) {
   }
 
   return (
-    <Card className={classes.root} variant="outlined">
-      <CardContent>
-        <Typography className={classes.title} color="textSecondary" gutterBottom>
-            {_getLocalDate(props.order.created)} ({_getMinutesOnQueue(props.order.created)})
-        </Typography>
-        <Typography variant="h7" component="h7" display="block">
-            {props.order.address} {props.order.complement}
-        </Typography>
+        <Accordion>
+            <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id={`panel-header-${props.order.id}`}
+            >
+            <Typography className={classesAccordion.heading}>{props.order.address} {props.order.complement}</Typography>
+            <Typography className={classesAccordion.title} color="textSecondary" gutterBottom>
+                ({_getMinutesOnQueue(props.order.created)})
+            </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+                <Card className={classesAccordion.root} variant="outlined">
+                    <CardContent>
+                        <Typography className={classesAccordion.title} color="textSecondary" gutterBottom>
+                            {_getLocalDate(props.order.created)}
+                        </Typography>
+                        <Typography variant="h7" component="h7" display="block">
+                            {props.order.address} {props.order.complement}
+                        </Typography>
 
-        {props.order.notes === '' ? null :
-        <Typography variant="overline" display="block">
-            {props.order.notes}
-        </Typography>
-        }
+                        {props.order.notes === '' ? null :
+                        <Typography variant="overline" display="block">
+                            {props.order.notes}
+                        </Typography>
+                        }
 
-        {props.order.products.map((prod) => 
-            <Typography color="textSecondary" gutterBottom>
-                {prod.quantity} {prod.description}
-            </Typography>)}
+                        {props.order.products.map((prod) => 
+                            <Typography color="textSecondary" gutterBottom>
+                                {prod.quantity} {prod.description}
+                            </Typography>)}
 
-        <Typography variant="body2" component="p">
-          Total em {<Trans id={props.order.credit_card_payment ? 'checkout.card' : 'checkout.cash'}>Total</Trans>}: {getValueFormatted(props.order.total_amount)}
-        </Typography>
+                        <Typography variant="body2" component="p">
+                        Total em {<Trans id={props.order.credit_card_payment ? 'checkout.card' : 'checkout.cash'}>Total</Trans>}: {getValueFormatted(props.order.total_amount)}
+                        </Typography>
 
-        {props.order.change_difference == null ? null :
-        <Typography variant="body2" component="p">
-            Levar troco de {getValueFormatted(props.order.change_difference)}
-        </Typography>
-        }
-      </CardContent>
-      <CardActions>
-        <Button size="small" ariant="outlined">Cancelar</Button>
-        <Button size="small" color="primary" variant="outlined">Entregar</Button>
-      </CardActions>
-    </Card>
+                        {props.order.change_difference == null ? null :
+                        <Typography variant="body2" component="p">
+                            Levar troco de {getValueFormatted(props.order.change_difference)}
+                        </Typography>
+                        }
+                    </CardContent>
+                    <CardActions>
+                        <Button size="small" ariant="outlined">Cancelar</Button>
+                        <Button size="small" color="primary" variant="outlined">Entregar</Button>
+                    </CardActions>
+                </Card>
+            </AccordionDetails>
+        </Accordion>
   );
 }
 
 
 
-const drawerWidth = 350;
+const drawerWidth = 380;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -207,6 +237,9 @@ const useStyles = makeStyles((theme) => ({
     }),
     marginRight: drawerWidth,
   },
+  badgePadding: {
+    padding: theme.spacing(0, 2),
+  },
 }));
 
 function App(props) {
@@ -214,11 +247,28 @@ function App(props) {
     const { window, language } = props;
     const localeMessage = require(`./locales/${language}/messages.js`);
     const classes = useStyles();
+    const classesAccordion = useStylesAccordion();
     const theme = useTheme();
     const open = true;
     const [value, setValue] = React.useState(0);
+    const [ordersQueue, setOrdersQueue] = React.useState([]);
 
-    const orderRepository = new OrderRepository()
+    const orderRepository = new OrderRepository();
+    
+    useEffect(() => {
+        async function fetchData() {
+          // You can await here
+          const response = await orderRepository.allInTheQueue();
+          // ...
+          setOrdersQueue(response);
+        }
+        fetchData();
+      }, []);
+      
+
+    // componentDidMount() {
+    //     setOrdersQueue(orderRepository.allInTheQueue)
+    //   }
     
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -266,14 +316,18 @@ function App(props) {
                         scrollButtons="auto"
                         onChange={handleChange}
                     >
-                        <Tab label="Fila" />
+                        <Tab label={
+                            <Badge className={classes.badgePadding} color="secondary" badgeContent={ordersQueue.length}>
+                                Fila
+                            </Badge>
+                            } />
                         <Tab label="Rota" />
                     </Tabs>
                     <TabPanel value={value} index={0}>
-                        {orderRepository.allInTheQueue().map((order) => <SimpleCard order={order}/>)}
+                        {ordersQueue.map((order) => <OrderCard order={order}/>)}
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        Em construção
+                        Em construção... ;)
                     </TabPanel>
                 </Paper>
             </Drawer>

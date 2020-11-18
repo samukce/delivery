@@ -90,7 +90,6 @@ export default class OrderRepository {
                 return order.status == null || order.status === 'QUEUE';
             })
             .sortBy('created')
-            .reverse()
             .value();
 
         return orders;
