@@ -115,11 +115,18 @@ export default function SimpleCard(props) {
         <Typography className={classes.title} color="textSecondary" gutterBottom>
             {_getLocalDate(props.order.created)} ({_getMinutesOnQueue(props.order.created)})
         </Typography>
-        <Typography variant="h7" component="h7">
+        <Typography variant="h7" component="h7" display="block">
             {props.order.address} {props.order.complement}
         </Typography>
+
+        {props.order.notes === '' ? null :
+        <Typography variant="overline" display="block">
+            {props.order.notes}
+        </Typography>
+        }
+
         {props.order.products.map((prod) => 
-            <Typography color="textSecondary">
+            <Typography color="textSecondary" gutterBottom>
                 {prod.quantity} {prod.description}
             </Typography>)}
 
@@ -261,18 +268,12 @@ function App(props) {
                     >
                         <Tab label="Fila" />
                         <Tab label="Rota" />
-                        <Tab label="Entregue" />
                     </Tabs>
                     <TabPanel value={value} index={0}>
                         {orderRepository.allInTheQueue().map((order) => <SimpleCard order={order}/>)}
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        <SimpleCard />
-                    </TabPanel>
-                    <TabPanel value={value} index={2}>
-                        <SimpleCard />
-                        <SimpleCard />
-                        <SimpleCard />
+                        Em construção
                     </TabPanel>
                 </Paper>
             </Drawer>
