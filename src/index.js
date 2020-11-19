@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import OrderQueue from './OrderQueue';
 import { Provider } from 'react-redux'
 import store from './redux/store'
+import OrderRepository from './repository/OrderRepository'
 
 
 const drawerWidth = 380;
@@ -83,6 +84,7 @@ function App(props) {
     const localeMessage = require(`./locales/${language}/messages.js`);
     const classes = useStyles();
     const open = true;
+    const orderRepository = new OrderRepository();
 
     return (
         <I18nProvider language={language} catalogs={{ [language]: localeMessage }}>
@@ -101,7 +103,7 @@ function App(props) {
                 </Toolbar>
             </AppBar>
 
-            <OrderQueue />
+            <OrderQueue orderRepository={orderRepository} />
 
             <main
                 className={clsx(classes.content, {
@@ -109,7 +111,7 @@ function App(props) {
                 })}
             >
             <div className={classes.drawerHeader} />
-                <Checkout />
+                <Checkout orderRepository={orderRepository} />
             </main>
             </div>
 

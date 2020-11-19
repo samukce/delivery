@@ -114,7 +114,7 @@ class Checkout extends Component {
     }
 
     this.props.orderRepository.save(order);
-    this.props.addTodo(order);
+    // this.props.addTodo(order);
   }
 
   isValid = () => {
@@ -471,7 +471,9 @@ class Checkout extends Component {
   }
 }
 
-export default connect(
-  null,
-  { addTodo }
-)(Checkout);
+// export default connect(
+//   null,
+//   { addTodo }
+// )(Checkout);
+
+export default Checkout;

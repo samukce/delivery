@@ -107,10 +107,8 @@ export default class OrderRepository {
         }
     }
 
-    allInTheQueue() { //WHY DO WE NEED TO USE DB ADAPTER TO GET LATEST DATA?!
-        const db = DbFactory.dbAdapter();
-        const order_collection = db.get('orders');
-        const orders = order_collection
+    allInTheQueue() {
+        const orders = this.order_collection
             .filter(order => {
                 return order.status == null || order.status === 'QUEUE';
             })
