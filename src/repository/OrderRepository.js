@@ -3,6 +3,7 @@ import DbFactory from './DbFactory';
 
 export default class OrderRepository {
     constructor(db = DbFactory.dbAdapter()) {
+        this.db = db;
         this.order_collection = db.defaults({ orders: [] }).get('orders');
         this.client_last_order_collection = db.defaults({ client_last_orders: [] })
             .get('client_last_orders');
@@ -61,6 +62,28 @@ export default class OrderRepository {
             .write();
 
         this._saveClientLastOrder(order);
+        return order.id;
+    }
+
+    markAsShipped(order) {
+        this.order_collection.getById(order.id)
+            .set('shipped_date', new Date().toJSON())
+            .set('status', 'SHIPPED')
+            .write();
+    }
+    
+    markAsCanceled(order) {
+        this.order_collection.getById(order.id)
+            .set('canceled_date', new Date().toJSON())
+            .set('status', 'CANCELED')
+            .write();
+    }
+
+    markAsDeliverid(order) {
+        this.order_collection.getById(order.id)
+            .set('delivered_date', new Date().toJSON())
+            .set('status', 'DELIVERED')
+            .write();
     }
 
     _saveClientLastOrder(order) {
@@ -84,8 +107,10 @@ export default class OrderRepository {
         }
     }
 
-    allInTheQueue() {
-        const orders = this.order_collection
+    allInTheQueue() { //WHY DO WE NEED TO USE DB ADAPTER TO GET LATEST DATA?!
+        const db = DbFactory.dbAdapter();
+        const order_collection = db.get('orders');
+        const orders = order_collection
             .filter(order => {
                 return order.status == null || order.status === 'QUEUE';
             })

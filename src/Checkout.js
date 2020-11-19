@@ -7,7 +7,8 @@ import AutocompleteCustom from './components/AutocompleteCustom'
 import OrderRepository from './repository/OrderRepository'
 import { Trans } from "@lingui/react"
 import { NotificationManager } from 'react-notifications';
-
+import { connect } from "react-redux";
+import { addTodo } from "./redux/actions";
 
 class Checkout extends Component {
   static propTypes = {
@@ -113,6 +114,7 @@ class Checkout extends Component {
     }
 
     this.props.orderRepository.save(order);
+    this.props.addTodo(order);
   }
 
   isValid = () => {
@@ -469,4 +471,7 @@ class Checkout extends Component {
   }
 }
 
-export default Checkout;
+export default connect(
+  null,
+  { addTodo }
+)(Checkout);
