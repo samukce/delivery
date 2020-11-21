@@ -7,7 +7,8 @@ import AutocompleteCustom from './components/AutocompleteCustom'
 import OrderRepository from './repository/OrderRepository'
 import { Trans } from "@lingui/react"
 import { NotificationManager } from 'react-notifications';
-
+// import { connect } from "react-redux";
+// import { addTodo } from "./redux/actions";
 
 class Checkout extends Component {
   static propTypes = {
@@ -86,7 +87,8 @@ class Checkout extends Component {
 
   saveValidOrder = () => {
     if (!this.isValid()) return;
-    const address = this.state.address;
+    const { address, complement, change_difference, products } = this.state;
+
     this.saveOrder();
     this.clearAllFieds();
 
@@ -94,10 +96,15 @@ class Checkout extends Component {
     this.summaryOrderModal.hideModal();
 
     //TODO: add translation
+    const product = products.reduce((full_list, prod) => `${full_list} (${prod.quantity})${prod.description}`, "");
+    const change_text = change_difference == null ? '' : ` [Levar R$ ${change_difference} de Troco]`
+    const fifteen_seconds = 15 * 1000;
+    
     NotificationManager.success(
-      `Pronto pra ser separado e enviado para ${address}`,
-      'Pedido salvo'
-    , 5000);
+      `${address} ${complement}${change_text} ${product}`,
+      'Pedido criado',
+      fifteen_seconds
+      );
   }
 
   saveOrder = () => {
@@ -107,6 +114,7 @@ class Checkout extends Component {
     }
 
     this.props.orderRepository.save(order);
+    // this.props.addTodo(order);
   }
 
   isValid = () => {
@@ -462,5 +470,10 @@ class Checkout extends Component {
     );
   }
 }
+
+// export default connect(
+//   null,
+//   { addTodo }
+// )(Checkout);
 
 export default Checkout;
