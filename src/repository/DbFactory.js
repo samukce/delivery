@@ -35,14 +35,14 @@ export default class DbFactory {
 
     static initialProductsBeta() { //TODO: initial load sync from server
         return [
-            { id: 1, description: 'Naturágua', cash: 11.00, card: 11.50 },
-            { id: 2, description: 'Indaiá', cash: 11.00, card: 11.50 },
-            { id: 3, description: 'Neblina', cash: 10.00, card: 10.50 },
-            { id: 4, description: 'Pacoty', cash: 9.00, card: 9.50 },
-            { id: 5, description: 'Clareza', cash: 5.00, card: 5.50 },
-            { id: 6, description: 'Fortágua', cash: 5.00, card: 5.50 },
-            { id: 7, description: 'Serra Grande', cash: 10.00, card: 10.50 },
-            { id: 8, description: 'Acácia', cash: 10.00, card: 10.50 },
+            { id: 1, description: 'Naturágua'.toUpperCase(), cash: 11.00, card: 11.50 },
+            { id: 2, description: 'Indaiá'.toUpperCase(), cash: 11.00, card: 11.50 },
+            { id: 3, description: 'Neblina'.toUpperCase(), cash: 10.00, card: 10.50 },
+            { id: 4, description: 'Pacoty'.toUpperCase(), cash: 9.00, card: 9.50 },
+            { id: 5, description: 'Clareza'.toUpperCase(), cash: 5.00, card: 5.50 },
+            { id: 6, description: 'Fortágua'.toUpperCase(), cash: 5.00, card: 5.50 },
+            { id: 7, description: 'Serra Grande'.toUpperCase(), cash: 10.00, card: 10.50 },
+            { id: 8, description: 'Acácia'.toUpperCase(), cash: 10.00, card: 10.50 },
         ]
     }
 }
