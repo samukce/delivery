@@ -19,7 +19,10 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import Hidden from '@material-ui/core/Hidden'
+import ListIcon from '@material-ui/icons/List';
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
+import Hidden from '@material-ui/core/Hidden';
+import Fab from '@material-ui/core/Fab';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -175,6 +178,16 @@ const useStyles = theme => ({
   menuButton: {
     marginLeft: theme.spacing(2),
   },
+  marginFloatButton: {
+    position: 'fixed',
+    top: theme.spacing(2),
+    right: theme.spacing(2),
+  },
+  marginFloatCloseTabButton: {
+    position: 'fixed',
+    top: theme.spacing(1),
+    right: theme.spacing(2),
+  },
   hide: {
     display: 'none',
   },
@@ -221,7 +234,7 @@ class OrderQueue extends Component {
 
     constructor(props) {
       super(props);
-      this.state = { ordersQueue: [], value: 0 };
+      this.state = { ordersQueue: [], value: 0, open: false };
       this.window = this.props.window;
       this.container = this.window !== undefined ? () => this.window.document.body : undefined;
       this.orderRepository = this.props.orderRepository;
@@ -295,13 +308,20 @@ class OrderQueue extends Component {
           </Drawer>
         </Hidden>
         <Hidden mdUp>
+          <div>
+            <Fab size="small" color="primary" aria-label="list" className={classes.marginFloatButton}
+              onClick={() => this.setState({ open: true })}>
+              <ListIcon />
+            </Fab>
+          </div>
+
           <Drawer
               id="drawer-small-size"
               container={this.container}
               className={classes.drawer}
               variant="variant"
               anchor="right"
-              open={false}
+              open={this.state.open}
               classes={{
                   paper: classes.drawerPaper,
               }}
@@ -310,6 +330,11 @@ class OrderQueue extends Component {
               }}
             >
               {drawer}
+
+              <Fab size="small" aria-label="close" className={classes.marginFloatCloseTabButton}
+                onClick={() => this.setState({ open: false })}>
+                <CloseOutlinedIcon />
+              </Fab>
           </Drawer>
         </Hidden>
       </React.Fragment>
