@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Input, Row, Icon, Button, Card, Modal, Col } from 'react-materialize';
 import Cart from './Cart'
-import { handleInputChangeBind, handleInputUpperCaseChangeBind, getValueFormatted } from './utilities/ComponentUtils'
+import { handleInputChangeBind, getValueFormatted } from './utilities/ComponentUtils'
 import AutocompleteCustom from './components/AutocompleteCustom'
 import OrderRepository from './repository/OrderRepository'
 import { Trans } from "@lingui/react"
@@ -101,7 +101,7 @@ class Checkout extends Component {
     const fifteen_seconds = 15 * 1000;
     
     NotificationManager.success(
-      `${address} ${complement}${change_text} ${product}`,
+      `${address} ${complement}${change_text} ${product}`.toUpperCase(),
       'Pedido criado',
       fifteen_seconds
       );
@@ -110,7 +110,15 @@ class Checkout extends Component {
   saveOrder = () => {
     const { phonenumber, address, complement, notes, change_to, products, total_amount, credit_card_payment, change_difference } = this.state;
     const order = {
-      phonenumber, address, complement, notes, change_to, products, total_amount, credit_card_payment, change_difference
+      phonenumber,
+      address: address.toUpperCase(),
+      complement: complement.toUpperCase(),
+      notes: notes.toUpperCase(),
+      change_to,
+      products,
+      total_amount,
+      credit_card_payment,
+      change_difference
     }
 
     this.props.orderRepository.save(order);
@@ -129,20 +137,6 @@ class Checkout extends Component {
       this.calculateTotalAmount(products);
       this.setFocusNextField();
     });
-  }
-
-  _autoCompleteChangeUpperCase = (event, value, field) => {
-    const input = event.target;
-    const start = input.selectionStart;
-    const end = input.selectionEnd;
-
-    this.setState({ [field]: value.toUpperCase() },
-      () => {
-        if (input.setSelectionRange) {
-          input.setSelectionRange(start, end)
-        }
-      }
-    );
   }
 
   onChangePhonenumber = (evt, value) => {
@@ -305,7 +299,7 @@ class Checkout extends Component {
             onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
             onKeyDown={this.handleKeyDownAddress}
             value={this.state.address}
-            onChange={(event, value) => this._autoCompleteChangeUpperCase(event, value, 'address')}
+            onChange={(event, value) => this.setState({ address: value })}
             s={12}
             m={7}
             icon='home'
@@ -323,7 +317,8 @@ class Checkout extends Component {
             value={this.state.complement}
             ref={(el) => this.inputComplement = el}
             onKeyDown={this.handleKeyDownComplement}
-            onChange={handleInputUpperCaseChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
+            style={{ textTransform: 'uppercase'}}
+            onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>rate_review</Icon>
           </Input>
         </Row>
 
@@ -380,7 +375,8 @@ class Checkout extends Component {
           value={this.state.notes}
           ref={(el) => this.inputNotes = el}
           onKeyDown={this.handleKeyDownNotes}
-          onChange={handleInputUpperCaseChangeBind(this.setState.bind(this))}><Icon>speaker_notes</Icon></Input>
+          style={{ textTransform: 'uppercase'}}
+          onChange={handleInputChangeBind(this.setState.bind(this))}><Icon>speaker_notes</Icon></Input>
 
         <Row>
           <Button
@@ -421,10 +417,10 @@ class Checkout extends Component {
                   <Col s={12} m={12}><Icon small left>phone</Icon>{this.state.phonenumber}</Col>
                 </Row>
                 <Row>
-                  <Col s={12} m={12}><Icon small left>home</Icon>{this.state.address} {this.state.complement}</Col>
+                  <Col s={12} m={12}><Icon small left>home</Icon>{this.state.address.toUpperCase()} {this.state.complement.toUpperCase()}</Col>
                 </Row>
                 <Row>
-                  {this.state.notes.trim() === "" ? null : <Col s={12} m={12}><Icon small left>speaker_notes</Icon>{this.state.notes}</Col>}
+                  {this.state.notes.trim() === "" ? null : <Col s={12} m={12}><Icon small left>speaker_notes</Icon>{this.state.notes.toUpperCase()}</Col>}
                 </Row>
 
                 {this.state.products.map(product => (

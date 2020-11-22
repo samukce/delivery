@@ -259,6 +259,7 @@ class AutocompleteCustom extends Component {
           validate={validate}
           value={this.state.value}
           ref={(el) => this.inputField = el}
+          style={{ textTransform: 'uppercase'}}
         />
         <label htmlFor={_id}>{title}</label>
         {this.renderDropdown(minLength, limit)}

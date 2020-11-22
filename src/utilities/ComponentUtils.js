@@ -10,23 +10,6 @@ export function handleInputChangeBind(setState, callback) {
     };
 }
 
-export function handleInputUpperCaseChangeBind(setState) {
-    return (event) => {
-        const input = event.target;
-        const name = input.name;
-        const start = input.selectionStart;
-        const end = input.selectionEnd;
-
-        setState({
-            [name]: input.value.toUpperCase()
-        }, () => {
-            if (input.setSelectionRange) {
-                input.setSelectionRange(start, end);
-            }
-        });
-    };
-}
-
 export function getValueFormatted(value)  {
     if (!value) return 0.0;
     return `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;

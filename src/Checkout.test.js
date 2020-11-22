@@ -42,11 +42,11 @@ describe('Checkout place order', () => {
     sandbox.restore();
   });
 
-  it('should fill the address field in uppercase', () => {
+  it('should fill the address field', () => {
     wrapper.find('#address').shallow().find('input')
       .simulate('change', { target: { name: 'address', value: '101 Street' } } );
 
-    expect(wrapper.state('address')).to.equal('101 STREET');
+    expect(wrapper.state('address')).to.equal('101 Street');
   });
 
   it('should not continue if address is empty', () => {
@@ -92,16 +92,16 @@ describe('Checkout place order', () => {
     expect(wrapper.find('#modal-order-summary').shallow().find('#place-order-button').props().disabled).to.be.false;
   });
 
-  it('should fill the address complement field in uppercase', () => {
+  it('should fill the address complement field', () => {
     wrapper.find('#complement').simulate('change', { target: { name: 'complement', value: 'ap. 202' } } );
 
-    expect(wrapper.state('complement')).to.equal('AP. 202');
+    expect(wrapper.state('complement')).to.equal('ap. 202');
   });
 
-  it('should fill the note field in uppercase', () => {
+  it('should fill the note field', () => {
     wrapper.find('#notes').simulate('change', { target: { name: 'notes', value: 'good customer' } } );
 
-    expect(wrapper.state('notes')).to.equal('GOOD CUSTOMER');
+    expect(wrapper.state('notes')).to.equal('good customer');
   });
 
   it('should fill the phonenumber field', () => {
@@ -410,11 +410,11 @@ describe('Checkout place order', () => {
   describe('save order', () => {
     it('should save by order repository', () => {
       const order = {
-        address: 'address new',
+        address: 'ADDRESS NEW',
         change_difference: null,
         complement: '....',
         credit_card_payment: false,
-        notes: 'notes..',
+        notes: 'NOTES..',
         phonenumber: '998887766',
         change_to: 100,
         products: [ { product_id: 1, description: '', cash: 10, quantity: 1 } ],
