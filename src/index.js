@@ -69,7 +69,9 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    marginRight: drawerWidth,
+    [theme.breakpoints.up('sm')]: {
+      marginRight: drawerWidth,
+    },
   },
   badgePadding: {
     padding: theme.spacing(0, 2),

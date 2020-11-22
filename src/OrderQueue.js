@@ -19,6 +19,7 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import Hidden from '@material-ui/core/Hidden'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -243,48 +244,75 @@ class OrderQueue extends Component {
 
     render() {
       const { classes } = this.props;
+      const drawer = (
+        <div>
+          <Paper square>
+              <Tabs
+                  value={this.state.value}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  onChange={this.handleChange}
+              >
+                  <Tab label={
+                      <Badge className={classes.badgePadding} color="secondary" badgeContent={this.state.ordersQueue.length}>
+                          Fila
+                      </Badge>
+                      } />
+                  <Tab label="Rota" />
+              </Tabs>
+              <TabPanel value={this.state.value} index={0}>
+                  {this.state.ordersQueue.map((order) => 
+                    <OrderCard key={`order-${order.id}`} order={order} orderRepository={this.orderRepository}/>)
+                    }
+              </TabPanel>
+              <TabPanel value={this.state.value} index={1}>
+                  Em construção... ;)
+              </TabPanel>
+          </Paper>
+        </div>
+      );
       
     return (
-        <Drawer
-            container={this.container}
-            className={classes.drawer}
-            variant="persistent"
-            anchor="right"
-            open={true}
-            classes={{
-                paper: classes.drawerPaper,
-            }}
-            ModalProps={{
-                keepMounted: true, // Better open performance on mobile.
-            }}
+      <React.Fragment>
+        <Hidden xsDown implementation="css">
+          <Drawer
+              id="drawer-regular-size"
+              container={this.container}
+              className={classes.drawer}
+              variant="persistent"
+              anchor="right"
+              open={true}
+              classes={{
+                  paper: classes.drawerPaper,
+              }}
+              ModalProps={{
+                  keepMounted: true, // Better open performance on mobile.
+              }}
             >
-            
-            <Paper square>
-                <Tabs
-                    value={this.state.value}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    onChange={this.handleChange}
-                >
-                    <Tab label={
-                        <Badge className={classes.badgePadding} color="secondary" badgeContent={this.state.ordersQueue.length}>
-                            Fila
-                        </Badge>
-                        } />
-                    <Tab label="Rota" />
-                </Tabs>
-                <TabPanel value={this.state.value} index={0}>
-                    {this.state.ordersQueue.map((order) => 
-                      <OrderCard key={`order-${order.id}`} order={order} orderRepository={this.orderRepository}/>)
-                      }
-                </TabPanel>
-                <TabPanel value={this.state.value} index={1}>
-                    Em construção... ;)
-                </TabPanel>
-            </Paper>
-        </Drawer>
+              {drawer}
+          </Drawer>
+        </Hidden>
+        <Hidden mdUp>
+          <Drawer
+              id="drawer-small-size"
+              container={this.container}
+              className={classes.drawer}
+              variant="variant"
+              anchor="right"
+              open={false}
+              classes={{
+                  paper: classes.drawerPaper,
+              }}
+              ModalProps={{
+                  keepMounted: true, // Better open performance on mobile.
+              }}
+            >
+              {drawer}
+          </Drawer>
+        </Hidden>
+      </React.Fragment>
     );
   }
 }
