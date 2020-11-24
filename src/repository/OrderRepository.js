@@ -128,4 +128,15 @@ export default class OrderRepository {
 
     return orders;
   }
+
+  allShipped() {
+    const orders = this.order_collection
+      .filter((order) => {
+        return order.status === "SHIPPED";
+      })
+      .sortBy("shipped_date")
+      .value();
+
+    return orders;
+  }
 }

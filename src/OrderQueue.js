@@ -64,6 +64,7 @@ function OrderCard(props) {
   const classesAccordion = useStylesAccordion();
   const handleCancelOrder = props.handleCancelOrder;
   const handleShippedOrder = props.handleShippedOrder;
+  const handleDeliveredOrder = props.handleDeliveredOrder;
 
   function _getMinutesOnQueue(utcDate) {
     var today = new Date();
@@ -95,6 +96,10 @@ function OrderCard(props) {
 
   function handleShippedClick() {
     handleShippedOrder(props.order.id);
+  }
+
+  function handleDeliveredClick() {
+    handleDeliveredOrder(props.order.id);
   }
 
   return (
@@ -174,14 +179,26 @@ function OrderCard(props) {
             <Button size="small" variant="outlined" onClick={handleCancelClick}>
               Cancelar
             </Button>
-            <Button
-              size="small"
-              color="primary"
-              variant="outlined"
-              onClick={handleShippedClick}
-            >
-              Entregar
-            </Button>
+            {handleShippedOrder == null ? null : (
+              <Button
+                size="small"
+                color="primary"
+                variant="outlined"
+                onClick={handleShippedClick}
+              >
+                Entregar
+              </Button>
+            )}
+            {handleDeliveredOrder == null ? null : (
+              <Button
+                size="small"
+                color="primary"
+                variant="contained"
+                onClick={handleDeliveredClick}
+              >
+                Entregue
+              </Button>
+            )}
           </CardActions>
         </Card>
       </AccordionDetails>
@@ -268,7 +285,7 @@ class OrderQueue extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { ordersQueue: [], value: 0, open: false };
+    this.state = { ordersQueue: [], ordersShipped: [], value: 0, open: false };
     this.window = this.props.window;
     this.container =
       this.window !== undefined ? () => this.window.document.body : undefined;
@@ -282,8 +299,9 @@ class OrderQueue extends Component {
   }
 
   fetchOrdersInQueue = () => {
-    const orders = this.orderRepository.allInTheQueue();
-    this.setState({ ordersQueue: orders }, () => console.log(orders.length));
+    const ordersQueue = this.orderRepository.allInTheQueue();
+    const ordersShipped = this.orderRepository.allShipped();
+    this.setState({ ordersQueue, ordersShipped });
   };
 
   handleShippedOrder = (orderId) => {
@@ -293,6 +311,11 @@ class OrderQueue extends Component {
 
   handleCancelOrder = (orderId) => {
     this.orderRepository.markAsCanceled(orderId);
+    this.removeOrderFromState(orderId);
+  };
+
+  handleDeliveredOrder = (orderId) => {
+    this.orderRepository.markAsDeliverid(orderId);
     this.removeOrderFromState(orderId);
   };
 
@@ -332,7 +355,17 @@ class OrderQueue extends Component {
                 </Badge>
               }
             />
-            <Tab label="Rota" />
+            <Tab
+              label={
+                <Badge
+                  className={classes.badgePadding}
+                  color="secondary"
+                  badgeContent={this.state.ordersShipped.length}
+                >
+                  Rota
+                </Badge>
+              }
+            />
           </Tabs>
           <TabPanel value={this.state.value} index={0}>
             {this.state.ordersQueue.map((order) => (
@@ -345,7 +378,14 @@ class OrderQueue extends Component {
             ))}
           </TabPanel>
           <TabPanel value={this.state.value} index={1}>
-            Em construção... ;)
+            {this.state.ordersShipped.map((order) => (
+              <OrderCard
+                key={`order-${order.id}`}
+                order={order}
+                handleCancelOrder={this.handleCancelOrder}
+                handleDeliveredOrder={this.handleDeliveredOrder}
+              />
+            ))}
           </TabPanel>
         </Paper>
       </div>
