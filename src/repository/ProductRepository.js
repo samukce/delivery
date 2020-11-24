@@ -1,15 +1,13 @@
-import DbFactory from './DbFactory';
+import DbFactory from "./DbFactory";
 
-const entity = 'products';
+const entity = "products";
 
 export default class ProductRepository {
-    constructor(db = DbFactory.dbAdapter()) {
-        this.db = db;
-    }
+  constructor(db = DbFactory.dbAdapter()) {
+    this.db = db;
+  }
 
-    all() {
-        return this.db.get(entity)
-        .sortBy('description')
-        .value()
-    }
+  all() {
+    return this.db.get(entity).sortBy("description").value();
+  }
 }

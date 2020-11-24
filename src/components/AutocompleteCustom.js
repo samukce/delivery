@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import cx from 'classnames';
-import constants from './constants';
-import idgen from './idgen';
-import { Icon } from 'react-materialize';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import cx from "classnames";
+import constants from "./constants";
+import idgen from "./idgen";
+import { Icon } from "react-materialize";
 
 class AutocompleteCustom extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      value: props.value || '',
+      value: props.value || "",
       itemSelected: false,
       activeItem: 0,
       expandItems: false,
@@ -39,17 +39,17 @@ class AutocompleteCustom extends Component {
   renderDropdown(minLength, limit) {
     const { value, itemSelected, activeItem, expandItems, data } = this.state;
 
-    if ((minLength && minLength > value.length)
-       || (!expandItems && !value)
-       || itemSelected) {
+    if (
+      (minLength && minLength > value.length) ||
+      (!expandItems && !value) ||
+      itemSelected
+    ) {
       return null;
     }
 
     let matches;
-    if (expandItems && !value)
-      matches = this._allValue();
-    else
-      matches = this._findRealValue(value);
+    if (expandItems && !value) matches = this._allValue();
+    else matches = this._findRealValue(value);
 
     if (limit) matches = matches.slice(0, limit);
     if (!matches || matches.length === 0) {
@@ -59,7 +59,7 @@ class AutocompleteCustom extends Component {
     return (
       <ul
         className="autocomplete-content dropdown-content"
-        ref={autoCompleteContent =>
+        ref={(autoCompleteContent) =>
           (this.autoCompleteContent = autoCompleteContent)
         }
       >
@@ -67,19 +67,19 @@ class AutocompleteCustom extends Component {
           const index = key.toUpperCase().indexOf(value.toUpperCase());
           return (
             <li
-              key={key + '_' + idx}
+              key={key + "_" + idx}
               onClick={this._onAutocomplete.bind(this, key, data[key])}
-              className={idx === activeItem ? 'active' : null}
+              className={idx === activeItem ? "active" : null}
             >
               {data[key] && data[key].img ? (
                 <img src={data[key].img} className="right circle" alt="" />
               ) : null}
               <span>
-                {index !== 0 ? key.substring(0, index) : ''}
+                {index !== 0 ? key.substring(0, index) : ""}
                 <span className="highlight">{value}</span>
                 {key.length !== index + value.length
                   ? key.substring(index + value.length)
-                  : ''}
+                  : ""}
               </span>
             </li>
           );
@@ -108,7 +108,7 @@ class AutocompleteCustom extends Component {
       this.setState({ data: dataLazy });
     }
 
-    const expandItems = expandOnFocus && value === '';
+    const expandItems = expandOnFocus && value === "";
 
     this.setState({ value, itemSelected: false, activeItem: 0, expandItems });
   }
@@ -133,19 +133,22 @@ class AutocompleteCustom extends Component {
       evt.preventDefault();
       if (matchCount > activeItem) {
         this.setState({
-          activeItem: activeItem + 1
+          activeItem: activeItem + 1,
         });
       }
-    } else if (evt.keyCode === 38) { // if event is arrow up
+    } else if (evt.keyCode === 38) {
+      // if event is arrow up
       evt.preventDefault();
       if (activeItem > 0) {
         this.setState({
-          activeItem: activeItem - 1
+          activeItem: activeItem - 1,
         });
       }
-    } else if (evt.keyCode === 27) { // if event is esc, reset value.
-      this.setState({ value: '' });
-    } else if (evt.keyCode === 13) { // if event is enter
+    } else if (evt.keyCode === 27) {
+      // if event is esc, reset value.
+      this.setState({ value: "" });
+    } else if (evt.keyCode === 13) {
+      // if event is enter
       evt.preventDefault();
       // liValue is gets text content of item that pressed enter.
       // we can't do innerHTML or innerText because there is <span className="highlight"></span>
@@ -176,7 +179,7 @@ class AutocompleteCustom extends Component {
     const { data } = this.state;
 
     // go and look to data. if you find a key that have same name with value, return it.
-    return Object.keys(data).filter(key => {
+    return Object.keys(data).filter((key) => {
       const index = key.toUpperCase().indexOf(liValue.toUpperCase());
       return index !== -1 && liValue.length <= key.length;
     });
@@ -187,7 +190,7 @@ class AutocompleteCustom extends Component {
   _onAutocomplete(value, object, evt) {
     const { onChange, onAutocomplete, propertyField } = this.props;
     if (onAutocomplete) {
-      onAutocomplete(object ? object: value);
+      onAutocomplete(object ? object : value);
     }
     if (onChange) {
       onChange(evt, object[propertyField] || value);
@@ -203,6 +206,7 @@ class AutocompleteCustom extends Component {
       id,
       className,
       title,
+      inputType,
       data,
       icon,
       iconClassName,
@@ -229,37 +233,36 @@ class AutocompleteCustom extends Component {
     const _id = id || `autocomplete-${idgen()}`;
     const sizes = { s, m, l };
     let classes = {
-      col: true
+      col: true,
     };
-    constants.SIZES.forEach(size => {
+    constants.SIZES.forEach((size) => {
       classes[size + sizes[size]] = sizes[size];
     });
 
-    
     return (
       <div
         offset={offset}
-        className={cx('input-field', className, classes)}
+        className={cx("input-field", className, classes)}
         {...props}
       >
         {icon && this.renderIcon(icon, iconClassName)}
         <input
           placeholder={placeholder}
-          className={`autocomplete ${validate ? 'validate' : ''}`}
+          className={`autocomplete ${validate ? "validate" : ""}`}
           id={_id}
           onChange={this._onChange}
           onKeyDown={this._onKeyDown}
           onKeyPress={this._onKeyPress}
           onFocus={expandOnFocus && this._onFocus}
           onBlur={expandOnFocus && this._onBlur}
-          type="text"
+          type={inputType ?? "text"}
           autocomplete="off"
           autoFocus={autoFocus}
           required={required}
           validate={validate}
           value={this.state.value}
-          ref={(el) => this.inputField = el}
-          style={{ textTransform: 'uppercase'}}
+          ref={(el) => (this.inputField = el)}
+          style={{ textTransform: "uppercase" }}
         />
         <label htmlFor={_id}>{title}</label>
         {this.renderDropdown(minLength, limit)}
@@ -279,6 +282,8 @@ AutocompleteCustom.propTypes = {
    * The title of the autocomplete component.
    */
   title: PropTypes.string,
+
+  inputType: PropTypes.string,
   /*
    * An object with the keys of the items to match in autocomplete
    * The values are either null or a location to an image
@@ -312,7 +317,7 @@ AutocompleteCustom.propTypes = {
   onChange: PropTypes.func,
 
   propertyField: PropTypes.string,
-  
+
   onKeyPressCustom: PropTypes.func,
   /**
    * Called when auto-completed item is selected.
@@ -327,7 +332,7 @@ AutocompleteCustom.propTypes = {
   /**
    * The value of the input
    */
-  value: PropTypes.string
+  value: PropTypes.string,
 };
 
 export default AutocompleteCustom;
