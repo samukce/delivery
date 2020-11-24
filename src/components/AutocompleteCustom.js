@@ -76,7 +76,7 @@ class AutocompleteCustom extends Component {
               ) : null}
               <span>
                 {index !== 0 ? key.substring(0, index) : ""}
-                <span className="highlight">{value}</span>
+                <span className="highlight">{value.toUpperCase()}</span>
                 {key.length !== index + value.length
                   ? key.substring(index + value.length)
                   : ""}
