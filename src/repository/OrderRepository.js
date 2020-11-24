@@ -51,7 +51,9 @@ export default class OrderRepository {
       .value()
       .reduce(function (map, last_order) {
         map[
-          `${last_order.phonenumber} / ${last_order.address}`
+          `${last_order.phonenumber} / ${last_order.address}${
+            last_order.complement !== "" ? " " + last_order.complement : ""
+          }`
         ] = order_collection.getById(last_order.last_order_id).value();
         return map;
       }, {});
@@ -97,7 +99,11 @@ export default class OrderRepository {
   _saveClientLastOrder(order) {
     const last_orders_by_address_and_phonenumber = this.client_last_order_collection
       .updateWhere(
-        { address: order.address, phonenumber: order.phonenumber },
+        {
+          address: order.address,
+          complement: order.complement,
+          phonenumber: order.phonenumber,
+        },
         { last_order_id: order.id, updated: new Date().toJSON() }
       )
       .write();
@@ -112,6 +118,7 @@ export default class OrderRepository {
           last_order_id: order.id,
           address: order.address,
           phonenumber: order.phonenumber,
+          complement: order.complement,
           created: new Date().toJSON(),
         })
         .write();
