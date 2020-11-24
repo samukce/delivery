@@ -278,7 +278,7 @@ class OrderQueue extends Component {
   componentDidMount() {
     this.fetchOrdersInQueue();
     //REMOVE TIMER AND APPLY REDUX
-    this.timer = setInterval(() => this.fetchOrdersInQueue(), 5000);
+    this.timer = setInterval(() => this.fetchOrdersInQueue(), 2000);
   }
 
   fetchOrdersInQueue = () => {

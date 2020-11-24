@@ -325,6 +325,7 @@ class Checkout extends Component {
             title={<Trans id="checkout.address">Address</Trans>}
             placeholder="..."
             className="address"
+            propertyField="address"
             required
             validate
             lazyData={this.lazyAddressSearch}

@@ -178,91 +178,258 @@ describe("OrderRepository", () => {
     });
 
     it("should return object started by the street name", () => {
-      dbTest.get(entity).push({ id: 1, address: "St Abc Cde Agh" }).write();
+      dbTest
+        .get(entity)
+        .push({
+          id: 1,
+          address: "St Abc Cde Agh",
+          phonenumber: "",
+          complement: "",
+        })
+        .write();
       dbTest
         .get(entityClientLastOrder)
-        .push({ id: 777, address: "St Abc Cde Agh", last_order_id: 1 })
+        .push({
+          id: 777,
+          address: "St Abc Cde Agh",
+          last_order_id: 1,
+          phonenumber: "",
+          complement: "",
+        })
         .write();
 
       expect(orderRepository.searchByAddress("St Abc Cde")).to.be.eql({
-        "St Abc Cde Agh": { id: 1, address: "St Abc Cde Agh" },
+        "St Abc Cde Agh": {
+          id: 1,
+          address: "St Abc Cde Agh",
+          phonenumber: "",
+          complement: "",
+        },
       });
     });
 
     it("should return object ended by the street name", () => {
-      dbTest.get(entity).push({ id: 1, address: "St Abc Cde Agh" }).write();
+      dbTest
+        .get(entity)
+        .push({
+          id: 1,
+          address: "St Abc Cde Agh",
+          phonenumber: "",
+          complement: "",
+        })
+        .write();
       dbTest
         .get(entityClientLastOrder)
-        .push({ id: 777, address: "St Abc Cde Agh", last_order_id: 1 })
+        .push({
+          id: 777,
+          address: "St Abc Cde Agh",
+          last_order_id: 1,
+          phonenumber: "",
+          complement: "",
+        })
         .write();
 
       expect(orderRepository.searchByAddress("Agh")).to.be.eql({
-        "St Abc Cde Agh": { id: 1, address: "St Abc Cde Agh" },
+        "St Abc Cde Agh": {
+          id: 1,
+          address: "St Abc Cde Agh",
+          phonenumber: "",
+          complement: "",
+        },
       });
     });
 
     it("should return object with the middle name", () => {
-      dbTest.get(entity).push({ id: 1, address: "St Abc Cde Agh" }).write();
+      dbTest
+        .get(entity)
+        .push({
+          id: 1,
+          address: "St Abc Cde Agh",
+          phonenumber: "",
+          complement: "",
+        })
+        .write();
       dbTest
         .get(entityClientLastOrder)
-        .push({ id: 777, address: "St Abc Cde Agh", last_order_id: 1 })
+        .push({
+          id: 777,
+          address: "St Abc Cde Agh",
+          last_order_id: 1,
+          phonenumber: "",
+          complement: "",
+        })
         .write();
 
       expect(orderRepository.searchByAddress("Cde")).to.be.eql({
-        "St Abc Cde Agh": { id: 1, address: "St Abc Cde Agh" },
+        "St Abc Cde Agh": {
+          id: 1,
+          address: "St Abc Cde Agh",
+          phonenumber: "",
+          complement: "",
+        },
       });
     });
 
     it("should return object ignoring the case", () => {
-      dbTest.get(entity).push({ id: 1, address: "St Abc Cde Agh" }).write();
+      dbTest
+        .get(entity)
+        .push({
+          id: 1,
+          address: "St Abc Cde Agh",
+          phonenumber: "",
+          complement: "",
+        })
+        .write();
       dbTest
         .get(entityClientLastOrder)
-        .push({ id: 777, address: "St Abc Cde Agh", last_order_id: 1 })
+        .push({
+          id: 777,
+          address: "St Abc Cde Agh",
+          last_order_id: 1,
+          phonenumber: "",
+          complement: "",
+        })
         .write();
 
       expect(orderRepository.searchByAddress("cde")).to.be.eql({
-        "St Abc Cde Agh": { id: 1, address: "St Abc Cde Agh" },
+        "St Abc Cde Agh": {
+          id: 1,
+          address: "St Abc Cde Agh",
+          phonenumber: "",
+          complement: "",
+        },
       });
     });
 
     it("should return the first 2 address", () => {
       dbTest
         .get(entity)
-        .push({ id: 1, address: "St Abc AAAA" })
-        .push({ id: 2, address: "St abc BBBB" })
-        .push({ id: 3, address: "St abc CCCC" })
+        .push({
+          id: 1,
+          address: "St Abc AAAA",
+          phonenumber: "",
+          complement: "",
+        })
+        .push({
+          id: 2,
+          address: "St abc BBBB",
+          phonenumber: "",
+          complement: "",
+        })
+        .push({
+          id: 3,
+          address: "St abc CCCC",
+          phonenumber: "",
+          complement: "",
+        })
         .write();
       dbTest
         .get(entityClientLastOrder)
-        .push({ id: 777, address: "St Abc AAAA", last_order_id: 1 })
-        .push({ id: 888, address: "St abc BBBB", last_order_id: 2 })
-        .push({ id: 999, address: "St abc CCCC", last_order_id: 3 })
+        .push({
+          id: 777,
+          address: "St Abc AAAA",
+          last_order_id: 1,
+          phonenumber: "",
+          complement: "",
+        })
+        .push({
+          id: 888,
+          address: "St abc BBBB",
+          last_order_id: 2,
+          phonenumber: "",
+          complement: "",
+        })
+        .push({
+          id: 999,
+          address: "St abc CCCC",
+          last_order_id: 3,
+          phonenumber: "",
+          complement: "",
+        })
         .write();
 
       expect(orderRepository.searchByAddress("abc", 2)).to.be.eql({
-        "St Abc AAAA": { id: 1, address: "St Abc AAAA" },
-        "St abc BBBB": { id: 2, address: "St abc BBBB" },
+        "St Abc AAAA": {
+          id: 1,
+          address: "St Abc AAAA",
+          phonenumber: "",
+          complement: "",
+        },
+        "St abc BBBB": {
+          id: 2,
+          address: "St abc BBBB",
+          phonenumber: "",
+          complement: "",
+        },
       });
     });
 
     it("should return sortBy address", () => {
       dbTest
         .get(entity)
-        .push({ id: 1, address: "St abc yyyyyyy" })
-        .push({ id: 2, address: "Av. Abcxxxxxx" })
-        .push({ id: 3, address: "Bv. Abcxxxxxx" })
+        .push({
+          id: 1,
+          address: "St abc yyyyyyy",
+          phonenumber: "",
+          complement: "",
+        })
+        .push({
+          id: 2,
+          address: "Av. Abcxxxxxx",
+          phonenumber: "",
+          complement: "",
+        })
+        .push({
+          id: 3,
+          address: "Bv. Abcxxxxxx",
+          phonenumber: "",
+          complement: "",
+        })
         .write();
       dbTest
         .get(entityClientLastOrder)
-        .push({ id: 777, address: "St abc yyyyyyy", last_order_id: 1 })
-        .push({ id: 888, address: "Av. Abcxxxxxx", last_order_id: 2 })
-        .push({ id: 999, address: "Bv. Abcxxxxxx", last_order_id: 3 })
+        .push({
+          id: 777,
+          address: "St abc yyyyyyy",
+          last_order_id: 1,
+          phonenumber: "",
+          complement: "",
+        })
+        .push({
+          id: 888,
+          address: "Av. Abcxxxxxx",
+          last_order_id: 2,
+          phonenumber: "",
+          complement: "",
+        })
+        .push({
+          id: 999,
+          address: "Bv. Abcxxxxxx",
+          last_order_id: 3,
+          phonenumber: "",
+          complement: "",
+        })
         .write();
 
       expect(orderRepository.searchByAddress("abc")).to.be.eql({
-        "Av. Abcxxxxxx": { id: 2, address: "Av. Abcxxxxxx" },
-        "Bv. Abcxxxxxx": { id: 3, address: "Bv. Abcxxxxxx" },
-        "St abc yyyyyyy": { id: 1, address: "St abc yyyyyyy" },
+        "Av. Abcxxxxxx": {
+          id: 2,
+          address: "Av. Abcxxxxxx",
+          phonenumber: "",
+          complement: "",
+        },
+        "Bv. Abcxxxxxx": {
+          id: 3,
+          address: "Bv. Abcxxxxxx",
+          phonenumber: "",
+          complement: "",
+        },
+        "St abc yyyyyyy": {
+          id: 1,
+          address: "St abc yyyyyyy",
+          phonenumber: "",
+          complement: "",
+        },
       });
     });
 
@@ -273,16 +440,26 @@ describe("OrderRepository", () => {
           id: 1,
           address: "Abc St.",
           created: "2019-02-23T23:59:26.919Z",
+          complement: "",
+          phonenumber: "",
         })
         .push({
           id: 2,
           address: "Abc St.",
           created: "2019-02-23T23:50:26.919Z",
+          complement: "",
+          phonenumber: "",
         })
         .write();
       dbTest
         .get(entityClientLastOrder)
-        .push({ id: 777, address: "Abc St.", last_order_id: 1 })
+        .push({
+          id: 777,
+          address: "Abc St.",
+          last_order_id: 1,
+          complement: "",
+          phonenumber: "",
+        })
         .write();
 
       expect(orderRepository.searchByAddress("abc")).to.be.eql({
@@ -290,6 +467,8 @@ describe("OrderRepository", () => {
           id: 1,
           address: "Abc St.",
           created: "2019-02-23T23:59:26.919Z",
+          complement: "",
+          phonenumber: "",
         },
       });
     });

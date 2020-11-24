@@ -12,48 +12,41 @@ export default class OrderRepository {
   searchByAddress(address, takeCount = 5) {
     if (!address) return {};
 
-    const order_collection = this.order_collection;
-    const orders = this.client_last_order_collection
-      .filter((last_order) => {
-        const index = last_order.address
-          .toUpperCase()
-          .indexOf(address.toUpperCase());
-        return index !== -1;
-      })
-      .sortBy("created")
-      .sortBy("address")
-      .take(takeCount)
-      .value()
-      .reduce(function (map, last_order) {
-        map[last_order.address] = order_collection
-          .getById(last_order.last_order_id)
-          .value();
-        return map;
-      }, {});
-
-    return orders;
+    return this._searchByFilternig((last_order) => {
+      const index = last_order.address
+        .toUpperCase()
+        .indexOf(address.toUpperCase());
+      return index !== -1;
+    }, takeCount);
   }
 
   searchByPhone(phonenumber, takeCount = 5) {
     if (!phonenumber) return {};
 
+    return this._searchByFilternig((last_order) => {
+      const index = last_order.phonenumber
+        .toUpperCase()
+        .indexOf(phonenumber.toUpperCase());
+      return index !== -1;
+    }, takeCount);
+  }
+
+  _searchByFilternig(filterFunction, takeCount) {
     const order_collection = this.order_collection;
     const orders = this.client_last_order_collection
-      .filter((last_order) => {
-        const index = last_order.phonenumber
-          .toUpperCase()
-          .indexOf(phonenumber.toUpperCase());
-        return index !== -1;
-      })
+      .filter(filterFunction)
       .sortBy("created")
       .sortBy("phonenumber")
       .take(takeCount)
       .value()
       .reduce(function (map, last_order) {
+        const phone_field =
+          last_order.phonenumber !== "" ? `${last_order.phonenumber} / ` : "";
+        const complement_field =
+          last_order.complement !== "" ? ` ${last_order.complement}` : "";
+
         map[
-          `${last_order.phonenumber} / ${last_order.address}${
-            last_order.complement !== "" ? " " + last_order.complement : ""
-          }`
+          `${phone_field}${last_order.address}${complement_field}`
         ] = order_collection.getById(last_order.last_order_id).value();
         return map;
       }, {});
