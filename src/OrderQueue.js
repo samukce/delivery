@@ -183,7 +183,7 @@ function OrderCard(props) {
               <Button
                 size="small"
                 color="primary"
-                variant="outlined"
+                variant="contained"
                 onClick={handleShippedClick}
               >
                 Entregar
@@ -348,7 +348,7 @@ class OrderQueue extends Component {
               label={
                 <Badge
                   className={classes.badgePadding}
-                  color="secondary"
+                  color="primary"
                   badgeContent={this.state.ordersQueue.length}
                 >
                   Fila
@@ -359,7 +359,7 @@ class OrderQueue extends Component {
               label={
                 <Badge
                   className={classes.badgePadding}
-                  color="secondary"
+                  color="primary"
                   badgeContent={this.state.ordersShipped.length}
                 >
                   Rota
