@@ -29,16 +29,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Products(props) {
   const classes = useStyles();
-  const productRepository = new ProductRepository();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    setProducts(productRepository.all());
+    setProducts(ProductRepository.all());
   }, []);
 
   const deleteProductHandler = (productId) => (event) => {
-    productRepository.delete(productId);
-    setProducts(productRepository.all());
+    ProductRepository.delete(productId);
+    setProducts(ProductRepository.all());
   };
 
   return (

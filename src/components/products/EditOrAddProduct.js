@@ -10,10 +10,9 @@ import SaveIcon from "@material-ui/icons/Save";
 export default function EditOrAddProduct(props) {
   const product_id = props.match.params.id;
   const [product, setProduct] = useState({});
-  const productRepository = new ProductRepository();
   useEffect(() => {
-    setProduct(productRepository.getById(product_id));
-  }, []);
+    setProduct(ProductRepository.getById(product_id));
+  }, [product_id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,7 +34,7 @@ export default function EditOrAddProduct(props) {
       return;
     }
     product.description = product.description.toUpperCase();
-    productRepository.save(product);
+    ProductRepository.save(product);
     props.history.push(`/products`);
   };
 

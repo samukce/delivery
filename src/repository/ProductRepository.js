@@ -2,7 +2,7 @@ import DbFactory from "./DbFactory";
 
 const entity = "products";
 
-export default class ProductRepository {
+class ProductRepository {
   constructor(db = DbFactory.dbAdapter()) {
     this.db = db;
     this.product_collection = db.get("products");
@@ -38,3 +38,5 @@ export default class ProductRepository {
     this.product_collection.remove({ id: productId }).write();
   }
 }
+
+export default new ProductRepository();
