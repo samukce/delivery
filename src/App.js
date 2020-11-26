@@ -15,23 +15,33 @@ function App(props) {
   const { language } = props;
   const localeMessage = require(`./locales/${language}/messages.js`);
   const { enqueueSnackbar } = useSnackbar();
-  const [newVersionAvailable, setNewVersionAvailable] = useState(false);
-  const [waitingWorker, setWaitingWorker] = useState({});
+  const [
+    newVersionAvailableAndWorker,
+    setNewVersionAvailableAndWorker,
+  ] = useState({
+    newVersionAvailable: false,
+    waitingWorker: {},
+  });
 
   useEffect(() => {
     const onServiceWorkerUpdate = (registration) => {
-      setNewVersionAvailable(true);
-      setWaitingWorker(registration && registration.waiting);
+      setNewVersionAvailableAndWorker({
+        newVersionAvailable: true,
+        waitingWorker: registration && registration.waiting,
+      });
     };
 
     const updateServiceWorker = () => {
+      const { waitingWorker } = newVersionAvailableAndWorker;
       waitingWorker && waitingWorker.postMessage({ type: "SKIP_WAITING" });
-      setNewVersionAvailable(false);
+
+      setNewVersionAvailableAndWorker({
+        newVersionAvailable: false,
+      });
       window.location.reload();
     };
 
     const refreshAction = (key) => {
-      //render the snackbar button
       return (
         <Fragment>
           <Button
@@ -47,19 +57,19 @@ function App(props) {
       );
     };
 
+    const { newVersionAvailable } = newVersionAvailableAndWorker;
     if (process.env.NODE_ENV === "production") {
       serviceWorker.register({ onUpdate: onServiceWorkerUpdate });
     }
 
     if (newVersionAvailable) {
-      //show snackbar with refresh button
       enqueueSnackbar("Uma nova versão foi disponibilizada", {
         persist: true,
         variant: "success",
         action: refreshAction(),
       });
     }
-  }, [newVersionAvailable, enqueueSnackbar, waitingWorker]);
+  }, [newVersionAvailableAndWorker, enqueueSnackbar]);
 
   return (
     <I18nProvider language={language} catalogs={{ [language]: localeMessage }}>
