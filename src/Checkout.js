@@ -430,7 +430,7 @@ class Checkout extends Component {
           id="notes"
           s={12}
           name="notes"
-          label={<Trans id="checkout.notes">Notes</Trans>}
+          label="Observações"
           placeholder="..."
           value={this.state.notes}
           ref={(el) => (this.inputNotes = el)}
