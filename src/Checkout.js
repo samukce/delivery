@@ -189,7 +189,7 @@ class Checkout extends Component {
         0
       );
     }
-    this.setState({ total_amount });
+    this.setState({ total_amount }, () => this.updateChangeDifference());
   };
 
   updateChangeDifference = () => {
