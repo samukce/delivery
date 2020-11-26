@@ -89,7 +89,7 @@ export default class OrderRepository {
       .write();
   }
 
-  _saveClientLastOrder(order) {
+  _saveExistentLastOrderWithAllFields(order) {
     const last_orders_by_address_and_phonenumber = this.client_last_order_collection
       .updateWhere(
         {
@@ -101,9 +101,38 @@ export default class OrderRepository {
       )
       .write();
 
+    return (
+      last_orders_by_address_and_phonenumber &&
+      last_orders_by_address_and_phonenumber.length > 0
+    );
+  }
+
+  _saveExistentLastOrderWithEmptyPhoneNumberPrevious(order) {
+    const last_orders_by_address_and_empty_phonenumber = this.client_last_order_collection
+      .updateWhere(
+        {
+          address: order.address,
+          complement: order.complement,
+          phonenumber: "",
+        },
+        {
+          last_order_id: order.id,
+          updated: new Date().toJSON(),
+          phonenumber: order.phonenumber,
+        }
+      )
+      .write();
+
+    return (
+      last_orders_by_address_and_empty_phonenumber &&
+      last_orders_by_address_and_empty_phonenumber.length > 0
+    );
+  }
+
+  _saveClientLastOrder(order) {
     if (
-      !last_orders_by_address_and_phonenumber ||
-      last_orders_by_address_and_phonenumber.length === 0
+      !this._saveExistentLastOrderWithAllFields(order) &&
+      !this._saveExistentLastOrderWithEmptyPhoneNumberPrevious(order)
     ) {
       this.client_last_order_collection
         .push({

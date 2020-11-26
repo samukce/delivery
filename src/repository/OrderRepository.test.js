@@ -165,6 +165,23 @@ describe("OrderRepository", () => {
         expect(dbTest.get(entityClientLastOrder).size().value()).to.be.equal(2);
         expect(order.notes).to.be.equal("Order 2");
       });
+
+      it("should update last order if address exist with empty phonenumber", () => {
+        orderRepository.save({ phonenumber: "", address: "1022 St.", notes: "order 1" });
+        orderRepository.save({ phonenumber: "99887766", address: "1022 St.", notes: "order 2" });
+
+        const clientLastOrder = dbTest
+          .get(entityClientLastOrder)
+          .find({ address: "1022 St." })
+          .value();
+        const order = dbTest
+          .get(entity)
+          .find({ id: clientLastOrder.last_order_id })
+          .value();
+
+        expect(dbTest.get(entityClientLastOrder).size().value()).to.be.equal(1);
+        expect(order.notes).to.be.equal("order 2");
+      });
     });
   });
 
