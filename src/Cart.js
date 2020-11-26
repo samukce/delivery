@@ -32,8 +32,26 @@ class Cart extends Component {
 
   onCartLoad = (products) => {
     const { onProductsChange } = this.props;
+    const freshProduct = products
+      .map((product) => {
+        const freshProduct = ProductRepository.getById(product.product_id);
+        if (!freshProduct) {
+          return null;
+        }
 
-    this.setState({ products }, () => onProductsChange(this.state.products));
+        return {
+          product_id: freshProduct.id,
+          description: freshProduct.description,
+          cash: freshProduct.cash,
+          card: freshProduct.card,
+          quantity: product.quantity,
+        };
+      })
+      .filter((product) => product != null);
+
+    this.setState({ products: freshProduct }, () =>
+      onProductsChange(freshProduct)
+    );
   };
 
   handleOnAutocompleteProduct = (value) => {
@@ -143,7 +161,11 @@ class Cart extends Component {
 
     return map(products, (product, i) => (
       <tr key={i}>
-        <td>{product.description.toUpperCase()}</td>
+        <td>
+          {product && product.description != null
+            ? product.description.toUpperCase()
+            : ""}
+        </td>
         <td className="center-align">{getValueFormatted(product.cash)}</td>
         <td className="center-align">{product.quantity}</td>
         <td className="center-align">

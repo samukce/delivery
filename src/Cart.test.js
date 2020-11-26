@@ -7,14 +7,27 @@ describe("Cart", () => {
   let spyAddProduct,
     wrapper,
     sandbox,
-    stubProductRepository,
+    stubProductRepositoryAll,
+    stubProductRepositoryGetById,
     componentRender,
     spyOnProductChange;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
 
-    stubProductRepository = createStubProductRepository(sandbox);
+    stubProductRepositoryAll = sandbox.stub(ProductRepository, "all").returns([
+      { id: 1, description: "Product 1", cash: 3.5, card: 4.0 },
+      { id: 2, description: "Product 2", cash: 2.5, card: 3.0 },
+    ]);
+    stubProductRepositoryGetById = sandbox.stub(ProductRepository, "getById");
+    stubProductRepositoryGetById.withArgs(1).returns({
+      id: 1,
+      description: "Product 1",
+      cash: 4.0,
+      card: 4.5,
+    });
+    stubProductRepositoryGetById.withArgs("user", "type").returns(null);
+
     spyOnProductChange = sandbox.spy();
 
     wrapper = shallow(<Cart onProductsChange={spyOnProductChange} />);
@@ -29,8 +42,7 @@ describe("Cart", () => {
 
   describe("add product", () => {
     it("should load products from repository", () => {
-      console.log(stubProductRepository);
-      expect(stubProductRepository).to.have.been.called;
+      expect(stubProductRepositoryAll).to.have.been.called;
     });
 
     it("should not add if no product selected", () => {
@@ -404,7 +416,7 @@ describe("Cart", () => {
   });
 
   describe("load products", () => {
-    it("should update the products state", () => {
+    it("should update the products state with latest product", () => {
       const productAdded = {
         product_id: 1,
         description: "Product 1",
@@ -415,7 +427,15 @@ describe("Cart", () => {
 
       componentRender.onCartLoad([productAdded]);
 
-      expect(wrapper.state("products")).to.eql([productAdded]);
+      const productLatest = {
+        product_id: 1,
+        description: "Product 1",
+        cash: 4.0,
+        card: 4.5,
+        quantity: 2,
+      };
+
+      expect(wrapper.state("products")).to.eql([productLatest]);
     });
 
     it("should fire on change product when add a product", () => {
@@ -424,27 +444,34 @@ describe("Cart", () => {
         description: "Product 1",
         cash: 3.5,
         card: 4.0,
-        quantity: 2,
+        quantity: 1,
       };
 
       componentRender.onCartLoad([productAdded]);
 
-      expect(spyOnProductChange).to.have.been.calledWith([productAdded]);
+      const productLatest = {
+        product_id: 1,
+        description: "Product 1",
+        cash: 4.0,
+        card: 4.5,
+        quantity: 1,
+      };
+
+      expect(spyOnProductChange).to.have.been.calledWith([productLatest]);
+    });
+
+    it("should ignore if the product not exist", () => {
+      const productAdded = {
+        product_id: 99999,
+        description: "Product 1",
+        cash: 3.5,
+        card: 4.0,
+        quantity: 1,
+      };
+
+      componentRender.onCartLoad([productAdded]);
+
+      expect(spyOnProductChange).to.have.been.calledWith([]);
     });
   });
 });
-
-function createStubProductRepository(sandbox) {
-  return sandbox.stub(ProductRepository, "all").returns([
-    { id: 1, description: "Product 1", cash: 3.5, card: 4.0 },
-    { id: 2, description: "Product 2", cash: 2.5, card: 3.0 },
-  ]);
-
-  // const all = sandbox.stub().returns([
-  //   { id: 1, description: 'Product 1', cash: 3.5, card: 4.0 },
-  //   { id: 2, description: 'Product 2', cash: 2.5, card: 3.0 }
-  // ]);
-  // return {
-  //   all: all
-  // };
-}
