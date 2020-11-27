@@ -487,7 +487,7 @@ class OrderQueue extends Component {
           </Drawer>
         </Hidden>
         <Hidden mdUp>
-          <div>
+          <Box zIndex="tooltip">
             <Fab
               size="small"
               color="primary"
@@ -497,7 +497,7 @@ class OrderQueue extends Component {
             >
               <ListIcon />
             </Fab>
-          </div>
+          </Box>
 
           <Drawer
             id="drawer-small-size"
