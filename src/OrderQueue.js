@@ -350,6 +350,7 @@ class OrderQueue extends Component {
                   className={classes.badgePadding}
                   color="primary"
                   badgeContent={this.state.ordersQueue.length}
+                  max={999}
                 >
                   Fila
                 </Badge>
@@ -361,6 +362,7 @@ class OrderQueue extends Component {
                   className={classes.badgePadding}
                   color="primary"
                   badgeContent={this.state.ordersShipped.length}
+                  max={999}
                 >
                   Rota
                 </Badge>
