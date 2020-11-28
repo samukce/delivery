@@ -289,10 +289,6 @@ const orderQueueTab = 0;
 const orderShippedTab = 1;
 
 class OrderQueue extends Component {
-  static defaultProps = {
-    orderRepository: new OrderRepository(),
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -308,7 +304,6 @@ class OrderQueue extends Component {
     this.window = this.props.window;
     this.container =
       this.window !== undefined ? () => this.window.document.body : undefined;
-    this.orderRepository = this.props.orderRepository;
   }
 
   componentDidMount() {
@@ -324,8 +319,8 @@ class OrderQueue extends Component {
       return;
     }
 
-    const ordersQueueSize = this.orderRepository.allInTheQueueSize();
-    const ordersShippedSize = this.orderRepository.allShippedSize();
+    const ordersQueueSize = OrderRepository.allInTheQueueSize();
+    const ordersShippedSize = OrderRepository.allShippedSize();
     this.setState({ ordersQueueSize, ordersShippedSize });
 
     if (this.state.value === orderQueueTab) {
@@ -344,7 +339,7 @@ class OrderQueue extends Component {
   };
 
   fetchQueue = () => {
-    const ordersQueue = this.orderRepository.allInTheQueue(
+    const ordersQueue = OrderRepository.allInTheQueue(
       this.state.ordersQueuePage,
       ordersPerPage
     );
@@ -352,7 +347,7 @@ class OrderQueue extends Component {
   };
 
   fetchShipped = () => {
-    const ordersShipped = this.orderRepository.allShipped(
+    const ordersShipped = OrderRepository.allShipped(
       this.state.ordersShippedPage,
       ordersPerPage
     );
@@ -360,27 +355,36 @@ class OrderQueue extends Component {
   };
 
   handleShippedOrder = (orderId) => {
-    this.orderRepository.markAsShipped(orderId);
-    this.removeOrderFromState(orderId);
+    OrderRepository.markAsShipped(orderId);
+    this.removeOrderQueueFromState(orderId);
   };
 
   handleCancelOrder = (orderId) => {
-    this.orderRepository.markAsCanceled(orderId);
-    this.removeOrderFromState(orderId);
+    OrderRepository.markAsCanceled(orderId);
+    this.removeOrderQueueFromState(orderId);
+    this.removeOrderShippedFromState(orderId);
   };
 
   handleDeliveredOrder = (orderId) => {
-    this.orderRepository.markAsDeliverid(orderId);
-    this.removeOrderFromState(orderId);
+    OrderRepository.markAsDeliverid(orderId);
+    this.removeOrderShippedFromState(orderId);
   };
 
   handleChange = (event, newValue) => {
     this.setState({ value: newValue }, () => this.fetchOrdersInQueue());
   };
 
-  removeOrderFromState(orderId) {
+  removeOrderQueueFromState(orderId) {
     this.setState({
       ordersQueue: this.state.ordersQueue.filter(
+        (order) => order.id !== orderId
+      ),
+    });
+  }
+
+  removeOrderShippedFromState(orderId) {
+    this.setState({
+      ordersShipped: this.state.ordersShipped.filter(
         (order) => order.id !== orderId
       ),
     });
