@@ -147,7 +147,7 @@ export default class OrderRepository {
     }
   }
 
-  allInTheQueue() {
+  allInTheQueue(page = 1, pageSize = 25) {
     const orders = this.order_collection
       .filter((order) => {
         return order.status == null || order.status === "QUEUE";
@@ -155,10 +155,20 @@ export default class OrderRepository {
       .sortBy("created")
       .value();
 
-    return orders;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return orders.slice(startIndex, endIndex);
   }
 
-  allShipped() {
+  allInTheQueueSize() {
+    return this.order_collection
+      .filter((order) => {
+        return order.status == null || order.status === "QUEUE";
+      })
+      .value().length;
+  }
+
+  allShipped(page = 1, pageSize = 25) {
     const orders = this.order_collection
       .filter((order) => {
         return order.status === "SHIPPED";
@@ -166,6 +176,16 @@ export default class OrderRepository {
       .sortBy("shipped_date")
       .value();
 
-    return orders;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return orders.slice(startIndex, endIndex);
+  }
+
+  allShippedSize() {
+    return this.order_collection
+      .filter((order) => {
+        return order.status === "SHIPPED";
+      })
+      .value().length;
   }
 }

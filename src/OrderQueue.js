@@ -23,6 +23,7 @@ import ListIcon from "@material-ui/icons/List";
 import CloseOutlinedIcon from "@material-ui/icons/CloseOutlined";
 import Hidden from "@material-ui/core/Hidden";
 import Fab from "@material-ui/core/Fab";
+import Pagination from "@material-ui/lab/Pagination";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -276,7 +277,14 @@ const useStyles = (theme) => ({
   badgePadding: {
     padding: theme.spacing(0, 2),
   },
+  pagination: {
+    background: "#ffffff",
+  },
 });
+
+const ordersPerPage = 25;
+const orderQueueTab = 0;
+const orderShippedTab = 1;
 
 class OrderQueue extends Component {
   static defaultProps = {
@@ -285,7 +293,16 @@ class OrderQueue extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { ordersQueue: [], ordersShipped: [], value: 0, open: false };
+    this.state = {
+      ordersQueue: [],
+      ordersQueueSize: 0,
+      ordersShipped: [],
+      ordersShippedSize: 0,
+      value: 0,
+      open: false,
+      ordersQueuePage: 1,
+      ordersShippedPage: 1,
+    };
     this.window = this.props.window;
     this.container =
       this.window !== undefined ? () => this.window.document.body : undefined;
@@ -299,9 +316,39 @@ class OrderQueue extends Component {
   }
 
   fetchOrdersInQueue = () => {
-    const ordersQueue = this.orderRepository.allInTheQueue();
-    const ordersShipped = this.orderRepository.allShipped();
-    this.setState({ ordersQueue, ordersShipped });
+    const ordersQueueSize = this.orderRepository.allInTheQueueSize();
+    const ordersShippedSize = this.orderRepository.allShippedSize();
+    this.setState({ ordersQueueSize, ordersShippedSize });
+
+    if (this.state.value === orderQueueTab) {
+      this.fetchQueue();
+    } else if (this.state.value === orderShippedTab) {
+      this.fetchShipped();
+    }
+  };
+
+  handleQueuePageChange = (event, value) => {
+    this.setState({ ordersQueuePage: value }, () => this.fetchQueue());
+  };
+
+  handleShippedPageChange = (event, value) => {
+    this.setState({ ordersShippedPage: value }, () => this.fetchShipped());
+  };
+
+  fetchQueue = () => {
+    const ordersQueue = this.orderRepository.allInTheQueue(
+      this.state.ordersQueuePage,
+      ordersPerPage
+    );
+    this.setState({ ordersQueue });
+  };
+
+  fetchShipped = () => {
+    const ordersShipped = this.orderRepository.allShipped(
+      this.state.ordersShippedPage,
+      ordersPerPage
+    );
+    this.setState({ ordersShipped });
   };
 
   handleShippedOrder = (orderId) => {
@@ -320,7 +367,7 @@ class OrderQueue extends Component {
   };
 
   handleChange = (event, newValue) => {
-    this.setState({ value: newValue });
+    this.setState({ value: newValue }, () => this.fetchOrdersInQueue());
   };
 
   removeOrderFromState(orderId) {
@@ -349,7 +396,7 @@ class OrderQueue extends Component {
                 <Badge
                   className={classes.badgePadding}
                   color="primary"
-                  badgeContent={this.state.ordersQueue.length}
+                  badgeContent={this.state.ordersQueueSize}
                   max={999}
                 >
                   Fila
@@ -361,7 +408,7 @@ class OrderQueue extends Component {
                 <Badge
                   className={classes.badgePadding}
                   color="primary"
-                  badgeContent={this.state.ordersShipped.length}
+                  badgeContent={this.state.ordersShippedSize}
                   max={999}
                 >
                   Rota
@@ -369,7 +416,7 @@ class OrderQueue extends Component {
               }
             />
           </Tabs>
-          <TabPanel value={this.state.value} index={0}>
+          <TabPanel value={this.state.value} index={orderQueueTab}>
             {this.state.ordersQueue.map((order) => (
               <OrderCard
                 key={`order-${order.id}`}
@@ -378,8 +425,17 @@ class OrderQueue extends Component {
                 handleShippedOrder={this.handleShippedOrder}
               />
             ))}
+            <Box hidden={this.state.ordersQueueSize < ordersPerPage}>
+              <Pagination
+                count={Math.ceil(this.state.ordersQueueSize / ordersPerPage)}
+                size="small"
+                className={classes.pagination}
+                page={this.state.ordersQueuePage}
+                onChange={this.handleQueuePageChange}
+              />
+            </Box>
           </TabPanel>
-          <TabPanel value={this.state.value} index={1}>
+          <TabPanel value={this.state.value} index={orderShippedTab}>
             {this.state.ordersShipped.map((order) => (
               <OrderCard
                 key={`order-${order.id}`}
@@ -388,6 +444,15 @@ class OrderQueue extends Component {
                 handleDeliveredOrder={this.handleDeliveredOrder}
               />
             ))}
+            <Box hidden={this.state.ordersShippedSize < ordersPerPage}>
+              <Pagination
+                count={Math.ceil(this.state.ordersShippedSize / ordersPerPage)}
+                size="small"
+                className={classes.pagination}
+                page={this.state.ordersShippedPage}
+                onChange={this.handleShippedPageChange}
+              />
+            </Box>
           </TabPanel>
         </Paper>
       </div>
