@@ -24,6 +24,8 @@ import CloseOutlinedIcon from "@material-ui/icons/CloseOutlined";
 import Hidden from "@material-ui/core/Hidden";
 import Fab from "@material-ui/core/Fab";
 import Pagination from "@material-ui/lab/Pagination";
+import { isWidthDown, withWidth } from "@material-ui/core";
+import { compose } from "recompose";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -310,12 +312,18 @@ class OrderQueue extends Component {
   }
 
   componentDidMount() {
-    this.fetchOrdersInQueue();
+    const isMobile = isWidthDown("xs", this.props.width);
+    this.setState({ open: !isMobile }, () => this.fetchOrdersInQueue());
+
     //REMOVE TIMER AND APPLY REDUX
     this.timer = setInterval(() => this.fetchOrdersInQueue(), 2000);
   }
 
   fetchOrdersInQueue = () => {
+    if (!this.state.open) {
+      return;
+    }
+
     const ordersQueueSize = this.orderRepository.allInTheQueueSize();
     const ordersShippedSize = this.orderRepository.allShippedSize();
     this.setState({ ordersQueueSize, ordersShippedSize });
@@ -467,7 +475,7 @@ class OrderQueue extends Component {
             className={classes.drawer}
             variant="persistent"
             anchor="right"
-            open={true}
+            open={this.state.open}
             classes={{
               paper: classes.drawerPaper,
             }}
@@ -522,4 +530,4 @@ class OrderQueue extends Component {
   }
 }
 
-export default withStyles(useStyles)(OrderQueue);
+export default compose(withStyles(useStyles), withWidth())(OrderQueue);
