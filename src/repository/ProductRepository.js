@@ -104,6 +104,28 @@ class ProductRepository {
       })
       .value()
       .forEach((product) => this._sendAndUpadateProduct(product, current_date));
+
+    this.firebase
+      .products()
+      .once("value")
+      .then((snapshot) => {
+        const products = snapshot.val();
+
+        for (var id in products) {
+          const product = products[id];
+          const productLocal = this.product_collection
+            .getById(product.id)
+            .value();
+
+          if (!productLocal) {
+            this.product_collection.push(product).write();
+          } else if (
+            new Date(product.updated) > new Date(productLocal.updated)
+          ) {
+            this.product_collection.getById(product.id).assign(product).write();
+          }
+        }
+      });
   }
 }
 
