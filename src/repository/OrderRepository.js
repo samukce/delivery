@@ -44,13 +44,14 @@ class OrderRepository {
 
   _searchByFilternig(filterFunction, takeCount) {
     const order_collection = this.order_collection;
+    const firebase = this.authUser ? this.firebase : null;
     const orders = this.client_last_order_collection
       .filter(filterFunction)
       .sortBy("created")
       .sortBy("phonenumber")
       .take(takeCount)
       .value()
-      .reduce(function (map, last_order) {
+      .reduce((map, last_order) => {
         const phone_field =
           last_order.phonenumber !== "" ? `${last_order.phonenumber} / ` : "";
         const complement_field =
@@ -58,7 +59,21 @@ class OrderRepository {
 
         map[
           `${phone_field}${last_order.address}${complement_field}`
-        ] = order_collection.getById(last_order.last_order_id).value();
+        ] = async () => {
+          var order = order_collection
+            .getById(last_order.last_order_id)
+            .value();
+
+          if (order) {
+            return order;
+          } else if (firebase && !order) {
+            const orderFromFirebase = await firebase
+              .order(last_order.last_order_id)
+              .once("value");
+            return orderFromFirebase.val();
+          }
+          return {};
+        };
         return map;
       }, {});
 

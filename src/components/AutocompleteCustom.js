@@ -189,14 +189,21 @@ class AutocompleteCustom extends Component {
 
   _onAutocomplete(value, object, evt) {
     const { onChange, onAutocomplete, propertyField } = this.props;
-    if (onAutocomplete) {
-      onAutocomplete(object ? object : value);
-    }
-    if (onChange) {
-      onChange(evt, object[propertyField] || value);
-    }
+    Promise.resolve(object()).then((objectValue) => {
+      if (onAutocomplete) {
+        onAutocomplete(objectValue ? objectValue : value);
+      }
 
-    this.setState({ value, itemSelected: true, expandItems: false });
+      if (onChange) {
+        onChange(evt, objectValue[propertyField] || value);
+      }
+
+      this.setState({
+        value: objectValue[propertyField],
+        itemSelected: true,
+        expandItems: false,
+      });
+    });
   }
 
   setFocus = () => this.inputField.focus();
