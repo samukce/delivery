@@ -1,6 +1,7 @@
 import DbFactory from "./DbFactory";
 import { ORDERS, CLIENT_LAST_ORDERS } from "../constants/entities";
 
+const maxDate = new Date(8640000000000000);
 const minDate = new Date(-8640000000000000);
 
 class OrderRepository {
@@ -71,8 +72,9 @@ class OrderRepository {
 
     entity.user_id = this.authUser.uid;
     entity.last_sync = date_last_sync;
+    entity.updated = entity.updated ?? date_last_sync;
 
-    this.firebase
+    return this.firebase
       .generic(ref, entity.id)
       .set(entity)
       .then(() => {
@@ -98,7 +100,8 @@ class OrderRepository {
   }
 
   _sendAndUpadateOrder(order, date_sync) {
-    this._saveEntityOnFireBase(ORDERS, order, date_sync, (newEntity) =>
+    console.log(order);
+    return this._saveEntityOnFireBase(ORDERS, order, date_sync, (newEntity) =>
       this._updateOrder(newEntity)
     );
   }
@@ -292,24 +295,59 @@ class OrderRepository {
   }
 
   //TODO: extract
-  syncOrders() {
+  async syncOrders() {
+    if (!this.authUser) return;
+
     const current_date = new Date().toJSON();
 
-    this.order_collection
-      .filter((order) => {
-        return new Date(order.updated) > new Date(order.last_sync || minDate);
-      })
-      .value()
-      .forEach((order) => this._sendAndUpadateOrder(order, current_date));
+    let orders_to_send = [];
+    do {
+      orders_to_send = this.order_collection
+        .filter((order) => {
+          return (
+            new Date(order.updated || maxDate) >
+            new Date(order.last_sync || minDate)
+          );
+        })
+        .take(10)
+        .value();
+
+      await orders_to_send.reduce(async (promise, order) => {
+        await promise;
+        await this._sendAndUpadateOrder(order, current_date);
+      }, Promise.resolve());
+    } while (orders_to_send.length > 0);
+
+    const max_order_sync = 200;
+    const snapshot = await this.firebase
+      .orders()
+      .orderByChild("created")
+      .limitToFirst(max_order_sync)
+      .once("value");
+    const orders = snapshot.val();
+
+    for (var id in orders) {
+      const order = orders[id];
+
+      const orderLocal = this.order_collection.getById(id).value();
+
+      if (!orderLocal) {
+        this.order_collection.push(order).write();
+      } else if (new Date(order.updated) > new Date(orderLocal.updated)) {
+        this.order_collection.getById(order.id).assign(order).write();
+      }
+    }
   }
 
   syncClientLastOrders() {
+    if (!this.authUser) return;
+
     const current_date = new Date().toJSON();
 
     this.client_last_order_collection
       .filter((client_last_order) => {
         return (
-          new Date(client_last_order.updated) >
+          new Date(client_last_order.updated || maxDate) >
           new Date(client_last_order.last_sync || minDate)
         );
       })

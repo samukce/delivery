@@ -409,7 +409,7 @@ class OrderQueue extends Component {
                   className={classes.badgePadding}
                   color="primary"
                   badgeContent={this.state.ordersQueueSize}
-                  max={999}
+                  max={99}
                 >
                   Fila
                 </Badge>

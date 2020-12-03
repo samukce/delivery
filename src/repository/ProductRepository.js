@@ -94,6 +94,8 @@ class ProductRepository {
   }
 
   syncProducts() {
+    if (!this.authUser) return;
+
     const current_date = new Date().toJSON();
 
     this.product_collection
