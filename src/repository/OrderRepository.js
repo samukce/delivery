@@ -100,7 +100,6 @@ class OrderRepository {
   }
 
   _sendAndUpadateOrder(order, date_sync) {
-    console.log(order);
     return this._saveEntityOnFireBase(ORDERS, order, date_sync, (newEntity) =>
       this._updateOrder(newEntity)
     );
@@ -298,26 +297,11 @@ class OrderRepository {
   async syncOrders() {
     if (!this.authUser) return;
 
-    const current_date = new Date().toJSON();
+    await this.sendAllOrdersChanged();
+    await this.downloadOldestOrders();
+  }
 
-    let orders_to_send = [];
-    do {
-      orders_to_send = this.order_collection
-        .filter((order) => {
-          return (
-            new Date(order.updated || maxDate) >
-            new Date(order.last_sync || minDate)
-          );
-        })
-        .take(10)
-        .value();
-
-      await orders_to_send.reduce(async (promise, order) => {
-        await promise;
-        await this._sendAndUpadateOrder(order, current_date);
-      }, Promise.resolve());
-    } while (orders_to_send.length > 0);
-
+  async downloadOldestOrders() {
     const max_order_sync = 200;
     const snapshot = await this.firebase
       .orders()
@@ -339,7 +323,29 @@ class OrderRepository {
     }
   }
 
-  syncClientLastOrders() {
+  async sendAllOrdersChanged() {
+    const current_date = new Date().toJSON();
+
+    let orders_to_send = [];
+    do {
+      orders_to_send = this.order_collection
+        .filter((order) => {
+          return (
+            new Date(order.updated || maxDate) >
+            new Date(order.last_sync || minDate)
+          );
+        })
+        .take(25)
+        .value();
+
+      await orders_to_send.reduce(async (promise, order) => {
+        await promise;
+        await this._sendAndUpadateOrder(order, current_date);
+      }, Promise.resolve());
+    } while (orders_to_send.length > 0);
+  }
+
+  async syncClientLastOrders() {
     if (!this.authUser) return;
 
     const current_date = new Date().toJSON();
@@ -355,6 +361,34 @@ class OrderRepository {
       .forEach((client_last_order) =>
         this._sendAndUpadateClientLastOrder(client_last_order, current_date)
       );
+
+    const max_order_sync = 500;
+    const snapshot = await this.firebase
+      .lastOrders()
+      .orderByChild("updated")
+      .limitToLast(max_order_sync)
+      .once("value");
+    const client_last_orders = snapshot.val();
+
+    for (var id in client_last_orders) {
+      const client_last_order = client_last_orders[id];
+
+      const clientLastOrderLocal = this.client_last_order_collection
+        .getById(id)
+        .value();
+
+      if (!clientLastOrderLocal) {
+        this.client_last_order_collection.push(client_last_order).write();
+      } else if (
+        new Date(client_last_order.updated) >
+        new Date(clientLastOrderLocal.updated)
+      ) {
+        this.client_last_order_collection
+          .getById(client_last_order.id)
+          .assign(client_last_order)
+          .write();
+      }
+    }
   }
 }
 
