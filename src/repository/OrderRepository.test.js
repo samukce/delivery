@@ -205,7 +205,7 @@ describe("OrderRepository", () => {
       expect(orderRepository.searchByAddress(null)).to.be.empty;
     });
 
-    it("should return object started by the street name", () => {
+    it("should return object started by the street name", async () => {
       dbTest
         .get(entity)
         .push({
@@ -226,17 +226,17 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByAddress("St Abc Cde")).to.be.eql({
-        "St Abc Cde Agh": {
-          id: 1,
-          address: "St Abc Cde Agh",
-          phonenumber: "",
-          complement: "",
-        },
+      const orders = orderRepository.searchByAddress("St Abc Cde");
+      const orderFirstOption = await orders["St Abc Cde Agh"]();
+      expect(orderFirstOption).to.be.eql({
+        id: 1,
+        address: "St Abc Cde Agh",
+        phonenumber: "",
+        complement: "",
       });
     });
 
-    it("should return object ended by the street name", () => {
+    it("should return object ended by the street name", async () => {
       dbTest
         .get(entity)
         .push({
@@ -257,17 +257,17 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByAddress("Agh")).to.be.eql({
-        "St Abc Cde Agh": {
-          id: 1,
-          address: "St Abc Cde Agh",
-          phonenumber: "",
-          complement: "",
-        },
+      const orders = orderRepository.searchByAddress("Agh");
+      const orderFirstOption = await orders["St Abc Cde Agh"]();
+      expect(orderFirstOption).to.be.eql({
+        id: 1,
+        address: "St Abc Cde Agh",
+        phonenumber: "",
+        complement: "",
       });
     });
 
-    it("should return object with the middle name", () => {
+    it("should return object with the middle name", async () => {
       dbTest
         .get(entity)
         .push({
@@ -288,17 +288,17 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByAddress("Cde")).to.be.eql({
-        "St Abc Cde Agh": {
-          id: 1,
-          address: "St Abc Cde Agh",
-          phonenumber: "",
-          complement: "",
-        },
+      const orders = orderRepository.searchByAddress("Cde");
+      const orderFirstOption = await orders["St Abc Cde Agh"]();
+      expect(orderFirstOption).to.be.eql({
+        id: 1,
+        address: "St Abc Cde Agh",
+        phonenumber: "",
+        complement: "",
       });
     });
 
-    it("should return object ignoring the case", () => {
+    it("should return object ignoring the case", async () => {
       dbTest
         .get(entity)
         .push({
@@ -319,17 +319,17 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByAddress("cde")).to.be.eql({
-        "St Abc Cde Agh": {
-          id: 1,
-          address: "St Abc Cde Agh",
-          phonenumber: "",
-          complement: "",
-        },
+      const orders = orderRepository.searchByAddress("cde");
+      const orderFirstOption = await orders["St Abc Cde Agh"]();
+      expect(orderFirstOption).to.be.eql({
+        id: 1,
+        address: "St Abc Cde Agh",
+        phonenumber: "",
+        complement: "",
       });
     });
 
-    it("should return the first 2 address", () => {
+    it("should return the first 2 address", async () => {
       dbTest
         .get(entity)
         .push({
@@ -376,23 +376,25 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByAddress("abc", 2)).to.be.eql({
-        "St Abc AAAA": {
-          id: 1,
-          address: "St Abc AAAA",
-          phonenumber: "",
-          complement: "",
-        },
-        "St abc BBBB": {
-          id: 2,
-          address: "St abc BBBB",
-          phonenumber: "",
-          complement: "",
-        },
+      const orders = orderRepository.searchByAddress("abc", 2);
+      const orderFirstOption = await orders["St Abc AAAA"]();
+      expect(orderFirstOption).to.be.eql({
+        id: 1,
+        address: "St Abc AAAA",
+        phonenumber: "",
+        complement: "",
+      });
+
+      const orderSecondOption = await orders["St abc BBBB"]();
+      expect(orderSecondOption).to.be.eql({
+        id: 2,
+        address: "St abc BBBB",
+        phonenumber: "",
+        complement: "",
       });
     });
 
-    it("should return sortBy address", () => {
+    it("should return sortBy address", async () => {
       dbTest
         .get(entity)
         .push({
@@ -439,29 +441,33 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByAddress("abc")).to.be.eql({
-        "Av. Abcxxxxxx": {
-          id: 2,
-          address: "Av. Abcxxxxxx",
-          phonenumber: "",
-          complement: "",
-        },
-        "Bv. Abcxxxxxx": {
-          id: 3,
-          address: "Bv. Abcxxxxxx",
-          phonenumber: "",
-          complement: "",
-        },
-        "St abc yyyyyyy": {
-          id: 1,
-          address: "St abc yyyyyyy",
-          phonenumber: "",
-          complement: "",
-        },
+      const orders = orderRepository.searchByAddress("abc");
+      const orderFirstOption = await orders["Av. Abcxxxxxx"]();
+      expect(orderFirstOption).to.be.eql({
+        id: 2,
+        address: "Av. Abcxxxxxx",
+        phonenumber: "",
+        complement: "",
+      });
+
+      const orderSecodOption = await orders["Bv. Abcxxxxxx"]();
+      expect(orderSecodOption).to.be.eql({
+        id: 3,
+        address: "Bv. Abcxxxxxx",
+        phonenumber: "",
+        complement: "",
+      });
+
+      const orderThirdOption = await orders["St abc yyyyyyy"]();
+      expect(orderThirdOption).to.be.eql({
+        id: 1,
+        address: "St abc yyyyyyy",
+        phonenumber: "",
+        complement: "",
       });
     });
 
-    it("should group By created date desc", () => {
+    it("should group By created date desc", async () => {
       dbTest
         .get(entity)
         .push({
@@ -490,14 +496,14 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByAddress("abc")).to.be.eql({
-        "Abc St.": {
-          id: 1,
-          address: "Abc St.",
-          created: "2019-02-23T23:59:26.919Z",
-          complement: "",
-          phonenumber: "",
-        },
+      const orders = orderRepository.searchByAddress("abc");
+      const orderFirstOption = await orders["Abc St."]();
+      expect(orderFirstOption).to.be.eql({
+        id: 1,
+        address: "Abc St.",
+        created: "2019-02-23T23:59:26.919Z",
+        complement: "",
+        phonenumber: "",
       });
     });
   });
@@ -511,7 +517,7 @@ describe("OrderRepository", () => {
       expect(orderRepository.searchByPhone(null)).to.be.empty;
     });
 
-    it("should return object started by the number", () => {
+    it("should return object started by the number", async () => {
       dbTest
         .get(entity)
         .push({
@@ -532,17 +538,17 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByPhone("9988")).to.be.eql({
-        "99887766 / 101 Abc St.": {
-          id: 1,
-          phonenumber: "99887766",
-          address: "101 Abc St.",
-          complement: "",
-        },
+      const orders = orderRepository.searchByPhone("9988");
+      const orderFirstOption = await orders["99887766 / 101 Abc St."]();
+      expect(orderFirstOption).to.be.eql({
+        id: 1,
+        phonenumber: "99887766",
+        address: "101 Abc St.",
+        complement: "",
       });
     });
 
-    it("should return object ended by the number", () => {
+    it("should return object ended by the number", async () => {
       dbTest
         .get(entity)
         .push({
@@ -563,17 +569,17 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByPhone("7766")).to.be.eql({
-        "99887766 / 101 Abc St.": {
-          id: 1,
-          phonenumber: "99887766",
-          address: "101 Abc St.",
-          complement: "",
-        },
+      const orders = orderRepository.searchByPhone("7766");
+      const orderFirstOption = await orders["99887766 / 101 Abc St."]();
+      expect(orderFirstOption).to.be.eql({
+        id: 1,
+        phonenumber: "99887766",
+        address: "101 Abc St.",
+        complement: "",
       });
     });
 
-    it("should return object with the middle number", () => {
+    it("should return object with the middle number", async () => {
       dbTest
         .get(entity)
         .push({
@@ -594,17 +600,17 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByPhone("8877")).to.be.eql({
-        "99887766 / 101 Abc St.": {
-          id: 1,
-          phonenumber: "99887766",
-          address: "101 Abc St.",
-          complement: "",
-        },
+      const orders = orderRepository.searchByPhone("8877");
+      const orderFirstOption = await orders["99887766 / 101 Abc St."]();
+      expect(orderFirstOption).to.be.eql({
+        id: 1,
+        phonenumber: "99887766",
+        address: "101 Abc St.",
+        complement: "",
       });
     });
 
-    it("should return the first 2 numbers", () => {
+    it("should return the first 2 numbers", async () => {
       dbTest
         .get(entity)
         .push({
@@ -651,23 +657,25 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByPhone("7766", 2)).to.be.eql({
-        "99887766 / 101 Abc St.": {
-          id: 1,
-          phonenumber: "99887766",
-          address: "101 Abc St.",
-          complement: "",
-        },
-        "88776699 / 101 Abc St.": {
-          id: 2,
-          phonenumber: "88776699",
-          address: "101 Abc St.",
-          complement: "",
-        },
+      const orders = orderRepository.searchByPhone("7766", 2);
+      const orderFirstOption = await orders["99887766 / 101 Abc St."]();
+      expect(orderFirstOption).to.be.eql({
+        id: 1,
+        phonenumber: "99887766",
+        address: "101 Abc St.",
+        complement: "",
+      });
+
+      const orderSecondOption = await orders["88776699 / 101 Abc St."]();
+      expect(orderSecondOption).to.be.eql({
+        id: 2,
+        phonenumber: "88776699",
+        address: "101 Abc St.",
+        complement: "",
       });
     });
 
-    it("should return sortBy phonenumber", () => {
+    it("should return sortBy phonenumber", async () => {
       dbTest
         .get(entity)
         .push({
@@ -714,29 +722,33 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByPhone("8877")).to.be.eql({
-        "11887722 / 101 Abc St.": {
-          id: 3,
-          phonenumber: "11887722",
-          address: "101 Abc St.",
-          complement: "",
-        },
-        "88776699 / 101 Abc St.": {
-          id: 2,
-          phonenumber: "88776699",
-          address: "101 Abc St.",
-          complement: "",
-        },
-        "99887766 / 101 Abc St.": {
-          id: 1,
-          phonenumber: "99887766",
-          address: "101 Abc St.",
-          complement: "",
-        },
+      const orders = orderRepository.searchByPhone("8877");
+      const orderFirstOption = await orders["11887722 / 101 Abc St."]();
+      expect(orderFirstOption).to.be.eql({
+        id: 3,
+        phonenumber: "11887722",
+        address: "101 Abc St.",
+        complement: "",
+      });
+
+      const orderSecondOption = await orders["88776699 / 101 Abc St."]();
+      expect(orderSecondOption).to.be.eql({
+        id: 2,
+        phonenumber: "88776699",
+        address: "101 Abc St.",
+        complement: "",
+      });
+
+      const orderThirdOption = await orders["99887766 / 101 Abc St."]();
+      expect(orderThirdOption).to.be.eql({
+        id: 1,
+        phonenumber: "99887766",
+        address: "101 Abc St.",
+        complement: "",
       });
     });
 
-    it("should group By phonenuymber and address", () => {
+    it("should group By phonenuymber and address", async () => {
       dbTest
         .get(entity)
         .push({
@@ -774,25 +786,27 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByPhone("998877")).to.be.eql({
-        "99887766 / 101 Abc St.": {
-          id: 1,
-          phonenumber: "99887766",
-          address: "101 Abc St.",
-          created: "2019-02-23T23:59:26.919Z",
-          complement: "",
-        },
-        "99887766 / 200 Def St.": {
-          id: 2,
-          phonenumber: "99887766",
-          address: "200 Def St.",
-          created: "2019-02-23T23:50:26.919Z",
-          complement: "",
-        },
+      const orders = orderRepository.searchByPhone("998877");
+      const orderValueFirstOption = await orders["99887766 / 101 Abc St."]();
+      expect(orderValueFirstOption).to.be.eql({
+        id: 1,
+        phonenumber: "99887766",
+        address: "101 Abc St.",
+        created: "2019-02-23T23:59:26.919Z",
+        complement: "",
+      });
+
+      const orderValueSecondOption = await orders["99887766 / 200 Def St."]();
+      expect(orderValueSecondOption).to.be.eql({
+        id: 2,
+        phonenumber: "99887766",
+        address: "200 Def St.",
+        created: "2019-02-23T23:50:26.919Z",
+        complement: "",
       });
     });
 
-    it("should group By phonenumber and address and take the lastest", () => {
+    it("should group By phonenumber and address and take the lastest", async () => {
       dbTest
         .get(entity)
         .push({
@@ -823,14 +837,14 @@ describe("OrderRepository", () => {
         })
         .write();
 
-      expect(orderRepository.searchByPhone("998877")).to.be.eql({
-        "99887766 / 101 Abc St.": {
-          id: 1,
-          phonenumber: "99887766",
-          address: "101 Abc St.",
-          created: "2019-02-23T23:59:26.919Z",
-          complement: "",
-        },
+      const orders = orderRepository.searchByPhone("998877");
+      const orderValue = await orders["99887766 / 101 Abc St."]();
+      expect(orderValue).to.be.eql({
+        id: 1,
+        phonenumber: "99887766",
+        address: "101 Abc St.",
+        created: "2019-02-23T23:59:26.919Z",
+        complement: "",
       });
     });
   });
