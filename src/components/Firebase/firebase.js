@@ -48,11 +48,14 @@ class Firebase {
   order = (org, uid) => this.db.ref(`${ORGANIZATIONS}/${org}/${ORDERS}/${uid}`);
   orders = (org) => this.db.ref(`${ORGANIZATIONS}/${org}/${ORDERS}`);
 
-  product = (uid) => this.db.ref(`${PRODUCTS}/${uid}`);
-  products = () => this.db.ref(PRODUCTS);
+  product = (org, uid) =>
+    this.db.ref(`${ORGANIZATIONS}/${org}/${PRODUCTS}/${uid}`);
+  products = (org) => this.db.ref(`${ORGANIZATIONS}/${org}/${PRODUCTS}`);
 
-  lastOrder = (uid) => this.db.ref(`${CLIENT_LAST_ORDERS}/${uid}`);
-  lastOrders = () => this.db.ref(CLIENT_LAST_ORDERS);
+  lastOrder = (org, uid) =>
+    this.db.ref(`${ORGANIZATIONS}/${org}/${CLIENT_LAST_ORDERS}/${uid}`);
+  lastOrders = (org) =>
+    this.db.ref(`${ORGANIZATIONS}/${org}/${CLIENT_LAST_ORDERS}`);
 
   // generic ref usage
   generic = (refs, org, uid) =>

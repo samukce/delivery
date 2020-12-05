@@ -167,7 +167,7 @@ class OrderRepository {
 
       if (orderLocal.last_sync) {
         this.firebase
-          .order(orderId)
+          .order(this.authUser.default_organization, orderId)
           .update({
             [field]: current_date,
             last_sync: current_date,
@@ -319,7 +319,7 @@ class OrderRepository {
   async downloadOldestOrders() {
     const max_order_sync = 200;
     const snapshot = await this.firebase
-      .orders()
+      .orders(this.authUser.default_organization)
       .orderByChild("created")
       .limitToFirst(max_order_sync)
       .once("value");
@@ -379,7 +379,7 @@ class OrderRepository {
 
     const max_order_sync = 500;
     const snapshot = await this.firebase
-      .lastOrders()
+      .lastOrders(this.authUser.default_organization)
       .orderByChild("updated")
       .limitToLast(max_order_sync)
       .once("value");

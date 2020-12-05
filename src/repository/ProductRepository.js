@@ -34,7 +34,7 @@ class ProductRepository {
     entity.last_sync = date_last_sync;
 
     this.firebase
-      .product(entity.id)
+      .product(this.authUser.default_organization, entity.id)
       .set(entity)
       .then(() => {
         if (successCallBack) {
@@ -81,7 +81,7 @@ class ProductRepository {
     if (product.last_sync) {
       if (this.authUser) {
         this.firebase
-          .product(productId)
+          .product(this.authUser.default_organization, productId)
           .set(null)
           .then(() =>
             this.product_collection.remove({ id: productId }).write()
@@ -108,7 +108,7 @@ class ProductRepository {
       .forEach((product) => this._sendAndUpadateProduct(product, current_date));
 
     this.firebase
-      .products()
+      .products(this.authUser.default_organization)
       .once("value")
       .then((snapshot) => {
         const products = snapshot.val();
