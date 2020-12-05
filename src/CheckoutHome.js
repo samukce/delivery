@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import Checkout from "./Checkout";
 import "react-notifications/lib/notifications.css";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import OrderQueue from "./OrderQueue";
+import { withFirebase } from "./components/Firebase";
+import NetworkLockedIcon from "@material-ui/icons/NetworkLocked";
+import { AuthUserContext } from "./components/Session";
+import { Box } from "@material-ui/core";
 import OrderRepository from "./repository/OrderRepository";
+import ProductRepository from "./repository/ProductRepository";
 
 const drawerWidth = 380;
 
@@ -68,26 +73,54 @@ const useStyles = makeStyles((theme) => ({
   badgePadding: {
     padding: theme.spacing(0, 2),
   },
+  marginFloatButton: {
+    position: "fixed",
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
 }));
 
-function CheckoutHome(props) {
+function CheckoutHome({ firebase }) {
   const classes = useStyles();
   const open = true;
-  const orderRepository = new OrderRepository();
+  const authUser = useContext(AuthUserContext);
+
+  useEffect(() => {
+    ProductRepository.setOrderRepositoryFirebase(firebase, authUser);
+    OrderRepository.setOrderRepositoryFirebase(firebase, authUser);
+
+    ProductRepository.syncProducts();
+    OrderRepository.syncOrders();
+    OrderRepository.syncClientLastOrders();
+  }, [firebase, authUser]);
+
+  const connectedSymbol = () => {
+    return (
+      <Box zIndex="tooltip">
+        <NetworkLockedIcon
+          size="small"
+          style={{ color: `${authUser ? "green" : "gray"}` }}
+          className={classes.marginFloatButton}
+        />
+      </Box>
+    );
+  };
 
   return (
     <div className={classes.root}>
-      <OrderQueue orderRepository={orderRepository} />
+      {connectedSymbol()}
+
+      <OrderQueue />
 
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: open,
         })}
       >
-        <Checkout orderRepository={orderRepository} />
+        <Checkout />
       </main>
     </div>
   );
 }
 
-export default CheckoutHome;
+export default withFirebase(CheckoutHome);

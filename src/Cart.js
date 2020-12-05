@@ -142,7 +142,7 @@ class Cart extends Component {
       const productDisplay = `${obj.description.toUpperCase()} (R$ ${
         obj.cash
       })`;
-      map[productDisplay] = obj;
+      map[productDisplay] = async () => obj;
       return map;
     }, {});
   };

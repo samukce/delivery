@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ProductRepository from "../../repository/ProductRepository";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -15,6 +15,8 @@ import EditIcon from "@material-ui/icons/Edit";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
 import AddBoxIcon from "@material-ui/icons/AddBox";
+import { AuthUserContext } from "../Session";
+import { withFirebase } from "../Firebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,9 +29,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Products(props) {
+function Products(props) {
+  const firebase = props.firebase;
   const classes = useStyles();
   const [products, setProducts] = useState([]);
+  const authUser = useContext(AuthUserContext);
+
+  useEffect(() => {
+    ProductRepository.setOrderRepositoryFirebase(firebase, authUser);
+    ProductRepository.syncProducts();
+  }, [firebase, authUser]);
 
   useEffect(() => {
     setProducts(ProductRepository.all());
@@ -103,3 +112,5 @@ export default function Products(props) {
     </Grid>
   );
 }
+
+export default withFirebase(Products);

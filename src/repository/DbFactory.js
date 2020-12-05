@@ -1,48 +1,86 @@
-const low = require('lowdb');
-const Memory = require('lowdb/adapters/Memory');
-const LocalStorage = require('lowdb/adapters/LocalStorage');
-const shortid = require('shortid');
-const lodashId = require('lodash-id')
+import Migration_v1 from "./migrations/Migration_v1";
+
+const low = require("lowdb");
+const Memory = require("lowdb/adapters/Memory");
+const LocalStorage = require("lowdb/adapters/LocalStorage");
+const shortid = require("shortid");
+const lodashId = require("lodash-id");
 
 let ProdOrDevDatabase;
-if (window && window.require){
-    let FileSync = window.require('lowdb/adapters/FileSync');
-    let remote = window.require('electron').remote;
-    ProdOrDevDatabase = new FileSync(remote.getGlobal('settings').database_path)
+if (process.env.NODE_ENV === "test") {
+  ProdOrDevDatabase = new Memory();
+} else if (window && window.require) {
+  let FileSync = window.require("lowdb/adapters/FileSync");
+  let remote = window.require("electron").remote;
+  ProdOrDevDatabase = new FileSync(remote.getGlobal("settings").database_path);
 } else {
-    ProdOrDevDatabase = new LocalStorage('db.json')
+  ProdOrDevDatabase = new LocalStorage("db.json");
 }
 
+const db = low(ProdOrDevDatabase);
+db._.mixin(lodashId);
+
+db.defaults({
+  products: [],
+  orders: [],
+  client_last_orders: [],
+  version: 0,
+  default_organization: "",
+  last_data_by_organization: {},
+}).write();
+
+const current_version = db.get("version").value();
+const update_if_success = (migration_version) =>
+  db.set("version", migration_version).write();
+Migration_v1.apply(db, current_version, update_if_success);
+
 export default class DbFactory {
-    static dbAdapter() {
-        const db = low(
-            process.env.NODE_ENV === 'test'
-              ? new Memory()
-              : ProdOrDevDatabase
-        )
+  static dbAdapter() {
+    return db;
+  }
 
-        db._.mixin(lodashId);
+  static getNewId() {
+    return shortid.generate();
+  }
 
-        db.defaults({ products: DbFactory.initialProductsBeta() })
-          .write();
+  static setLastOrganization(default_organization) {
+    const last_default_organization = db.get("default_organization").value();
+    if (
+      last_default_organization !== "" &&
+      last_default_organization !== default_organization
+    ) {
+      const current_data_by_organization = db
+        .get("last_data_by_organization")
+        .value();
+      current_data_by_organization[last_default_organization] = {
+        products: db.get("products").value(),
+        orders: db.get("orders").value(),
+        client_last_orders: db.get("client_last_orders").value(),
+      };
+      db.set("last_data_by_organization", current_data_by_organization).write();
 
-        return db;
+      const current_organization =
+        current_data_by_organization[default_organization];
+      db.set(
+        "products",
+        current_organization && current_organization["products"]
+          ? current_organization["products"]
+          : []
+      ).write();
+      db.set(
+        "orders",
+        current_organization && current_organization["orders"]
+          ? current_organization["orders"]
+          : []
+      ).write();
+      db.set(
+        "client_last_orders",
+        current_organization && current_organization["client_last_orders"]
+          ? current_organization["client_last_orders"]
+          : []
+      ).write();
     }
 
-    static getNewId() {
-        return shortid.generate();
-    }
-
-    static initialProductsBeta() { //TODO: initial load sync from server
-        return [
-            { id: 1, description: 'Naturágua'.toUpperCase(), cash: 11.00, card: 11.50 },
-            { id: 2, description: 'Indaiá'.toUpperCase(), cash: 11.00, card: 11.50 },
-            { id: 3, description: 'Neblina'.toUpperCase(), cash: 10.00, card: 10.50 },
-            { id: 4, description: 'Pacoty'.toUpperCase(), cash: 9.00, card: 9.50 },
-            { id: 5, description: 'Clareza'.toUpperCase(), cash: 5.00, card: 5.50 },
-            { id: 6, description: 'Fortágua'.toUpperCase(), cash: 5.00, card: 5.50 },
-            { id: 7, description: 'Serra Grande'.toUpperCase(), cash: 10.00, card: 10.50 },
-            { id: 8, description: 'Acácia'.toUpperCase(), cash: 10.00, card: 10.50 },
-        ]
-    }
+    db.set("default_organization", default_organization).write();
+  }
 }

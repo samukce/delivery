@@ -10,6 +10,12 @@ import EditOrAddProduct from "./components/products/EditOrAddProduct";
 import { useSnackbar } from "notistack";
 import * as serviceWorker from "./serviceWorker";
 import { Button } from "@material-ui/core";
+import * as ROUTES from "./constants/routes";
+import SignUpPage from "./components/SignUp";
+import SignInPage from "./components/SignIn";
+import PasswordForgetPage from "./components/PasswordForget";
+import AccountPage from "./components/Account";
+import { withAuthentication } from "./components/Session";
 
 function App(props) {
   const { language } = props;
@@ -80,6 +86,14 @@ function App(props) {
         <Route exact path="/products" component={Products} />
         <Route exact path="/products/add" component={EditOrAddProduct} />
         <Route path="/products/:id" component={EditOrAddProduct} />
+
+        <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+        <Route
+          path={[ROUTES.SIGN_IN, ROUTES.SIGN_IN_PT]}
+          component={SignInPage}
+        />
+        <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
+        <Route path={[ROUTES.ACCOUNT, ROUTES.ACCOUNT_PT]} component={AccountPage} />
       </Switch>
 
       <NotificationContainer />
@@ -87,4 +101,4 @@ function App(props) {
   );
 }
 
-export default App;
+export default withAuthentication(App);
