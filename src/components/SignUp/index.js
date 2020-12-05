@@ -15,6 +15,7 @@ const SignUpPage = () => (
 const INITIAL_STATE = {
   username: "",
   email: "",
+  organizationName: "",
   passwordOne: "",
   passwordTwo: "",
   error: null,
@@ -28,17 +29,46 @@ class SignUpFormBase extends Component {
   }
 
   onSubmit = (event) => {
-    const { username, email, passwordOne } = this.state;
+    const { username, email, passwordOne, organizationName } = this.state;
 
     this.props.firebase
       .doCreateUserWithEmailAndPassword(email, passwordOne)
       .then((authUser) => {
-        return this.props.firebase.user(authUser.user.uid).set({
+        this.props.firebase.user(authUser.user.uid).set({
           username,
           email,
         });
+
+        return authUser;
       })
       .then((authUser) => {
+        return {
+          organizationRef: this.props.firebase
+            .user(authUser.user.uid)
+            .child("organizations")
+            .push({
+              name: organizationName,
+            }),
+          authUser,
+        };
+      })
+      .then((organizationRefAndUser) => {
+        this.props.firebase
+          .organization(organizationRefAndUser.organizationRef.key)
+          .child("about")
+          .set({
+            name: organizationName,
+          });
+
+        return this.props.firebase
+          .organization(organizationRefAndUser.organizationRef.key)
+          .child(`staff/${organizationRefAndUser.authUser.user.uid}`)
+          .set({
+            username,
+            email,
+          });
+      })
+      .then(() => {
         this.setState({ ...INITIAL_STATE });
         this.props.history.push(ROUTES.HOME);
       })
@@ -54,15 +84,30 @@ class SignUpFormBase extends Component {
   };
 
   render() {
-    const { username, email, passwordOne, passwordTwo, error } = this.state;
+    const {
+      organizationName,
+      username,
+      email,
+      passwordOne,
+      passwordTwo,
+      error,
+    } = this.state;
     const isInvalid =
       passwordOne !== passwordTwo ||
       passwordOne === "" ||
       email === "" ||
+      organizationName === "" ||
       username === "";
 
     return (
       <form onSubmit={this.onSubmit}>
+        <input
+          name="organizationName"
+          value={organizationName}
+          onChange={this.onChange}
+          type="text"
+          placeholder="Organization name"
+        />
         <input
           name="username"
           value={username}

@@ -5,6 +5,7 @@ import {
   ORDERS,
   CLIENT_LAST_ORDERS,
   USERS,
+  ORGANIZATIONS,
   PRODUCTS,
 } from "../../constants/entities";
 
@@ -40,6 +41,9 @@ class Firebase {
   // *** User API ***
   user = (uid) => this.db.ref(`${USERS}/${uid}`);
   users = () => this.db.ref(USERS);
+
+  organization = (uid) => this.db.ref(`${ORGANIZATIONS}/${uid}`);
+  organizations = () => this.db.ref(ORGANIZATIONS);
 
   order = (uid) => this.db.ref(`${ORDERS}/${uid}`);
   orders = () => this.db.ref(ORDERS);
