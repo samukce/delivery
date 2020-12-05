@@ -54,10 +54,10 @@ class PasswordForgetFormBase extends Component {
           value={this.state.email}
           onChange={this.onChange}
           type="text"
-          placeholder="Email Address"
+          placeholder="Email"
         />
         <button disabled={isInvalid} type="submit">
-          Reset My Password
+          Resetar Senha
         </button>
 
         {error && <p>{error.message}</p>}
@@ -68,7 +68,7 @@ class PasswordForgetFormBase extends Component {
 
 const PasswordForgetLink = () => (
   <p>
-    <Link to={ROUTES.PASSWORD_FORGET}>Forgot Password?</Link>
+    <Link to={ROUTES.PASSWORD_FORGET}>Esqueceu sua senha?</Link>
   </p>
 );
 
