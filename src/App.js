@@ -93,7 +93,7 @@ function App(props) {
           component={SignInPage}
         />
         <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
-        <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+        <Route path={[ROUTES.ACCOUNT, ROUTES.ACCOUNT_PT]} component={AccountPage} />
       </Switch>
 
       <NotificationContainer />

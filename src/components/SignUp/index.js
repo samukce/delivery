@@ -7,7 +7,7 @@ import * as ROUTES from "../../constants/routes";
 
 const SignUpPage = () => (
   <div>
-    <h1>SignUp</h1>
+    <h1>Criar nova conta</h1>
     <SignUpForm />
   </div>
 );
@@ -106,38 +106,38 @@ class SignUpFormBase extends Component {
           value={organizationName}
           onChange={this.onChange}
           type="text"
-          placeholder="Organization name"
+          placeholder="Nome da Empresa"
         />
         <input
           name="username"
           value={username}
           onChange={this.onChange}
           type="text"
-          placeholder="Full Name"
+          placeholder="Nome completo"
         />
         <input
           name="email"
           value={email}
           onChange={this.onChange}
           type="text"
-          placeholder="Email Address"
+          placeholder="Email"
         />
         <input
           name="passwordOne"
           value={passwordOne}
           onChange={this.onChange}
           type="password"
-          placeholder="Password"
+          placeholder="Senha"
         />
         <input
           name="passwordTwo"
           value={passwordTwo}
           onChange={this.onChange}
           type="password"
-          placeholder="Confirm Password"
+          placeholder="Confirmar Senha"
         />
         <button disabled={isInvalid} type="submit">
-          Sign Up
+          Inscrever
         </button>
 
         {error && <p>{error.message}</p>}
