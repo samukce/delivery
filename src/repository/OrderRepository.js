@@ -90,7 +90,7 @@ class OrderRepository {
     entity.updated = entity.updated ?? date_last_sync;
 
     return this.firebase
-      .generic(ref, entity.id)
+      .generic(ref, this.authUser.default_organization, entity.id)
       .set(entity)
       .then(() => {
         if (successCallBack) {
