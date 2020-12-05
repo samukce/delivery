@@ -22,7 +22,11 @@ db._.mixin(lodashId);
 
 db.defaults({
   products: [],
+  orders: [],
+  client_last_orders: [],
   version: 0,
+  default_organization: "",
+  last_data_by_organization: {},
 }).write();
 
 const current_version = db.get("version").value();
@@ -37,5 +41,46 @@ export default class DbFactory {
 
   static getNewId() {
     return shortid.generate();
+  }
+
+  static setLastOrganization(default_organization) {
+    const last_default_organization = db.get("default_organization").value();
+    if (
+      last_default_organization !== "" &&
+      last_default_organization !== default_organization
+    ) {
+      const current_data_by_organization = db
+        .get("last_data_by_organization")
+        .value();
+      current_data_by_organization[last_default_organization] = {
+        products: db.get("products").value(),
+        orders: db.get("orders").value(),
+        client_last_orders: db.get("client_last_orders").value(),
+      };
+      db.set("last_data_by_organization", current_data_by_organization).write();
+
+      const current_organization =
+        current_data_by_organization[default_organization];
+      db.set(
+        "products",
+        current_organization && current_organization["products"]
+          ? current_organization["products"]
+          : []
+      ).write();
+      db.set(
+        "orders",
+        current_organization && current_organization["orders"]
+          ? current_organization["orders"]
+          : []
+      ).write();
+      db.set(
+        "client_last_orders",
+        current_organization && current_organization["client_last_orders"]
+          ? current_organization["client_last_orders"]
+          : []
+      ).write();
+    }
+
+    db.set("default_organization", default_organization).write();
   }
 }

@@ -2,6 +2,7 @@ import React from "react";
 
 import AuthUserContext from "./context";
 import { withFirebase } from "../Firebase";
+import DbFactory from "../../repository/DbFactory";
 
 const withAuthentication = (Component) => {
   class WithAuthentication extends React.Component {
@@ -22,13 +23,15 @@ const withAuthentication = (Component) => {
               .once("value")
               .then((snapshot) => {
                 const full_user_data = snapshot.val();
+                const default_organization = Object.keys(
+                  full_user_data["organizations"]
+                )[0];
+                DbFactory.setLastOrganization(default_organization);
 
                 const newUser = {
                   ...authUser,
                   ...full_user_data,
-                  default_organization: Object.keys(
-                    full_user_data["organizations"]
-                  )[0],
+                  default_organization,
                 };
                 this.setState({ authUser: newUser });
               });
