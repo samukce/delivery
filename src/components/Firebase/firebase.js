@@ -44,6 +44,8 @@ class Firebase {
 
   organization = (uid) => this.db.ref(`${ORGANIZATIONS}/${uid}`);
   organizations = () => this.db.ref(ORGANIZATIONS);
+  printer_settings = (org) =>
+    this.db.ref(`${ORGANIZATIONS}/${org}/printer_settings`);
 
   order = (org, uid) => this.db.ref(`${ORGANIZATIONS}/${org}/${ORDERS}/${uid}`);
   orders = (org) => this.db.ref(`${ORGANIZATIONS}/${org}/${ORDERS}`);

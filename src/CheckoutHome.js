@@ -94,6 +94,17 @@ function CheckoutHome({ firebase }) {
     OrderRepository.syncClientLastOrders();
   }, [firebase, authUser]);
 
+  useEffect(() => {
+    if (authUser) {
+      return firebase
+        .printer_settings(authUser.default_organization)
+        .on("value", (snapshot) => {
+          console.log(`Printer: ${snapshot.val().ip_address}`);
+          // this.setState({ from_status: snapshot.val().ip_address });
+        });
+    }
+  }, [firebase, authUser]);
+
   const connectedSymbol = () => {
     return (
       <Box zIndex="tooltip">

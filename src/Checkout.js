@@ -9,6 +9,7 @@ import AutocompleteCustom from "./components/AutocompleteCustom";
 import { Trans } from "@lingui/react";
 import { NotificationManager } from "react-notifications";
 import OrderRepository from "./repository/OrderRepository";
+import axios from "axios";
 // import { connect } from "react-redux";
 // import { addTodo } from "./redux/actions";
 
@@ -85,7 +86,8 @@ class Checkout extends Component {
     if (!this.isValid()) return;
     const { address, complement, change_difference, products } = this.state;
 
-    this.saveOrder();
+    const order = this.saveOrder();
+    this.sendToPrind(order);
     this.clearAllFieds();
 
     if (!this.summaryOrderModal) return;
@@ -107,6 +109,13 @@ class Checkout extends Component {
       "Pedido criado",
       fifteen_seconds
     );
+  };
+
+  sendToPrind = (order) => {
+    axios.post(`http://192.168.1.103:8080/print`, order).then((res) => {
+      console.log(res);
+      console.log(res.data);
+    });
   };
 
   saveOrder = () => {
@@ -133,7 +142,8 @@ class Checkout extends Component {
       change_difference,
     };
 
-    OrderRepository.save(order);
+    order["id"] = OrderRepository.save(order);
+    return order;
     // this.props.addTodo(order);
   };
 
