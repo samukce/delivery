@@ -29,6 +29,12 @@ class SignInFormBase extends Component {
     this.state = { ...INITIAL_STATE };
   }
 
+  componentDidMount = () => {
+    const email = this.props.match.params.email;
+    const password = this.props.match.params.password;
+    this.setState({ email, password });
+  };
+
   onSubmit = (event) => {
     const { email, password } = this.state;
 
