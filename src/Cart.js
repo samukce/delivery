@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Input, Row, Icon, Col, Button } from "react-materialize";
+import { Table, Input, Icon, Col, Button } from "react-materialize";
 import AutocompleteCustom from "./components/AutocompleteCustom";
 import PropTypes from "prop-types";
 import ProductRepository from "./repository/ProductRepository";

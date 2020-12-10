@@ -1,4 +1,5 @@
 import Migration_v1 from "./migrations/Migration_v1";
+import Migration_v2 from "./migrations/Migration_v2";
 
 const low = require("lowdb");
 const Memory = require("lowdb/adapters/Memory");
@@ -29,10 +30,10 @@ db.defaults({
   last_data_by_organization: {},
 }).write();
 
-const current_version = db.get("version").value();
 const update_if_success = (migration_version) =>
   db.set("version", migration_version).write();
-Migration_v1.apply(db, current_version, update_if_success);
+Migration_v1.apply(db, db.get("version").value(), update_if_success);
+Migration_v2.apply(db, db.get("version").value(), update_if_success);
 
 export default class DbFactory {
   static dbAdapter() {

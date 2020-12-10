@@ -380,7 +380,7 @@ class OrderRepository {
         this._sendAndUpadateClientLastOrder(client_last_order, current_date)
       );
 
-    const max_order_sync = 500;
+    const max_order_sync = 2000;
     const snapshot = await this.firebase
       .lastOrders(this.authUser.default_organization)
       .orderByChild("updated")
