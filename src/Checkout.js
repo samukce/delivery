@@ -160,7 +160,7 @@ class Checkout extends Component {
   onKeyPressOnlyNumber = (event) => {
     const keyCode = event.keyCode || event.which;
     const keyValue = String.fromCharCode(keyCode);
-    const onlyNumbers = /^\d+$/;
+    const onlyNumbers = /^[0-9]+$/;
     if (!onlyNumbers.test(keyValue)) {
       event.preventDefault();
     }
@@ -202,7 +202,7 @@ class Checkout extends Component {
     }
 
     const phone_only_digits = phonenumber
-      .replace(/^\D+/g, "")
+      .replace(/[^0-9]/g, "")
       .replace(/\s/g, "");
     return OrderRepository.searchByPhone(phone_only_digits);
   };

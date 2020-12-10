@@ -517,19 +517,24 @@ describe("Checkout place order", () => {
   });
 
   describe("phonenumber search", () => {
-    it("should trigger lazy search", () => {
-      const spyLazyPhoneSearch = sandbox.spy(
-        componentRender,
-        "lazyPhoneSearch"
-      );
-      componentRender.forceUpdate();
+    let spyLazyPhoneSearch;
+    // let spyLazyPhoneSearch, wrapper, componentRender;
 
+    beforeEach(() => {
+      spyLazyPhoneSearch = sandbox.spy(componentRender, "lazyPhoneSearch");
+      componentRender.forceUpdate();
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    it("should trigger lazy search", () => {
       wrapper
         .find("#phonenumber")
         .shallow()
         .find("input")
         .simulate("change", { target: { name: "phonenumber", value: "9988" } });
-
       expect(spyLazyPhoneSearch).to.have.been.calledWith("9988");
     });
 
@@ -541,6 +546,18 @@ describe("Checkout place order", () => {
         .simulate("change", { target: { name: "phonenumber", value: "9988" } });
 
       expect(stubSearchByPhone).to.have.been.calledWith("9988");
+    });
+
+    it("should parse only numbers", () => {
+      wrapper
+        .find("#phonenumber")
+        .shallow()
+        .find("input")
+        .simulate("change", {
+          target: { name: "phonenumber", value: "ABC.6677," },
+        });
+
+      expect(stubSearchByPhone).to.have.been.calledWith("6677");
     });
 
     it("should fill complement fields from the last order", () => {
