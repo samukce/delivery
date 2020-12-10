@@ -7,6 +7,9 @@ import store from "./redux/store";
 import App from "./App";
 import { SnackbarProvider } from "notistack";
 import Firebase, { FirebaseContext } from "./components/Firebase";
+import "materialize-css";
+import "materialize-css/dist/css/materialize.min.css";
+import "./icons/icon.css";
 
 ReactDOM.render(
   <Router>
