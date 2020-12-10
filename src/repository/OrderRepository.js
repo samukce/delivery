@@ -68,7 +68,10 @@ class OrderRepository {
             return order;
           } else if (firebase && !order) {
             const orderFromFirebase = await firebase
-              .order(last_order.last_order_id)
+              .order(
+                this.authUser.default_organization,
+                last_order.last_order_id
+              )
               .once("value");
             return orderFromFirebase.val();
           }
