@@ -347,90 +347,90 @@ class Checkout extends Component {
           >
             <Icon>rate_review</Icon>
           </Input>
-        </Row>
 
-        <Cart
-          onProductsChange={this.onProductsChange}
-          ref={(el) => (this.cartComponent = el)}
-        >
-          <Card
-            id="total_amount"
-            actions={[
-              <Row>
-                <Button
-                  id="cash-payment-button"
-                  onClick={this.buttonClickCashPayment}
-                  className={`col s12 m6 blue ${
-                    this.state.credit_card_payment ? "lighten-4" : ""
-                  }`}
-                >
-                  <Icon>attach_money</Icon>
-                </Button>
-                <Button
-                  id="card-payment-button"
-                  onClick={this.buttonClickCreditCardPayment}
-                  className={`col s12 m6 blue ${
-                    !this.state.credit_card_payment ? "lighten-4" : ""
-                  }`}
-                >
-                  <Icon>credit_card</Icon>
-                </Button>
-              </Row>,
-            ]}
-            title={getValueFormatted(this.state.total_amount)}
+          <Cart
+            onProductsChange={this.onProductsChange}
+            ref={(el) => (this.cartComponent = el)}
           >
-            {
-              <Trans
-                id={
-                  this.state.credit_card_payment
-                    ? "checkout.card"
-                    : "checkout.cash"
-                }
-              >
-                Total
-              </Trans>
-            }
-          </Card>
-
-          {this.state.credit_card_payment ? null : (
-            <Input
-              id="change_to"
-              name="change_to"
-              label={<Trans id="checkout.change_to">Change to</Trans>}
-              placeholder="..."
-              s={12}
-              type="number"
-              value={this.state.change_to}
-              min={this.state.total_amount + 0.01}
-              step="0.01"
-              validate
-              disabled={this.state.credit_card_payment}
-              ref={(el) => (this.inputChargeTo = el)}
-              onKeyDown={this.handleKeyDownChange}
-              onChange={handleInputChangeBind(
-                this.setState.bind(this),
-                this.updateChangeDifference
-              )}
+            <Card
+              id="total_amount"
+              actions={[
+                <Row>
+                  <Button
+                    id="cash-payment-button"
+                    onClick={this.buttonClickCashPayment}
+                    className={`col s12 m6 blue ${
+                      this.state.credit_card_payment ? "lighten-4" : ""
+                    }`}
+                  >
+                    <Icon>attach_money</Icon>
+                  </Button>
+                  <Button
+                    id="card-payment-button"
+                    onClick={this.buttonClickCreditCardPayment}
+                    className={`col s12 m6 blue ${
+                      !this.state.credit_card_payment ? "lighten-4" : ""
+                    }`}
+                  >
+                    <Icon>credit_card</Icon>
+                  </Button>
+                </Row>,
+              ]}
+              title={getValueFormatted(this.state.total_amount)}
             >
-              <Icon>attach_money</Icon>
-            </Input>
-          )}
-        </Cart>
+              {
+                <Trans
+                  id={
+                    this.state.credit_card_payment
+                      ? "checkout.card"
+                      : "checkout.cash"
+                  }
+                >
+                  Total
+                </Trans>
+              }
+            </Card>
 
-        <Input
-          id="notes"
-          s={12}
-          name="notes"
-          label={<Trans id="checkout.notes">Notes</Trans>}
-          placeholder="..."
-          value={this.state.notes}
-          ref={(el) => (this.inputNotes = el)}
-          onKeyDown={this.handleKeyDownNotes}
-          style={{ textTransform: "uppercase" }}
-          onChange={handleInputChangeBind(this.setState.bind(this))}
-        >
-          <Icon>speaker_notes</Icon>
-        </Input>
+            {this.state.credit_card_payment ? null : (
+              <Input
+                id="change_to"
+                name="change_to"
+                label={<Trans id="checkout.change_to">Change to</Trans>}
+                placeholder="..."
+                s={12}
+                type="number"
+                value={this.state.change_to}
+                min={this.state.total_amount + 0.01}
+                step="0.01"
+                validate
+                disabled={this.state.credit_card_payment}
+                ref={(el) => (this.inputChargeTo = el)}
+                onKeyDown={this.handleKeyDownChange}
+                onChange={handleInputChangeBind(
+                  this.setState.bind(this),
+                  this.updateChangeDifference
+                )}
+              >
+                <Icon>attach_money</Icon>
+              </Input>
+            )}
+          </Cart>
+
+          <Input
+            id="notes"
+            s={12}
+            name="notes"
+            label={<Trans id="checkout.notes">Notes</Trans>}
+            placeholder="..."
+            value={this.state.notes}
+            ref={(el) => (this.inputNotes = el)}
+            onKeyDown={this.handleKeyDownNotes}
+            style={{ textTransform: "uppercase" }}
+            onChange={handleInputChangeBind(this.setState.bind(this))}
+          >
+            <Icon>speaker_notes</Icon>
+          </Input>
+        </Row>
 
         <Row>
           <Button

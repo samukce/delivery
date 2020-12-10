@@ -193,7 +193,7 @@ class Cart extends Component {
     );
 
     return (
-      <Row>
+      <React.Fragment>
         <AutocompleteCustom
           id="product_display_description"
           title={<Trans id="cart.product">Product</Trans>}
@@ -266,7 +266,7 @@ class Cart extends Component {
         <Col s={12} m={3}>
           {this.props.children}
         </Col>
-      </Row>
+      </React.Fragment>
     );
   }
 }
