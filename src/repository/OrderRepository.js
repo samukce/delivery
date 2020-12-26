@@ -139,6 +139,7 @@ class OrderRepository {
     order.id = DbFactory.getNewId();
     order.created = current_date;
     order.updated = current_date;
+    order.status = "QUEUE";
     this.order_collection.push(order).write();
 
     this._sendAndUpadateOrder(order, current_date);
@@ -316,14 +317,16 @@ class OrderRepository {
     if (!this.authUser) return;
 
     await this.sendAllOrdersChanged();
-    await this.downloadOldestOrders();
+    await this.downloadOrdersByStatus("QUEUE");
+    await this.downloadOrdersByStatus("SHIPPED");
   }
 
-  async downloadOldestOrders() {
+  async downloadOrdersByStatus(status) {
     const max_order_sync = 200;
     const snapshot = await this.firebase
       .orders(this.authUser.default_organization)
-      .orderByChild("created")
+      .orderByChild("status")
+      .equalTo(status)
       .limitToFirst(max_order_sync)
       .once("value");
     const orders = snapshot.val();

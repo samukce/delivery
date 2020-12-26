@@ -24,7 +24,7 @@ import CloseOutlinedIcon from "@material-ui/icons/CloseOutlined";
 import Hidden from "@material-ui/core/Hidden";
 import Fab from "@material-ui/core/Fab";
 import Pagination from "@material-ui/lab/Pagination";
-import { isWidthDown, withWidth } from "@material-ui/core";
+import { Grid, isWidthDown, withWidth } from "@material-ui/core";
 import { compose } from "recompose";
 
 function TabPanel(props) {
@@ -179,29 +179,43 @@ function OrderCard(props) {
             )}
           </CardContent>
           <CardActions>
-            <Button size="small" variant="outlined" onClick={handleCancelClick}>
-              Cancelar
-            </Button>
-            {handleShippedOrder == null ? null : (
-              <Button
-                size="small"
-                color="primary"
-                variant="contained"
-                onClick={handleShippedClick}
-              >
-                Entregar
-              </Button>
-            )}
-            {handleDeliveredOrder == null ? null : (
-              <Button
-                size="small"
-                color="primary"
-                variant="contained"
-                onClick={handleDeliveredClick}
-              >
-                Entregue
-              </Button>
-            )}
+            <Grid container spacing={1}>
+              <Grid item xs={6}>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={handleCancelClick}
+                  fullWidth
+                >
+                  Cancelar
+                </Button>
+              </Grid>
+
+              <Grid item xs={6}>
+                {handleShippedOrder == null ? null : (
+                  <Button
+                    size="small"
+                    color="primary"
+                    variant="contained"
+                    onClick={handleShippedClick}
+                    fullWidth
+                  >
+                    Entregar
+                  </Button>
+                )}
+                {handleDeliveredOrder == null ? null : (
+                  <Button
+                    size="small"
+                    color="primary"
+                    variant="contained"
+                    onClick={handleDeliveredClick}
+                    fullWidth
+                  >
+                    Entregue
+                  </Button>
+                )}
+              </Grid>
+            </Grid>
           </CardActions>
         </Card>
       </AccordionDetails>
