@@ -1,15 +1,14 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import Checkout from "./Checkout";
 import "react-notifications/lib/notifications.css";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import OrderQueue from "./OrderQueue";
-import { withFirebase } from "./components/Firebase";
 import NetworkLockedIcon from "@material-ui/icons/NetworkLocked";
 import { AuthUserContext } from "./components/Session";
 import { Box } from "@material-ui/core";
-import OrderRepository from "./repository/OrderRepository";
-import ProductRepository from "./repository/ProductRepository";
+import OrderService from "./services/OrderService";
+import ProductService from "./services/ProductService";
 
 const drawerWidth = 380;
 
@@ -80,30 +79,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CheckoutHome({ firebase }) {
+function CheckoutHome() {
   const classes = useStyles();
   const open = true;
   const authUser = useContext(AuthUserContext);
-
-  useEffect(() => {
-    ProductRepository.setOrderRepositoryFirebase(firebase, authUser);
-    OrderRepository.setOrderRepositoryFirebase(firebase, authUser);
-
-    ProductRepository.syncProducts();
-    OrderRepository.syncOrders();
-    OrderRepository.syncClientLastOrders();
-  }, [firebase, authUser]);
-
-  useEffect(() => {
-    if (authUser) {
-      return firebase
-        .printer_settings(authUser.default_organization)
-        .on("value", (snapshot) => {
-          console.log(`Printer: ${snapshot.val().ip_address}`);
-          // this.setState({ from_status: snapshot.val().ip_address });
-        });
-    }
-  }, [firebase, authUser]);
 
   const connectedSymbol = () => {
     return (
@@ -121,6 +100,9 @@ function CheckoutHome({ firebase }) {
     <div className={classes.root}>
       {connectedSymbol()}
 
+      <OrderService />
+      <ProductService />
+
       <OrderQueue />
 
       <main
@@ -134,4 +116,4 @@ function CheckoutHome({ firebase }) {
   );
 }
 
-export default withFirebase(CheckoutHome);
+export default CheckoutHome;

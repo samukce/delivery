@@ -584,6 +584,7 @@ describe("Checkout place order", () => {
         change_difference: null,
         complement: "....",
         credit_card_payment: false,
+        id: undefined,
         notes: "NOTES..",
         phonenumber: "998887766",
         change_to: 100,
