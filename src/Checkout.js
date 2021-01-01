@@ -9,9 +9,11 @@ import AutocompleteCustom from "./components/AutocompleteCustom";
 import { Trans } from "@lingui/react";
 import { NotificationManager } from "react-notifications";
 import OrderRepository from "./repository/OrderRepository";
-import axios from "axios";
+import PrinterService from "./services/PrinterService";
 // import { connect } from "react-redux";
 // import { addTodo } from "./redux/actions";
+
+const printCallbackRef = { current: () => {} };
 
 class Checkout extends Component {
   constructor(props) {
@@ -87,7 +89,7 @@ class Checkout extends Component {
     const { address, complement, change_difference, products } = this.state;
 
     const order = this.saveOrder();
-    this.sendToPrind(order);
+    this.sendToPrint(order);
     this.clearAllFieds();
 
     if (!this.summaryOrderModal) return;
@@ -111,11 +113,8 @@ class Checkout extends Component {
     );
   };
 
-  sendToPrind = (order) => {
-    axios.post(`http://192.168.1.103:8080/print`, order).then((res) => {
-      console.log(res);
-      console.log(res.data);
-    });
+  sendToPrint = (order) => {
+    printCallbackRef && printCallbackRef.current(order);
   };
 
   saveOrder = () => {
@@ -300,6 +299,12 @@ class Checkout extends Component {
   render() {
     return (
       <div ref={(el) => (this.checkoutSection = el)}>
+        <PrinterService
+          printOrder={(callback) => {
+            printCallbackRef.current = callback;
+          }}
+        />
+
         <Row>
           <AutocompleteCustom
             id="phonenumber"
