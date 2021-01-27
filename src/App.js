@@ -89,7 +89,12 @@ function App(props) {
 
         <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
         <Route
-          path={[ROUTES.SIGN_IN, ROUTES.SIGN_IN_PT]}
+          path={[
+            ROUTES.SIGN_IN_ARG,
+            ROUTES.SIGN_IN_ARG_PT,
+            ROUTES.SIGN_IN,
+            ROUTES.SIGN_IN_PT,
+          ]}
           component={SignInPage}
         />
         <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
