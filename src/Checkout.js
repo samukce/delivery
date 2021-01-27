@@ -289,7 +289,7 @@ class Checkout extends Component {
 
   render() {
     return (
-      <div className="section" ref={(el) => (this.checkoutSection = el)}>
+      <div ref={(el) => (this.checkoutSection = el)}>
         <Row>
           <AutocompleteCustom
             id="phonenumber"

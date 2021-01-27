@@ -9,6 +9,7 @@ import {
   getValueFormatted,
 } from "./utilities/ComponentUtils";
 import { Trans } from "@lingui/react";
+import "./styles/fixed-body-size.css";
 
 class Cart extends Component {
   static propTypes = {
