@@ -12,7 +12,7 @@ function ProductService({ firebase }) {
     ProductRepository.syncProducts();
   }, [firebase, authUser]);
 
-  return <React.Fragment></React.Fragment>;
+  return <React.Fragment />;
 }
 
 export default withFirebase(ProductService);

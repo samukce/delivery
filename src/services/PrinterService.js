@@ -32,7 +32,7 @@ function PrinterService({ firebase, printOrder }) {
     }
   }, [printOrder, printerDestiny]);
 
-  return <React.Fragment></React.Fragment>;
+  return <React.Fragment />;
 }
 
 export default withFirebase(PrinterService);

@@ -13,7 +13,7 @@ function OrderService({ firebase }) {
     OrderRepository.syncClientLastOrders();
   }, [firebase, authUser]);
 
-  return <React.Fragment></React.Fragment>;
+  return <React.Fragment />;
 }
 
 export default withFirebase(OrderService);
