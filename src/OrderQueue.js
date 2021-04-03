@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, Component } from "react";
 import OrderRepository from "./repository/OrderRepository";
 import { Trans } from "@lingui/react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -24,8 +24,10 @@ import CloseOutlinedIcon from "@material-ui/icons/CloseOutlined";
 import Hidden from "@material-ui/core/Hidden";
 import Fab from "@material-ui/core/Fab";
 import Pagination from "@material-ui/lab/Pagination";
-import { Grid, isWidthDown, withWidth } from "@material-ui/core";
+import { Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, isWidthDown, withWidth } from "@material-ui/core";
 import { compose } from "recompose";
+import Input from "react-materialize/lib/Input";
+import {Icon} from "react-materialize";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -65,6 +67,8 @@ const useStylesAccordion = makeStyles((theme) => ({
 
 function OrderCard(props) {
   const classesAccordion = useStylesAccordion();
+  const [pendingPayment,isPendingPayment] = useState(false);
+  const [pendingBottle,isPendingBottle] = useState(false);
   const handleCancelOrder = props.handleCancelOrder;
   const handleShippedOrder = props.handleShippedOrder;
   const handleDeliveredOrder = props.handleDeliveredOrder;
@@ -91,6 +95,10 @@ function OrderCard(props) {
   function _getLocalDate(utcDate) {
     var localDate = new Date(utcDate);
     return localDate.toLocaleString();
+  }
+
+  function _getTotalBottle() {
+    return props.order.products.reduce((total, prod) => (total + Number(prod.quantity)), 0);
   }
 
   function handleCancelClick() {
@@ -177,6 +185,61 @@ function OrderCard(props) {
                 {getValueFormatted(props.order.change_difference)}
               </Typography>
             )}
+
+            {handleDeliveredOrder == null ? null : (
+              <Card variant="outlined">
+                <CardContent>
+                  <FormControl component="fieldset" className={classesAccordion.root}>
+                    <FormLabel component="legend">Observações</FormLabel>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={<Checkbox name="pending_payment" checked={pendingPayment} onChange={(event) => isPendingPayment(event.target.checked)} />}
+                        label="Pagamento Pendente"
+                      />
+                      {pendingPayment ?
+                          <Input
+                                 type="number"
+                                 label="Ficou devendo"
+                                 variant="outlined"
+                                 defaultValue={props.order.total_amount}
+                                 min={0.01}
+                                 max={props.order.total_amount}
+                                 step="0.01"
+                                 validate
+                                 placeholder="...">
+                            <Icon>attach_money</Icon>
+                          </Input> : undefined}
+
+                     
+                      <FormControlLabel
+                        control={<Checkbox name="pending_bottle" checked={pendingBottle} onChange={(event) => isPendingBottle(event.target.checked)} />}
+                        label="Garrafão Emprestado"
+                      />
+                      {pendingBottle ?
+                          <FormGroup>
+                            <Input
+                                   type="number"
+                                   label="Garrafões"
+                                   variant="outlined"
+                                   defaultValue={_getTotalBottle()}
+                                   min={1}
+                                   step="1"
+                                   validate
+                                   placeholder="...">
+                              <Icon>invert_colors</Icon>
+                            </Input>
+                          </FormGroup>: undefined}
+
+                      <Input
+                        label="Observações" 
+                        variant="outlined" 
+                        placeholder="..." />
+                    </FormGroup>
+                  </FormControl>
+                </CardContent>
+              </Card>
+            )
+          }
           </CardContent>
           <CardActions>
             <Grid container spacing={1}>
