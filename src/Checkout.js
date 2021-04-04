@@ -208,8 +208,30 @@ class Checkout extends Component {
   };
 
   handleOnAutocompleteLastOrderSearch = (order) => {
-    this.setState(order, () => this.triggerCartLoad(order));
+    this.setState(order, () => {
+      this.triggerCartLoad(order);
+      this.addPendenciesOnNote(order);
+    });
   };
+
+  addPendenciesOnNote({ pendent, notes }) {
+    if (!pendent) return;
+
+    let notesWithPendencies = notes ?? "";
+    if (pendent.note) {
+      if (notesWithPendencies) notesWithPendencies += ' ';
+      notesWithPendencies += pendent.note;
+    }
+    if (pendent.payment) {
+      if (notesWithPendencies) notesWithPendencies += ' ';
+      notesWithPendencies += `Devendo ${ getValueFormatted(pendent.payment.value) };`;
+    }
+    if (pendent.bottles) {
+      if (notesWithPendencies) notesWithPendencies += ' ';
+      notesWithPendencies += `${ pendent.bottles.quantity } garrafões emprestados;`
+    }
+    this.setState({ notes: notesWithPendencies })
+  }
 
   handleKeyDownPhonenumber = (event) => {
     if (event.key === "Enter") {

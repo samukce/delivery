@@ -314,7 +314,7 @@ describe("OrderRepository", () => {
 
         const order = dbTest.get(entity).getById(1).value();
 
-        expect(order.pending).to.be.eql({
+        expect(order.pendent).to.be.eql({
           payment: {
             value: 5
           },
@@ -334,7 +334,7 @@ describe("OrderRepository", () => {
 
         const order = dbTest.get(entity).getById(1).value();
 
-        expect(order.pending).to.be.eql({
+        expect(order.pendent).to.be.eql({
           bottles: {
             quantity: 2
           },
@@ -354,7 +354,7 @@ describe("OrderRepository", () => {
 
         const order = dbTest.get(entity).getById(1).value();
 
-        expect(order.pending).to.be.eql({
+        expect(order.pendent).to.be.eql({
           note: "need to take some",
         });
       });
@@ -372,7 +372,7 @@ describe("OrderRepository", () => {
 
         const order = dbTest.get(entity).getById(1).value();
 
-        expect(order.pending).to.be.eql({
+        expect(order.pendent).to.be.eql({
           payment: {
             value: 10
           },

@@ -67,11 +67,11 @@ const useStylesAccordion = makeStyles((theme) => ({
 
 function OrderCard(props) {
   const classesAccordion = useStylesAccordion();
-  const [pendingPayment,isPendingPayment] = useState(false);
-  const [pendingBottle,isPendingBottle] = useState(false);
-  const [pendingPaymentValue,setPendingPaymentValue] = useState(null);
-  const [pendingBottleQuantity,setPendingBottleQuantity] = useState(null);
-  const [pendingGenericNote,setPendingGenericNote] = useState(null);
+  const [pendingPayment, isPendingPayment] = useState(false);
+  const [pendingBottle, isPendingBottle] = useState(false);
+  const [pendingPaymentValue, setPendingPaymentValue] = useState(props.order.total_amount);
+  const [pendingBottleQuantity, setPendingBottleQuantity] = useState(_getTotalBottle());
+  const [pendingGenericNote, setPendingGenericNote] = useState(null);
   const handleCancelOrder = props.handleCancelOrder;
   const handleShippedOrder = props.handleShippedOrder;
   const handleDeliveredOrder = props.handleDeliveredOrder;
@@ -114,8 +114,8 @@ function OrderCard(props) {
 
   function handleDeliveredClick() {
     handleDeliveredOrder(props.order.id, {
-      pending_payment: pendingPaymentValue,
-      pending_bottles: pendingBottleQuantity,
+      pending_payment: pendingPaymentValue ? pendingPaymentValue : undefined,
+      pending_bottles: pendingBottleQuantity ? pendingBottleQuantity : undefined,
       pending_generic_note: pendingGenericNote
     });
   }
