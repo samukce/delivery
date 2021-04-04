@@ -196,6 +196,59 @@ describe("OrderRepository", () => {
     });
   });
 
+  describe("update status", () => {
+    it("should mark status as SHIPPED", () => {
+      dbTest
+        .get(entity)
+        .push({
+          id: 1,
+          address: "St Abc Cde Agh",
+        })
+        .write();
+
+      orderRepository.markAsShipped(1);
+
+      const order = dbTest.get(entity).getById(1).value();
+
+      expect(order.status).to.be.equal("SHIPPED");
+      expect(order.shipped_date).to.be.not.null;
+    });
+
+    it("should mark status as CANCELED", () => {
+      dbTest
+        .get(entity)
+        .push({
+          id: 1,
+          address: "St Abc Cde Agh",
+        })
+        .write();
+
+      orderRepository.markAsCanceled(1);
+
+      const order = dbTest.get(entity).getById(1).value();
+
+      expect(order.status).to.be.equal("CANCELED");
+      expect(order.canceled_date).to.be.not.null;
+    });
+
+    it("should mark status as DELIVERED", () => {
+      dbTest
+        .get(entity)
+        .push({
+          id: 1,
+          address: "St Abc Cde Agh",
+        })
+        .write();
+
+      orderRepository.markAsDelivered(1);
+
+      const order = dbTest.get(entity).getById(1).value();
+
+      expect(order.status).to.be.equal("DELIVERED");
+      expect(order.delivery_date).to.be.not.null;
+    });
+  });
+
   describe("search by address", () => {
     it("should return empty object if empty address", () => {
       expect(orderRepository.searchByAddress("")).to.be.empty;
