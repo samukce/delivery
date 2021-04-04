@@ -4,10 +4,7 @@ import AutocompleteCustom from "./components/AutocompleteCustom";
 import PropTypes from "prop-types";
 import ProductRepository from "./repository/ProductRepository";
 import { map } from "lodash";
-import {
-  handleInputChangeBind,
-  getValueFormatted,
-} from "./utilities/ComponentUtils";
+import { getValueFormatted } from "./utilities/ComponentUtils";
 import { Trans } from "@lingui/react";
 import "./styles/fixed-body-size.css";
 
@@ -226,7 +223,7 @@ class Cart extends Component {
           min="1"
           step="1"
           onKeyDown={this.handleKeyDownQuantity}
-          onChange={handleInputChangeBind(this.setState.bind(this))}
+          onChange={(event) => this.setState({add_product_quantity: Number(event.target.value)})}
         >
           <Icon>list_alt</Icon>
         </Input>

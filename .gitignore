@@ -86,4 +86,4 @@ yarn-error.log*
 dist/
 src/locales/_build/
 
-.env*.local
+.idea/

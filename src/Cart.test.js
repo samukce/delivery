@@ -69,7 +69,7 @@ describe("Cart", () => {
         card: 4.0,
       });
       wrapper.find("#add_product_quantity").simulate("change", {
-        target: { name: "add_product_quantity", value: 2 },
+        target: { name: "add_product_quantity", value: "2" },
       });
 
       wrapper.find("#add-product-button").simulate("click");

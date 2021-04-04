@@ -196,6 +196,194 @@ describe("OrderRepository", () => {
     });
   });
 
+  describe("update status", () => {
+    it("should mark status as SHIPPED", () => {
+      dbTest
+        .get(entity)
+        .push({
+          id: 1,
+          address: "St Abc Cde Agh",
+        })
+        .write();
+
+      orderRepository.markAsShipped(1);
+
+      const order = dbTest.get(entity).getById(1).value();
+
+      expect(order.status).to.be.equal("SHIPPED");
+      expect(order.shipped_date).to.be.not.null;
+    });
+
+    it("should mark status as CANCELED", () => {
+      dbTest
+        .get(entity)
+        .push({
+          id: 1,
+          address: "St Abc Cde Agh",
+        })
+        .write();
+
+      orderRepository.markAsCanceled(1);
+
+      const order = dbTest.get(entity).getById(1).value();
+
+      expect(order.status).to.be.equal("CANCELED");
+      expect(order.canceled_date).to.be.not.null;
+    });
+
+    describe("mark as DELIVERED", () => {
+      it("should mark status as DELIVERED", () => {
+        dbTest
+          .get(entity)
+          .push({
+            id: 1,
+            address: "St Abc Cde Agh",
+          })
+          .write();
+
+        orderRepository.markAsDelivered(1);
+
+        const order = dbTest.get(entity).getById(1).value();
+
+        expect(order.status).to.be.equal("DELIVERED");
+        expect(order.delivery_date).to.be.not.null;
+      });
+
+      it("without pendencies when null", () => {
+        dbTest
+          .get(entity)
+          .push({
+            id: 1,
+            address: "St Abc Cde Agh"
+          })
+          .write();
+
+        orderRepository.markAsDelivered(1);
+
+        const order = dbTest.get(entity).getById(1).value();
+
+        expect(order.pending).to.be.undefined;
+      });
+
+      it("without pendencies when empty object", () => {
+        dbTest
+          .get(entity)
+          .push({
+            id: 1,
+            address: "St Abc Cde Agh"
+          })
+          .write();
+
+        orderRepository.markAsDelivered(1, {});
+
+        const order = dbTest.get(entity).getById(1).value();
+
+        expect(order.pending).to.be.undefined;
+      });
+
+      it("without pendencies when empty fields", () => {
+        dbTest
+          .get(entity)
+          .push({
+            id: 1,
+            address: "St Abc Cde Agh"
+          })
+          .write();
+
+        orderRepository.markAsDelivered(1, {
+          pending_payment: undefined,
+          pending_bottles: undefined,
+          pending_generic_note: undefined
+        });
+
+        const order = dbTest.get(entity).getById(1).value();
+
+        expect(order.pending).to.be.undefined;
+      });
+
+      it("with pending payment", () => {
+        dbTest
+          .get(entity)
+          .push({
+            id: 1,
+            address: "St Abc Cde Agh"
+          })
+          .write();
+
+        orderRepository.markAsDelivered(1, { pending_payment: 5 });
+
+        const order = dbTest.get(entity).getById(1).value();
+
+        expect(order.pendent).to.be.eql({
+          payment: {
+            value: 5
+          },
+        });
+      });
+
+      it("with pending payment", () => {
+        dbTest
+          .get(entity)
+          .push({
+            id: 1,
+            address: "St Abc Cde Agh"
+          })
+          .write();
+
+        orderRepository.markAsDelivered(1, { pending_bottles: 2 });
+
+        const order = dbTest.get(entity).getById(1).value();
+
+        expect(order.pendent).to.be.eql({
+          bottles: {
+            quantity: 2
+          },
+        });
+      });
+
+      it("with generic pending note", () => {
+        dbTest
+          .get(entity)
+          .push({
+            id: 1,
+            address: "St Abc Cde Agh"
+          })
+          .write();
+
+        orderRepository.markAsDelivered(1, { pending_generic_note: "need to take some" });
+
+        const order = dbTest.get(entity).getById(1).value();
+
+        expect(order.pendent).to.be.eql({
+          note: "need to take some",
+        });
+      });
+
+      it("with pending payment and bottles", () => {
+        dbTest
+          .get(entity)
+          .push({
+            id: 1,
+            address: "St Abc Cde Agh"
+          })
+          .write();
+
+        orderRepository.markAsDelivered(1, { pending_bottles: 2, pending_payment: 10 });
+
+        const order = dbTest.get(entity).getById(1).value();
+
+        expect(order.pendent).to.be.eql({
+          payment: {
+            value: 10
+          },
+          bottles: {
+            quantity: 2
+          },
+        });
+      });
+    });
+  });
+
   describe("search by address", () => {
     it("should return empty object if empty address", () => {
       expect(orderRepository.searchByAddress("")).to.be.empty;

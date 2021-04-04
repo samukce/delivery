@@ -575,6 +575,56 @@ describe("Checkout place order", () => {
 
       expect(wrapper.state("notes")).to.equal("Fast delivery");
     });
+
+    describe("load pedencies on notes from last order", () => {
+      it("should load pending payment ", () => {
+        wrapper
+          .find("#phonenumber")
+          .simulate("autocomplete", { pendent: { payment: { value: 10 } } });
+
+        expect(wrapper.state("notes")).to.equal("Devendo R$ 10.00;");
+      });
+
+      it("should load pending bottles", () => {
+        wrapper
+          .find("#phonenumber")
+          .simulate("autocomplete", { pendent: { bottles: { quantity: 2 } } });
+
+        expect(wrapper.state("notes")).to.equal("2 garrafões emprestados;");
+      });
+
+      it("should load pending note", () => {
+        wrapper
+          .find("#phonenumber")
+          .simulate("autocomplete", { pendent: { note: "Pending note" } });
+
+        expect(wrapper.state("notes")).to.equal("Pending note");
+      });
+
+      it("should add last notes with bottles pendent", () => {
+        wrapper
+          .find("#phonenumber")
+          .simulate("autocomplete", { pendent: { bottles: { quantity: 2 } }, notes: "Deixar na portaria" });
+
+        expect(wrapper.state("notes")).to.equal("Deixar na portaria 2 garrafões emprestados;");
+      });
+
+      it("should add last notes with payment pendent", () => {
+        wrapper
+          .find("#phonenumber")
+          .simulate("autocomplete", { pendent: { payment: { value: 10 } }, notes: "Deixar na portaria" });
+
+        expect(wrapper.state("notes")).to.equal("Deixar na portaria Devendo R$ 10.00;");
+      });
+
+      it("should add last notes with payment note", () => {
+        wrapper
+          .find("#phonenumber")
+          .simulate("autocomplete", { pendent: { note: "Pending note" }, notes: "Deixar na portaria" });
+
+        expect(wrapper.state("notes")).to.equal("Deixar na portaria Pending note");
+      });
+    });
   });
 
   describe("save order", () => {
