@@ -204,7 +204,24 @@ class OrderRepository {
     this._markStatusAs(orderId, "canceled_date", "CANCELED");
   }
 
-  markAsDelivered(orderId) {
+  markAsDelivered(orderId, pendencies) {
+    if (pendencies && Object.keys(pendencies).length > 0) {
+      let pending = { };
+      if (pendencies.pending_payment) {
+        pending["payment"] = { value: pendencies.pending_payment };
+      }
+
+      if (pendencies.pending_bottles) {
+        pending["bottles"] = { quantity: pendencies.pending_bottles };
+      }
+
+      if (pendencies.pending_generic_note) {
+        pending["note"] = pendencies.pending_generic_note;
+      }
+      this.order_collection.getById(orderId)
+        .set("pending", pending)
+        .write();
+    }
     this._markStatusAs(orderId, "delivered_date", "DELIVERED");
   }
 
