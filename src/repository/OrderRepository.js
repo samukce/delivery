@@ -205,8 +205,13 @@ class OrderRepository {
   }
 
   markAsDelivered(orderId, pendencies) {
-    if (pendencies && Object.keys(pendencies).length > 0) {
-      let pending = { };
+    this._addPendenciesToOrder(orderId, pendencies);
+    this._markStatusAs(orderId, "delivered_date", "DELIVERED");
+  }
+
+  _addPendenciesToOrder(orderId, pendencies) {
+    if (pendencies) {
+      let pending = {};
       if (pendencies.pending_payment) {
         pending["payment"] = { value: pendencies.pending_payment };
       }
@@ -218,11 +223,13 @@ class OrderRepository {
       if (pendencies.pending_generic_note) {
         pending["note"] = pendencies.pending_generic_note;
       }
-      this.order_collection.getById(orderId)
-        .set("pending", pending)
-        .write();
+
+      if (Object.keys(pending).length > 0) {
+        this.order_collection.getById(orderId)
+          .set("pending", pending)
+          .write();
+      }
     }
-    this._markStatusAs(orderId, "delivered_date", "DELIVERED");
   }
 
   _saveExistentLastOrderWithAllFields(order) {

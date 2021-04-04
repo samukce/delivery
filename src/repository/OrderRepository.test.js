@@ -281,6 +281,26 @@ describe("OrderRepository", () => {
         expect(order.pending).to.be.undefined;
       });
 
+      it("without pendencies when empty fields", () => {
+        dbTest
+          .get(entity)
+          .push({
+            id: 1,
+            address: "St Abc Cde Agh"
+          })
+          .write();
+
+        orderRepository.markAsDelivered(1, {
+          pending_payment: undefined,
+          pending_bottles: undefined,
+          pending_generic_note: undefined
+        });
+
+        const order = dbTest.get(entity).getById(1).value();
+
+        expect(order.pending).to.be.undefined;
+      });
+
       it("with pending payment", () => {
         dbTest
           .get(entity)

@@ -69,6 +69,9 @@ function OrderCard(props) {
   const classesAccordion = useStylesAccordion();
   const [pendingPayment,isPendingPayment] = useState(false);
   const [pendingBottle,isPendingBottle] = useState(false);
+  const [pendingPaymentValue,setPendingPaymentValue] = useState(null);
+  const [pendingBottleQuantity,setPendingBottleQuantity] = useState(null);
+  const [pendingGenericNote,setPendingGenericNote] = useState(null);
   const handleCancelOrder = props.handleCancelOrder;
   const handleShippedOrder = props.handleShippedOrder;
   const handleDeliveredOrder = props.handleDeliveredOrder;
@@ -110,7 +113,11 @@ function OrderCard(props) {
   }
 
   function handleDeliveredClick() {
-    handleDeliveredOrder(props.order.id);
+    handleDeliveredOrder(props.order.id, {
+      pending_payment: pendingPaymentValue,
+      pending_bottles: pendingBottleQuantity,
+      pending_generic_note: pendingGenericNote
+    });
   }
 
   return (
@@ -202,6 +209,8 @@ function OrderCard(props) {
                                  label="Ficou devendo"
                                  variant="outlined"
                                  defaultValue={props.order.total_amount}
+                                 value={pendingPaymentValue}
+                                 onChange={(event) => setPendingPaymentValue(Number(event.target.value))}
                                  min={0.01}
                                  max={props.order.total_amount}
                                  step="0.01"
@@ -222,7 +231,10 @@ function OrderCard(props) {
                                    label="Garrafões"
                                    variant="outlined"
                                    defaultValue={_getTotalBottle()}
+                                   value={pendingBottleQuantity}
+                                   onChange={(event) => setPendingBottleQuantity(Number(event.target.value))}
                                    min={1}
+                                   max={_getTotalBottle()}
                                    step="1"
                                    validate
                                    placeholder="...">
@@ -232,7 +244,9 @@ function OrderCard(props) {
 
                       <Input
                         label="Observações" 
-                        variant="outlined" 
+                        variant="outlined"
+                        value={pendingGenericNote}
+                        onChange={(event) => setPendingGenericNote(event.target.value)}
                         placeholder="..." />
                     </FormGroup>
                   </FormControl>
@@ -442,8 +456,8 @@ class OrderQueue extends Component {
     this.removeOrderShippedFromState(orderId);
   };
 
-  handleDeliveredOrder = (orderId) => {
-    OrderRepository.markAsDelivered(orderId);
+  handleDeliveredOrder = (orderId, pendencies) => {
+    OrderRepository.markAsDelivered(orderId, pendencies);
     this.removeOrderShippedFromState(orderId);
   };
 
