@@ -443,7 +443,7 @@ class OrderQueue extends Component {
   };
 
   handleDeliveredOrder = (orderId) => {
-    OrderRepository.markAsDeliverid(orderId);
+    OrderRepository.markAsDelivered(orderId);
     this.removeOrderShippedFromState(orderId);
   };
 

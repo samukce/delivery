@@ -204,7 +204,7 @@ class OrderRepository {
     this._markStatusAs(orderId, "canceled_date", "CANCELED");
   }
 
-  markAsDeliverid(orderId) {
+  markAsDelivered(orderId) {
     this._markStatusAs(orderId, "delivered_date", "DELIVERED");
   }
 
