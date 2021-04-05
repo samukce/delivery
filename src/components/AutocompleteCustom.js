@@ -64,7 +64,9 @@ class AutocompleteCustom extends Component {
         }
       >
         {matches.map((key, idx) => {
-          const index = key.toUpperCase().indexOf(value.toUpperCase());
+          const searchTerm = value ? value.toUpperCase() : "";
+          const index = key.toUpperCase().indexOf(searchTerm);
+          const length = value ? value.length : 0;
           return (
             <li
               key={key + "_" + idx}
@@ -76,9 +78,9 @@ class AutocompleteCustom extends Component {
               ) : null}
               <span>
                 {index !== 0 ? key.substring(0, index) : ""}
-                <span className="highlight">{value.toUpperCase()}</span>
-                {key.length !== index + value.length
-                  ? key.substring(index + value.length)
+                <span className="highlight">{searchTerm}</span>
+                {key.length !== index + length
+                  ? key.substring(index + length)
                   : ""}
               </span>
             </li>
