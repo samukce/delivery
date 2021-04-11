@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Create env file
+        run: |
+          touch .env
+          echo REACT_APP_CURRENT_GIT_SHA=${GITHUB_SHA} >> .env
+          cat .env
       - run: yarn install && yarn react-build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

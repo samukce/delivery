@@ -54,7 +54,7 @@
     "add-locale": "lingui add-locale",
     "extract": "lingui extract",
     "compile": "lingui compile",
-    "react-start": "react-scripts start",
+    "react-start": "REACT_APP_CURRENT_GIT_SHA=`git rev-parse --short HEAD` react-scripts start",
     "react-build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "react-eject": "react-scripts eject",
