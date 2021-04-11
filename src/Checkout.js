@@ -534,7 +534,7 @@ class Checkout extends Component {
                 </Row>
 
                 {this.state.products.map((product) => (
-                  <Row>
+                  <Row key={product.product_id}>
                     <Col s={1} m={1}>
                       <Icon tinny left>
                         local_grocery_store

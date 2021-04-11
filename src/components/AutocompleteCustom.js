@@ -26,6 +26,13 @@ class AutocompleteCustom extends Component {
     this._onBlur = this._onBlur.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.expandOnFocus && this.props.lazyData) {
+      const dataLazy = this.props.lazyData(this.props.value);
+      this.setState({ data: dataLazy });
+    }
+  }
+
   componentWillReceiveProps({ value }) {
     if (value !== undefined) {
       this.setState({ value });
@@ -269,7 +276,7 @@ class AutocompleteCustom extends Component {
           autoFocus={autoFocus}
           required={required}
           validate={validate}
-          value={this.state.value}
+          value={value}
           ref={(el) => (this.inputField = el)}
           style={{ textTransform: "uppercase" }}
         />
@@ -290,7 +297,7 @@ AutocompleteCustom.propTypes = {
   /*
    * The title of the autocomplete component.
    */
-  title: PropTypes.string,
+  title: PropTypes.object,
 
   inputType: PropTypes.string,
   /*

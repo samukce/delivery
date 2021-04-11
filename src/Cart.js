@@ -56,6 +56,7 @@ class Cart extends Component {
     this.setState(
       {
         add_product: value,
+        product_display_description: value ? value.description : ""
       },
       () => this.focusQuantity()
     );
@@ -145,6 +146,10 @@ class Cart extends Component {
     }, {});
   };
 
+  lazyProductSearch = () => {
+    return this.convertProductsToAutocompleteMap(ProductRepository.all());
+  };
+
   fillProductTable = () => {
     const { products } = this.state;
 
@@ -186,9 +191,6 @@ class Cart extends Component {
   };
 
   render() {
-    const products = this.convertProductsToAutocompleteMap(
-      ProductRepository.all()
-    );
 
     return (
       <React.Fragment>
@@ -197,7 +199,7 @@ class Cart extends Component {
           title={<Trans id="cart.product">Product</Trans>}
           className="product"
           placeholder="..."
-          data={products}
+          lazyData={this.lazyProductSearch}
           expandOnFocus={true}
           onAutocomplete={this.handleOnAutocompleteProduct}
           value={this.state.product_display_description}

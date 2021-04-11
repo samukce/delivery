@@ -41,7 +41,9 @@ describe("Cart", () => {
   });
 
   describe("add product", () => {
-    it("should load products from repository", () => {
+    it("should load products from repository on boot component", () => {
+      const output = mount(<Cart />);
+
       expect(stubProductRepositoryAll).to.have.been.called;
     });
 
