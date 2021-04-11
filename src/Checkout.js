@@ -9,6 +9,7 @@ import AutocompleteCustom from "./components/AutocompleteCustom";
 import { Trans } from "@lingui/react";
 import { NotificationManager } from "react-notifications";
 import OrderRepository from "./repository/OrderRepository";
+import Typography from "@material-ui/core/Typography";
 // import { connect } from "react-redux";
 // import { addTodo } from "./redux/actions";
 
@@ -599,6 +600,7 @@ class Checkout extends Component {
             </Row>
           </Modal>
         </Row>
+        <Typography variant="caption" display="block" gutterBottom>Version: {process.env.REACT_APP_CURRENT_GIT_SHA}</Typography>
       </div>
     );
   }
