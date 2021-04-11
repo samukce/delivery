@@ -138,6 +138,26 @@ class Cart extends Component {
     );
   };
 
+  onIncreaseProductQuantityByOne = (product_to_increase) => {
+    const { onProductsChange } = this.props;
+    const { products } = this.state;
+
+    this.setState(
+      {
+        products: products.filter(function (product) {
+          if (product === product_to_increase) {
+            const quantity = ++product.quantity;
+            return {...product, quantity}
+          }
+          return product;
+        }),
+      },
+      () => {
+        onProductsChange(this.state.products);
+      }
+    );
+  }
+
   convertProductsToAutocompleteMap = (arr) => {
     return arr.reduce(function (map, obj) {
       const productDisplay = `${obj.description.toUpperCase()} (R$ ${
@@ -185,6 +205,16 @@ class Cart extends Component {
           >
             <i className="small material-icons red-text text-darken-4">
               delete
+            </i>
+          </a>
+          <a
+            id={`increase-quantity-${i}`}
+            href="#!"
+            className="waves-effect waves-light btn-small"
+            onClick={this.onIncreaseProductQuantityByOne.bind(this, product)}
+          >
+            <i className="small material-icons text-darken-4">
+              add
             </i>
           </a>
         </td>
