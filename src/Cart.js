@@ -15,18 +15,19 @@ class Cart extends Component {
 
   constructor(props) {
     super(props);
-    this.state = this.getInitialState();
+    this.state = this.getInitialState(true);
   }
 
-  getInitialState = () => {
+  getInitialState = (resetProduct) => {
     return {
       add_product_quantity: 1,
       product_display_description: "",
+      resetProduct,
       products: [],
     };
   };
 
-  onCartClear = () => this.setState(this.getInitialState());
+  onCartClear = () => this.setState(this.getInitialState(!this.state.resetProduct));
 
   onCartLoad = (products) => {
     const { onProductsChange } = this.props;
@@ -113,6 +114,7 @@ class Cart extends Component {
         add_product_quantity: 1,
         product_display_description: "",
         add_product: null,
+        resetProduct: !this.state.resetProduct
       },
       () => {
         onProductsChange(this.state.products);
@@ -197,8 +199,8 @@ class Cart extends Component {
         <AutocompleteCustom
           id="product_display_description"
           title={<Trans id="cart.product">Product</Trans>}
-          className="product"
           placeholder="..."
+          className="product"
           lazyData={this.lazyProductSearch}
           expandOnFocus={true}
           onAutocomplete={this.handleOnAutocompleteProduct}
@@ -209,6 +211,7 @@ class Cart extends Component {
           m={6}
           icon="local_grocery_store"
           iconClassName="prefix"
+          reset={this.state.resetProduct}
         />
 
         <Input

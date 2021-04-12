@@ -4,26 +4,30 @@ import cx from "classnames";
 import constants from "./constants";
 import idgen from "./idgen";
 import { Icon } from "react-materialize";
+import { ClickAwayListener } from "@material-ui/core";
 
 class AutocompleteCustom extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      value: props.value || "",
+  initialState = (value, data, reset) => {
+    return {
+      value: value || "",
       itemSelected: false,
       activeItem: 0,
       expandItems: false,
-      data: props.data || [],
-    };
+      data: data || [],
+      reset: reset
+    }
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = this.initialState(props.value, props.data, props.reset);
 
     this.renderIcon = this.renderIcon.bind(this);
     this.renderDropdown = this.renderDropdown.bind(this);
     this._onChange = this._onChange.bind(this);
-    this._onKeyDown = this._onKeyDown.bind(this);
     this._onKeyPress = this._onKeyPress.bind(this);
     this._onFocus = this._onFocus.bind(this);
-    this._onBlur = this._onBlur.bind(this);
   }
 
   componentDidMount() {
@@ -33,9 +37,16 @@ class AutocompleteCustom extends Component {
     }
   }
 
-  componentWillReceiveProps({ value }) {
-    if (value !== undefined) {
-      this.setState({ value });
+  componentWillReceiveProps({ value, data, reset }) {
+    if (reset !== this.state.reset) {
+      let state = this.initialState(value, data, reset);
+
+      if (this.props.expandOnFocus && this.props.lazyData) {
+        const dataLazy = this.props.lazyData(this.props.value);
+        state.data = dataLazy;
+      }
+
+      this.setState(state)
     }
   }
 
@@ -122,9 +133,8 @@ class AutocompleteCustom extends Component {
     this.setState({ value, itemSelected: false, activeItem: 0, expandItems });
   }
 
-  _onKeyDown(evt) {
+  _onKeyDown = (evt) => {
     const { activeItem } = this.state;
-
     const matches = this.autoCompleteContent
       ? this.autoCompleteContent.childNodes
       : null;
@@ -153,9 +163,9 @@ class AutocompleteCustom extends Component {
           activeItem: activeItem - 1,
         });
       }
-    } else if (evt.keyCode === 27) {
-      // if event is esc, reset value.
-      this.setState({ value: "" });
+    } else if (evt.keyCode === 27 || evt.keyCode === 9) {
+      // if event is esc or tab, reset value.
+      this.setState({ value: "", expandItems: false });
     } else if (evt.keyCode === 13) {
       // if event is enter
       evt.preventDefault();
@@ -169,20 +179,12 @@ class AutocompleteCustom extends Component {
   }
 
   _onFocus(evt) {
-    const { expandOnFocus } = this.props;
-    if (!expandOnFocus) return;
-
-    this.setState({ expandItems: true, itemSelected: false });
+    this.setState({ value: evt.target.value, expandItems: true  });
   }
 
-  _onBlur(evt) {
-    const { expandOnFocus } = this.props;
-    if (!expandOnFocus) return;
-
-    setTimeout(() => {
-      this.setState({ expandItems: false });
-    }, 100);
-  }
+  handleClose = (event) => {
+    this.setState({ value: "", expandItems: false });
+  };
 
   _findRealValue(liValue) {
     const { data } = this.state;
@@ -256,33 +258,34 @@ class AutocompleteCustom extends Component {
     });
 
     return (
-      <div
-        offset={offset}
-        className={cx("input-field", className, classes)}
-        {...props}
-      >
-        {icon && this.renderIcon(icon, iconClassName)}
-        <input
-          placeholder={placeholder}
-          className={`autocomplete ${validate ? "validate" : ""}`}
-          id={_id}
-          onChange={this._onChange}
-          onKeyDown={this._onKeyDown}
-          onKeyPress={this._onKeyPress}
-          onFocus={expandOnFocus && this._onFocus}
-          onBlur={expandOnFocus && this._onBlur}
-          type={inputType ?? "text"}
-          autocomplete="off"
-          autoFocus={autoFocus}
-          required={required}
-          validate={validate}
-          value={value}
-          ref={(el) => (this.inputField = el)}
-          style={{ textTransform: "uppercase" }}
-        />
-        <label htmlFor={_id}>{title}</label>
-        {this.renderDropdown(minLength, limit)}
-      </div>
+      <ClickAwayListener onClickAway={this.handleClose}>
+        <div
+          offset={offset}
+          className={cx("input-field", className, classes)}
+          {...props}
+        >
+          {icon && this.renderIcon(icon, iconClassName)}
+          <input
+            placeholder={placeholder}
+            className={`autocomplete ${validate ? "validate" : ""}`}
+            id={_id}
+            onChange={this._onChange}
+            onKeyDown={this._onKeyDown}
+            onKeyPress={this._onKeyPress}
+            onFocus={this._onFocus}
+            type={inputType ?? "text"}
+            autocomplete="off"
+            autoFocus={autoFocus}
+            required={required}
+            validate={validate}
+            value={value}
+            ref={(el) => (this.inputField = el)}
+            style={{ textTransform: "uppercase" }}
+          />
+          <label htmlFor={_id}>{title}</label>
+          {this.renderDropdown(minLength, limit)}
+        </div>
+      </ClickAwayListener>
     );
   }
 }
@@ -345,6 +348,7 @@ AutocompleteCustom.propTypes = {
   required: PropTypes.bool,
   autoFocus: PropTypes.bool,
   lazyData: PropTypes.func,
+  reset: PropTypes.bool,
   /**
    * The value of the input
    */
