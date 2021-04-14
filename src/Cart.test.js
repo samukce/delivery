@@ -281,10 +281,8 @@ describe("Cart", () => {
 
       wrapper.find("#add-product-button").simulate("click");
 
-      expect(
-        wrapper.find("Table").find("tbody").props().children[0].props
-          .children[2].props.children
-      ).to.be.equal(1);
+      expect(wrapper.find("#current-quantity-0").props().children)
+        .to.be.equal(1);
     });
 
     it("should calculate the total amount of the product on the table", () => {
@@ -321,6 +319,30 @@ describe("Cart", () => {
 
       expect(spyOnProductChange).to.have.been.calledOnce;
     });
+
+    it("should increase product quantity", () => {
+      const products = [
+        {
+          description: "Product 1",
+          product_id: 1,
+          quantity: 1,
+          cash: 3.5,
+          card: 4.0,
+        },
+      ];
+      wrapper.setState({ products });
+
+      wrapper.find("#increase-quantity-0").simulate("click");
+
+      expect(spyOnProductChange).to.have.been.calledOnce;
+      expect(wrapper.state("products")).to.eql([{
+        description: "Product 1",
+        product_id: 1,
+        quantity: 2,
+        cash: 3.5,
+        card: 4.0,
+      }]);
+    });
   });
 
   describe("remove product", () => {
@@ -356,6 +378,74 @@ describe("Cart", () => {
       wrapper.find("#remove-product-0").simulate("click");
 
       expect(spyOnProductChange).to.have.been.calledOnce;
+    });
+
+    it("should decrease product quantity", () => {
+      const products = [
+        {
+          description: "Product 1",
+          product_id: 1,
+          quantity: 2,
+          cash: 3.5,
+          card: 4.0,
+        },
+      ];
+      wrapper.setState({ products });
+
+      wrapper.find("#decrease-quantity-0").simulate("click");
+
+      expect(spyOnProductChange).to.have.been.calledOnce;
+      expect(wrapper.state("products")).to.eql([{
+        description: "Product 1",
+        product_id: 1,
+        quantity: 1,
+        cash: 3.5,
+        card: 4.0,
+      }]);
+    });
+
+    describe("decrease quantity", () => {
+      it("should decrease product quantity", () => {
+        const products = [
+          {
+            description: "Product 1",
+            product_id: 1,
+            quantity: 2,
+            cash: 3.5,
+            card: 4.0,
+          },
+        ];
+        wrapper.setState({ products });
+
+        wrapper.find("#decrease-quantity-0").simulate("click");
+
+        expect(spyOnProductChange).to.have.been.calledOnce;
+        expect(wrapper.state("products")).to.eql([{
+          description: "Product 1",
+          product_id: 1,
+          quantity: 1,
+          cash: 3.5,
+          card: 4.0,
+        }]);
+      });
+
+      it("should remove product quantity when zero quantity", () => {
+        const products = [
+          {
+            description: "Product 1",
+            product_id: 1,
+            quantity: 1,
+            cash: 3.5,
+            card: 4.0,
+          },
+        ];
+        wrapper.setState({ products });
+
+        wrapper.find("#decrease-quantity-0").simulate("click");
+
+        expect(spyOnProductChange).to.have.been.calledOnce;
+        expect(wrapper.state("products")).to.eql([]);
+      });
     });
   });
 
