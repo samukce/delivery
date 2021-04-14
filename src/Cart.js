@@ -7,6 +7,7 @@ import { map } from "lodash";
 import { getValueFormatted } from "./utilities/ComponentUtils";
 import { Trans } from "@lingui/react";
 import "./styles/fixed-body-size.css";
+import { Grid, Typography } from "@material-ui/core";
 
 class Cart extends Component {
   static propTypes = {
@@ -144,13 +145,33 @@ class Cart extends Component {
 
     this.setState(
       {
-        products: products.filter(function (product) {
+        products: products.map(function (product) {
           if (product === product_to_increase) {
             const quantity = ++product.quantity;
             return {...product, quantity}
           }
           return product;
         }),
+      },
+      () => {
+        onProductsChange(this.state.products);
+      }
+    );
+  }
+
+  onDecreaseProductQuantityByOne = (product_to_decrease) => {
+    const { onProductsChange } = this.props;
+    const { products } = this.state;
+
+    this.setState(
+      {
+        products: products.map(function (product) {
+          if (product === product_to_decrease) {
+            const quantity = --product_to_decrease.quantity;
+            return {...product, quantity}
+          }
+          return product;
+        }).filter((product) => product.quantity > 0),
       },
       () => {
         onProductsChange(this.state.products);
@@ -192,7 +213,37 @@ class Cart extends Component {
             : ""}
         </td>
         <td className="center-align">{getValueFormatted(product.cash)}</td>
-        <td className="center-align">{product.quantity}</td>
+        <td className="center-align">
+          <Grid container justify="center" alignItems="center" spacing={1}>
+            <Grid key={`grid-decrease-quantity-${i}`} item>
+              <a
+                id={`decrease-quantity-${i}`}
+                href="#!"
+                className="waves-effect waves-light btn-small"
+                onClick={this.onDecreaseProductQuantityByOne.bind(this, product)}
+              >
+                <i className="small material-icons text-darken-4">
+                  remove
+                </i>
+              </a>
+            </Grid>
+            <Grid key={`grid-quantity-${i}`} item>
+              <Typography>{product.quantity}</Typography>
+            </Grid>
+            <Grid key={`grid-increase-quantity-${i}`} item>
+              <a
+                id={`increase-quantity-${i}`}
+                href="#!"
+                className="waves-effect waves-light btn-small"
+                onClick={this.onIncreaseProductQuantityByOne.bind(this, product)}
+              >
+                <i className="small material-icons text-darken-4">
+                  add
+                </i>
+              </a>
+            </Grid>
+          </Grid>
+        </td>
         <td className="center-align">
           {getValueFormatted(product.quantity * product.cash)}
         </td>
@@ -205,16 +256,6 @@ class Cart extends Component {
           >
             <i className="small material-icons red-text text-darken-4">
               delete
-            </i>
-          </a>
-          <a
-            id={`increase-quantity-${i}`}
-            href="#!"
-            className="waves-effect waves-light btn-small"
-            onClick={this.onIncreaseProductQuantityByOne.bind(this, product)}
-          >
-            <i className="small material-icons text-darken-4">
-              add
             </i>
           </a>
         </td>
