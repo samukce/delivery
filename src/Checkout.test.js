@@ -7,7 +7,7 @@ import OrderRepository from "./repository/OrderRepository";
 
 describe("Checkout component load", () => {
   it("should focus in the phonenumber field", () => {
-    const output = mount(<Checkout />);
+    const output = mount(<Checkout/>);
 
     expect(output.find("input#phonenumber").getElement().props.id).to.be.equal(
       document.activeElement.id
@@ -39,7 +39,7 @@ describe("Checkout place order", () => {
 
     stubOrderRespositorySave = sandbox.stub(OrderRepository, "save");
 
-    wrapper = shallow(<Checkout />);
+    wrapper = shallow(<Checkout/>);
     componentRender = wrapper.instance();
 
     spyPlaceOrder = sandbox.spy(componentRender, "placeOrder");
@@ -165,7 +165,7 @@ describe("Checkout place order", () => {
   });
 
   it("should focus change field when choose product", () => {
-    const checkout = TestUtils.renderIntoDocument(<Checkout />);
+    const checkout = TestUtils.renderIntoDocument(<Checkout/>);
 
     checkout.onProductsChange([
       { product_id: 1, description: "Water", cash: 3.5, quantity: 1 },
@@ -175,7 +175,7 @@ describe("Checkout place order", () => {
   });
 
   it("should focus address field when press enter in phonenumber field", () => {
-    const checkout = TestUtils.renderIntoDocument(<Checkout />);
+    const checkout = TestUtils.renderIntoDocument(<Checkout/>);
 
     checkout.setFocusOnChargeTo();
 
@@ -185,7 +185,7 @@ describe("Checkout place order", () => {
   });
 
   it("should focus complement field when press enter in address field", () => {
-    const checkout = TestUtils.renderIntoDocument(<Checkout />);
+    const checkout = TestUtils.renderIntoDocument(<Checkout/>);
 
     checkout.setFocusOnChargeTo();
 
@@ -195,7 +195,7 @@ describe("Checkout place order", () => {
   });
 
   it("should focus product field when press enter in complement field", () => {
-    const checkout = TestUtils.renderIntoDocument(<Checkout />);
+    const checkout = TestUtils.renderIntoDocument(<Checkout/>);
 
     checkout.setFocusOnChargeTo();
 
@@ -207,7 +207,7 @@ describe("Checkout place order", () => {
   });
 
   it("should focus note field when enter in change field", () => {
-    const checkout = TestUtils.renderIntoDocument(<Checkout />);
+    const checkout = TestUtils.renderIntoDocument(<Checkout/>);
 
     checkout.setFocusOnChargeTo();
 
@@ -413,7 +413,7 @@ describe("Checkout place order", () => {
     });
 
     it("should trigger clear action on cart component", () => {
-      const checkout = TestUtils.renderIntoDocument(<Checkout />);
+      const checkout = TestUtils.renderIntoDocument(<Checkout/>);
       const cart = TestUtils.findRenderedComponentWithType(checkout, Cart);
 
       const spyCartClear = sandbox.spy(cart, "onCartClear");
@@ -474,7 +474,7 @@ describe("Checkout place order", () => {
     });
 
     it("should trigger refresh products in cart component", () => {
-      const checkout = TestUtils.renderIntoDocument(<Checkout />);
+      const checkout = TestUtils.renderIntoDocument(<Checkout/>);
       const cart = TestUtils.findRenderedComponentWithType(checkout, Cart);
       const spyCartLoad = sandbox.stub(cart, "onCartLoad");
 
@@ -487,7 +487,7 @@ describe("Checkout place order", () => {
     });
 
     it("should trigger on clean before refresh products in cart component", () => {
-      const checkout = TestUtils.renderIntoDocument(<Checkout />);
+      const checkout = TestUtils.renderIntoDocument(<Checkout/>);
       const cart = TestUtils.findRenderedComponentWithType(checkout, Cart);
       const spyCartLoad = sandbox.stub(cart, "onCartLoad");
       const spyCartClear = sandbox.spy(cart, "onCartClear");
@@ -499,7 +499,7 @@ describe("Checkout place order", () => {
     });
 
     it("should focus change field when search complete", () => {
-      const checkout = TestUtils.renderIntoDocument(<Checkout />);
+      const checkout = TestUtils.renderIntoDocument(<Checkout/>);
 
       checkout.handleOnAutocompleteLastOrderSearch({ products: [] });
 
@@ -507,7 +507,7 @@ describe("Checkout place order", () => {
     });
 
     it("should focus note field when search complete if payment is credit card", () => {
-      const checkout = TestUtils.renderIntoDocument(<Checkout />);
+      const checkout = TestUtils.renderIntoDocument(<Checkout/>);
 
       checkout.setState({ credit_card_payment: true });
       checkout.handleOnAutocompleteLastOrderSearch({ products: [] });
@@ -576,53 +576,109 @@ describe("Checkout place order", () => {
       expect(wrapper.state("notes")).to.equal("Fast delivery");
     });
 
-    describe("load pedencies on notes from last order", () => {
+    describe("load pendencies from last order", () => {
       it("should load pending payment ", () => {
         wrapper
           .find("#phonenumber")
-          .simulate("autocomplete", { pendent: { payment: { value: 10 } } });
+          .simulate("autocomplete", { id: 1, pendent: { payment: { value: 10 } }, created: "2021-01-01" });
 
-        expect(wrapper.state("notes")).to.equal("Devendo R$ 10.00;");
+        expect(wrapper.state("order").previous_pendencies)
+          .to.eql([{
+          order_id: 1,
+          pendent: {
+            payment: { value: 10 }
+          },
+          created: "2021-01-01"
+        }]);
       });
 
       it("should load pending bottles", () => {
         wrapper
           .find("#phonenumber")
-          .simulate("autocomplete", { pendent: { bottles: { quantity: 2 } } });
+          .simulate("autocomplete", { id: 1, pendent: { bottles: { quantity: 2 } }, created: "2021-01-01" });
 
-        expect(wrapper.state("notes")).to.equal("2 garrafões emprestados;");
+        expect(wrapper.state("order").previous_pendencies)
+          .to.eql([{
+          order_id: 1,
+          pendent: {
+            bottles: { quantity: 2 }
+          },
+          created: "2021-01-01"
+        }]);
       });
 
-      it("should load pending note", () => {
+      it("should append last pendency ", () => {
         wrapper
           .find("#phonenumber")
-          .simulate("autocomplete", { pendent: { note: "Pending note" } });
+          .simulate("autocomplete", {
+            id: 5,
+            previous_pendencies: [{
+              order_id: 4,
+              pendent: {
+                bottles: { quantity: 2 }
+              }
+            }]
+          });
 
-        expect(wrapper.state("notes")).to.equal("Pending note");
+        expect(wrapper.state("order").previous_pendencies)
+          .to.eql([{
+          order_id: 4,
+          pendent: {
+            bottles: { quantity: 2 }
+          }
+        }]);
       });
 
-      it("should add last notes with bottles pendent", () => {
+      it("should append last pendency and maintain previous pendencies", () => {
         wrapper
           .find("#phonenumber")
-          .simulate("autocomplete", { pendent: { bottles: { quantity: 2 } }, notes: "Deixar na portaria" });
+          .simulate("autocomplete", {
+            id: 5,
+            pendent: { bottles: { quantity: 5 } },
+            previous_pendencies: [{
+              order_id: 4,
+              pendent: {
+                bottles: { quantity: 2 }
+              },
+              created: "2021-05-07"
+            }],
+            created: "2021-02-10"
+          });
 
-        expect(wrapper.state("notes")).to.equal("Deixar na portaria 2 garrafões emprestados;");
+        expect(wrapper.state("order").previous_pendencies)
+          .to.eql([
+          {
+            order_id: 4,
+            pendent: {
+              bottles: { quantity: 2 }
+            },
+            created: "2021-05-07"
+          },
+          {
+            order_id: 5,
+            pendent: {
+              bottles: { quantity: 5 }
+            },
+            created: "2021-02-10"
+          }]);
       });
 
-      it("should add last notes with payment pendent", () => {
+      it("should not append last resolved pendency ", () => {
         wrapper
           .find("#phonenumber")
-          .simulate("autocomplete", { pendent: { payment: { value: 10 } }, notes: "Deixar na portaria" });
+          .simulate("autocomplete", {
+            id: 5,
+            previous_pendencies: [{
+              order_id: 4,
+              pendent: {
+                bottles: { quantity: 2 }
+              },
+              resolved: true
+            }]
+          });
 
-        expect(wrapper.state("notes")).to.equal("Deixar na portaria Devendo R$ 10.00;");
-      });
-
-      it("should add last notes with payment note", () => {
-        wrapper
-          .find("#phonenumber")
-          .simulate("autocomplete", { pendent: { note: "Pending note" }, notes: "Deixar na portaria" });
-
-        expect(wrapper.state("notes")).to.equal("Deixar na portaria Pending note");
+        expect(wrapper.state("order").previous_pendencies)
+          .to.eql([]);
       });
     });
   });

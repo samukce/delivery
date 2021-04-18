@@ -94,17 +94,17 @@ class Checkout extends Component {
 
     //TODO: add translation
     const product = products.reduce(
-      (full_list, prod) => `${full_list} (${prod.quantity})${prod.description}`,
+      (full_list, prod) => `${ full_list } (${ prod.quantity })${ prod.description }`,
       ""
     );
     const change_text =
       change_difference == null
         ? ""
-        : ` [Levar R$ ${change_difference} de Troco]`;
+        : ` [Levar R$ ${ change_difference } de Troco]`;
     const fifteen_seconds = 15 * 1000;
 
     NotificationManager.success(
-      `${address} ${complement}${change_text} ${product}`.toUpperCase(),
+      `${ address } ${ complement }${ change_text } ${ product }`.toUpperCase(),
       "Pedido criado",
       fifteen_seconds
     );
@@ -215,23 +215,18 @@ class Checkout extends Component {
     });
   };
 
-  addPendenciesOnNote({ pendent, notes }) {
-    if (!pendent) return;
+  addPendenciesOnNote(order) {
+    let full_previous_pendencies = order.previous_pendencies ?? [];
 
-    let notesWithPendencies = notes ?? "";
-    if (pendent.note) {
-      if (notesWithPendencies) notesWithPendencies += ' ';
-      notesWithPendencies += pendent.note;
+    if (order.pendent) {
+      full_previous_pendencies.push({
+        order_id: order.id,
+        pendent: order.pendent,
+        created: order.created
+      });
     }
-    if (pendent.payment) {
-      if (notesWithPendencies) notesWithPendencies += ' ';
-      notesWithPendencies += `Devendo ${ getValueFormatted(pendent.payment.value) };`;
-    }
-    if (pendent.bottles) {
-      if (notesWithPendencies) notesWithPendencies += ' ';
-      notesWithPendencies += `${ pendent.bottles.quantity } garrafões emprestados;`
-    }
-    this.setState({ notes: notesWithPendencies })
+    let previous_pendencies = full_previous_pendencies.filter((pendency) => !pendency.resolved);
+    this.setState({ order: { ...order, previous_pendencies } })
   }
 
   handleKeyDownPhonenumber = (event) => {
@@ -312,45 +307,45 @@ class Checkout extends Component {
 
   render() {
     return (
-      <div ref={(el) => (this.checkoutSection = el)}>
+      <div ref={ (el) => (this.checkoutSection = el) }>
         <Row>
           <AutocompleteCustom
             id="phonenumber"
-            title={<Trans id="checkout.phonenumber">Phone number</Trans>}
+            title={ <Trans id="checkout.phonenumber">Phone number</Trans> }
             placeholder="..."
             autoFocus
             className="phonenumber"
-            lazyData={this.lazyPhoneSearch}
-            onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
-            value={this.state.phonenumber}
-            onChange={this.onChangePhonenumber}
+            lazyData={ this.lazyPhoneSearch }
+            onAutocomplete={ this.handleOnAutocompleteLastOrderSearch }
+            value={ this.state.phonenumber }
+            onChange={ this.onChangePhonenumber }
             propertyField="phonenumber"
-            s={12}
+            s={ 12 }
             icon="phone"
-            ref={(el) => (this.inputPhonenumber = el)}
-            onKeyDown={this.handleKeyDownPhonenumber}
+            ref={ (el) => (this.inputPhonenumber = el) }
+            onKeyDown={ this.handleKeyDownPhonenumber }
             iconClassName="prefix"
-            onKeyPressCustom={this.onKeyPressOnlyNumber}
+            onKeyPressCustom={ this.onKeyPressOnlyNumber }
             inputType="number"
           />
 
           <AutocompleteCustom
             id="address"
-            title={<Trans id="checkout.address">Address</Trans>}
+            title={ <Trans id="checkout.address">Address</Trans> }
             placeholder="..."
             className="address"
             propertyField="address"
             required
             validate
-            lazyData={this.lazyAddressSearch}
-            onAutocomplete={this.handleOnAutocompleteLastOrderSearch}
-            onKeyDown={this.handleKeyDownAddress}
-            value={this.state.address}
-            onChange={(event, value) => this.setState({ address: value })}
-            s={12}
-            m={7}
+            lazyData={ this.lazyAddressSearch }
+            onAutocomplete={ this.handleOnAutocompleteLastOrderSearch }
+            onKeyDown={ this.handleKeyDownAddress }
+            value={ this.state.address }
+            onChange={ (event, value) => this.setState({ address: value }) }
+            s={ 12 }
+            m={ 7 }
             icon="home"
-            ref={(el) => (this.inputAddress = el)}
+            ref={ (el) => (this.inputAddress = el) }
             iconClassName="prefix"
           />
 
@@ -359,47 +354,47 @@ class Checkout extends Component {
             name="complement"
             placeholder="..."
             autocomplete="off"
-            s={12}
-            m={5}
-            label={<Trans id="checkout.complement">Complement</Trans>}
-            value={this.state.complement}
-            ref={(el) => (this.inputComplement = el)}
-            onKeyDown={this.handleKeyDownComplement}
-            style={{ textTransform: "uppercase" }}
-            onChange={handleInputChangeBind(this.setState.bind(this))}
+            s={ 12 }
+            m={ 5 }
+            label={ <Trans id="checkout.complement">Complement</Trans> }
+            value={ this.state.complement }
+            ref={ (el) => (this.inputComplement = el) }
+            onKeyDown={ this.handleKeyDownComplement }
+            style={ { textTransform: "uppercase" } }
+            onChange={ handleInputChangeBind(this.setState.bind(this)) }
           >
             <Icon>rate_review</Icon>
           </Input>
 
           <Cart
-            onProductsChange={this.onProductsChange}
-            ref={(el) => (this.cartComponent = el)}
+            onProductsChange={ this.onProductsChange }
+            ref={ (el) => (this.cartComponent = el) }
           >
             <Card
               id="total_amount"
-              actions={[
+              actions={ [
                 <Row>
                   <Button
                     id="cash-payment-button"
-                    onClick={this.buttonClickCashPayment}
-                    className={`col s12 m6 blue ${
+                    onClick={ this.buttonClickCashPayment }
+                    className={ `col s12 m6 blue ${
                       this.state.credit_card_payment ? "lighten-4" : ""
-                    }`}
+                    }` }
                   >
                     <Icon>attach_money</Icon>
                   </Button>
                   <Button
                     id="card-payment-button"
-                    onClick={this.buttonClickCreditCardPayment}
-                    className={`col s12 m6 blue ${
+                    onClick={ this.buttonClickCreditCardPayment }
+                    className={ `col s12 m6 blue ${
                       !this.state.credit_card_payment ? "lighten-4" : ""
-                    }`}
+                    }` }
                   >
                     <Icon>credit_card</Icon>
                   </Button>
                 </Row>,
-              ]}
-              title={getValueFormatted(this.state.total_amount)}
+              ] }
+              title={ getValueFormatted(this.state.total_amount) }
             >
               {
                 <Trans
@@ -414,42 +409,42 @@ class Checkout extends Component {
               }
             </Card>
 
-            {this.state.credit_card_payment ? null : (
+            { this.state.credit_card_payment ? null : (
               <Input
                 id="change_to"
                 name="change_to"
-                label={<Trans id="checkout.change_to">Change to</Trans>}
+                label={ <Trans id="checkout.change_to">Change to</Trans> }
                 placeholder="..."
-                s={12}
+                s={ 12 }
                 type="number"
-                value={this.state.change_to}
-                min={this.state.total_amount + 0.01}
+                value={ this.state.change_to }
+                min={ this.state.total_amount + 0.01 }
                 step="0.01"
                 validate
-                disabled={this.state.credit_card_payment}
-                ref={(el) => (this.inputChargeTo = el)}
-                onKeyDown={this.handleKeyDownChange}
-                onChange={handleInputChangeBind(
+                disabled={ this.state.credit_card_payment }
+                ref={ (el) => (this.inputChargeTo = el) }
+                onKeyDown={ this.handleKeyDownChange }
+                onChange={ handleInputChangeBind(
                   this.setState.bind(this),
                   this.updateChangeDifference
-                )}
+                ) }
               >
                 <Icon>attach_money</Icon>
               </Input>
-            )}
+            ) }
           </Cart>
 
           <Input
             id="notes"
-            s={12}
+            s={ 12 }
             name="notes"
-            label={<Trans id="checkout.notes">Notes</Trans>}
+            label={ <Trans id="checkout.notes">Notes</Trans> }
             placeholder="..."
-            value={this.state.notes}
-            ref={(el) => (this.inputNotes = el)}
-            onKeyDown={this.handleKeyDownNotes}
-            style={{ textTransform: "uppercase" }}
-            onChange={handleInputChangeBind(this.setState.bind(this))}
+            value={ this.state.notes }
+            ref={ (el) => (this.inputNotes = el) }
+            onKeyDown={ this.handleKeyDownNotes }
+            style={ { textTransform: "uppercase" } }
+            onChange={ handleInputChangeBind(this.setState.bind(this)) }
           >
             <Icon>speaker_notes</Icon>
           </Input>
@@ -458,102 +453,102 @@ class Checkout extends Component {
         <Row>
           <Button
             id="clear-button"
-            onClick={this.clearAllFieds}
+            onClick={ this.clearAllFieds }
             className="col s12 m2 grey clear-button"
           >
-            {<Trans id="checkout.clean">Clean</Trans>}
+            { <Trans id="checkout.clean">Clean</Trans> }
             <Icon left>clear_all</Icon>
           </Button>
 
           <Modal
-            actions={[
+            actions={ [
               <Button flat modal="close" node="button" waves="green">
-                {<Trans id="checkout.back">Voltar</Trans>}
+                { <Trans id="checkout.back">Voltar</Trans> }
               </Button>,
               <Button
                 id="place-order-button"
-                onClick={this.saveValidOrder}
-                disabled={!this.isValid()}
-                ref={(el) => (this.buttonPlaceOrderFinal = el)}
+                onClick={ this.saveValidOrder }
+                disabled={ !this.isValid() }
+                ref={ (el) => (this.buttonPlaceOrderFinal = el) }
                 className="col s12 m3 offset-m7"
               >
-                {<Trans id="checkout.place_order">Place Order</Trans>}
+                { <Trans id="checkout.place_order">Place Order</Trans> }
                 <Icon left>motorcycle</Icon>
               </Button>,
-            ]}
+            ] }
             fixedFooter
-            header={<Trans id="checkout.order_summary">Order Summary</Trans>}
+            header={ <Trans id="checkout.order_summary">Order Summary</Trans> }
             id="modal-order-summary"
-            ref={(el) => (this.summaryOrderModal = el)}
-            modalOptions={{
+            ref={ (el) => (this.summaryOrderModal = el) }
+            modalOptions={ {
               ready: () => this.setState({ modal_opened: true }),
               complete: () => this.setState({ modal_opened: false }),
-            }}
-            root={[this.checkoutSection]}
+            } }
+            root={ [this.checkoutSection] }
             trigger={
               <Button
                 id="modal-open-modal"
                 node="button"
                 className="col s12 m3 offset-m7"
-                disabled={!this.isValid()}
+                disabled={ !this.isValid() }
               >
-                {<Trans id="checkout.place_order">Place Order</Trans>}
+                { <Trans id="checkout.place_order">Place Order</Trans> }
                 <Icon left>motorcycle</Icon>
               </Button>
             }
           >
             <Row>
               <Row></Row>
-              <Col s={12} m={6}>
+              <Col s={ 12 } m={ 6 }>
                 <Row>
-                  <Col s={12} m={12}>
+                  <Col s={ 12 } m={ 12 }>
                     <Icon small left>
                       phone
                     </Icon>
-                    {this.state.phonenumber}
+                    { this.state.phonenumber }
                   </Col>
                 </Row>
                 <Row>
-                  <Col s={12} m={12}>
+                  <Col s={ 12 } m={ 12 }>
                     <Icon small left>
                       home
                     </Icon>
-                    {this.state.address.toUpperCase()}{" "}
-                    {this.state.complement.toUpperCase()}
+                    { this.state.address.toUpperCase() }{ " " }
+                    { this.state.complement.toUpperCase() }
                   </Col>
                 </Row>
                 <Row>
-                  {this.state.notes.trim() === "" ? null : (
-                    <Col s={12} m={12}>
+                  { this.state.notes.trim() === "" ? null : (
+                    <Col s={ 12 } m={ 12 }>
                       <Icon small left>
                         speaker_notes
                       </Icon>
-                      {this.state.notes.toUpperCase()}
+                      { this.state.notes.toUpperCase() }
                     </Col>
-                  )}
+                  ) }
                 </Row>
 
-                {this.state.products.map((product) => (
-                  <Row key={product.product_id}>
-                    <Col s={1} m={1}>
+                { this.state.products.map((product) => (
+                  <Row key={ product.product_id }>
+                    <Col s={ 1 } m={ 1 }>
                       <Icon tinny left>
                         local_grocery_store
                       </Icon>
                     </Col>
-                    <Col s={11} m={11}>
-                      {product.quantity} x{" "}
-                      {product.description
+                    <Col s={ 11 } m={ 11 }>
+                      { product.quantity } x{ " " }
+                      { product.description
                         ? product.description.toUpperCase()
-                        : ""}
+                        : "" }
                     </Col>
                   </Row>
-                ))}
+                )) }
 
                 <Row>
-                  <Col s={1}>
+                  <Col s={ 1 }>
                     <Icon>attach_money</Icon>
                   </Col>
-                  <Col s={11}>
+                  <Col s={ 11 }>
                     {
                       <Trans
                         id={
@@ -565,42 +560,43 @@ class Checkout extends Component {
                         Total
                       </Trans>
                     }
-                    {` ${getValueFormatted(this.state.total_amount)}`}
+                    { ` ${ getValueFormatted(this.state.total_amount) }` }
                   </Col>
                 </Row>
 
-                {this.state.change_to === "" ? null : (
+                { this.state.change_to === "" ? null : (
                   <Row>
-                    <Col s={1} m={1}>
+                    <Col s={ 1 } m={ 1 }>
                       <Icon>attach_money</Icon>
                     </Col>
-                    <Col s={11} m={11}>
-                      {<Trans id={"checkout.change_to"}>Change to</Trans>}
-                      {` ${getValueFormatted(this.state.change_to)}`}
+                    <Col s={ 11 } m={ 11 }>
+                      { <Trans id={ "checkout.change_to" }>Change to</Trans> }
+                      { ` ${ getValueFormatted(this.state.change_to) }` }
                     </Col>
                   </Row>
-                )}
+                ) }
 
-                {this.state.change_difference == null ? null : (
+                { this.state.change_difference == null ? null : (
                   <Row>
-                    <Col s={1} m={1}>
+                    <Col s={ 1 } m={ 1 }>
                       <Icon>attach_money</Icon>
                     </Col>
-                    <Col s={11}>
+                    <Col s={ 11 }>
                       {
-                        <Trans id={"checkout.change_difference"}>
+                        <Trans id={ "checkout.change_difference" }>
                           Cash change
                         </Trans>
                       }
-                      {` ${getValueFormatted(this.state.change_difference)}`}
+                      { ` ${ getValueFormatted(this.state.change_difference) }` }
                     </Col>
                   </Row>
-                )}
+                ) }
               </Col>
             </Row>
           </Modal>
         </Row>
-        <Typography variant="caption" display="block" gutterBottom>Version: {process.env.REACT_APP_CURRENT_GIT_SHA}</Typography>
+        <Typography variant="caption" display="block"
+                    gutterBottom>Version: { process.env.REACT_APP_CURRENT_GIT_SHA }</Typography>
       </div>
     );
   }
