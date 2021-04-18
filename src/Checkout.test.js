@@ -582,13 +582,13 @@ describe("Checkout place order", () => {
           .find("#phonenumber")
           .simulate("autocomplete", { id: 1, pendent: { payment: { value: 10 } }, created: "2021-01-01" });
 
-        expect(wrapper.state("order").previous_pendencies)
+        expect(wrapper.state("previous_pendencies"))
           .to.eql([{
           order_id: 1,
           pendent: {
             payment: { value: 10 }
           },
-          created: "2021-01-01"
+          order_created: "2021-01-01"
         }]);
       });
 
@@ -597,13 +597,13 @@ describe("Checkout place order", () => {
           .find("#phonenumber")
           .simulate("autocomplete", { id: 1, pendent: { bottles: { quantity: 2 } }, created: "2021-01-01" });
 
-        expect(wrapper.state("order").previous_pendencies)
+        expect(wrapper.state("previous_pendencies"))
           .to.eql([{
           order_id: 1,
           pendent: {
             bottles: { quantity: 2 }
           },
-          created: "2021-01-01"
+          order_created: "2021-01-01"
         }]);
       });
 
@@ -620,7 +620,7 @@ describe("Checkout place order", () => {
             }]
           });
 
-        expect(wrapper.state("order").previous_pendencies)
+        expect(wrapper.state("previous_pendencies"))
           .to.eql([{
           order_id: 4,
           pendent: {
@@ -640,26 +640,26 @@ describe("Checkout place order", () => {
               pendent: {
                 bottles: { quantity: 2 }
               },
-              created: "2021-05-07"
+              order_created: "2021-05-07"
             }],
             created: "2021-02-10"
           });
 
-        expect(wrapper.state("order").previous_pendencies)
+        expect(wrapper.state("previous_pendencies"))
           .to.eql([
           {
             order_id: 4,
             pendent: {
               bottles: { quantity: 2 }
             },
-            created: "2021-05-07"
+            order_created: "2021-05-07"
           },
           {
             order_id: 5,
             pendent: {
               bottles: { quantity: 5 }
             },
-            created: "2021-02-10"
+            order_created: "2021-02-10"
           }]);
       });
 
@@ -677,7 +677,7 @@ describe("Checkout place order", () => {
             }]
           });
 
-        expect(wrapper.state("order").previous_pendencies)
+        expect(wrapper.state("previous_pendencies"))
           .to.eql([]);
       });
     });
@@ -695,6 +695,11 @@ describe("Checkout place order", () => {
         change_to: 100,
         products: [{ product_id: 1, description: "", cash: 10, quantity: 1 }],
         total_amount: 10,
+        previous_pendencies: [{
+          order_id: "2",
+          pendent: {},
+          created: "2021-01-01"
+        }]
       };
       wrapper.setState(order);
 

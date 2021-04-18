@@ -32,6 +32,7 @@ class Checkout extends Component {
       credit_card_payment: false,
       change_difference: null,
       modal_opened: false,
+      previous_pendencies: [],
     };
   };
 
@@ -121,7 +122,9 @@ class Checkout extends Component {
       total_amount,
       credit_card_payment,
       change_difference,
+      previous_pendencies
     } = this.state;
+
     const order = {
       phonenumber,
       address: address.toUpperCase(),
@@ -132,6 +135,7 @@ class Checkout extends Component {
       total_amount,
       credit_card_payment,
       change_difference,
+      previous_pendencies
     };
 
     OrderRepository.save(order);
@@ -211,22 +215,22 @@ class Checkout extends Component {
   handleOnAutocompleteLastOrderSearch = (order) => {
     this.setState(order, () => {
       this.triggerCartLoad(order);
-      this.addPendenciesOnNote(order);
+      this.addPendenciesToTheNewOrder(order);
     });
   };
 
-  addPendenciesOnNote(order) {
+  addPendenciesToTheNewOrder(order) {
     let full_previous_pendencies = order.previous_pendencies ?? [];
 
     if (order.pendent) {
       full_previous_pendencies.push({
         order_id: order.id,
         pendent: order.pendent,
-        created: order.created
+        order_created: order.created
       });
     }
     let previous_pendencies = full_previous_pendencies.filter((pendency) => !pendency.resolved);
-    this.setState({ order: { ...order, previous_pendencies } })
+    this.setState({ previous_pendencies });
   }
 
   handleKeyDownPhonenumber = (event) => {
