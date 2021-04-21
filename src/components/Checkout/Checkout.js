@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { Input, Row, Icon, Button, Card, Modal, Col } from "react-materialize";
-import Cart from "./Cart";
+import Cart from "../../Cart";
 import {
   handleInputChangeBind,
   getValueFormatted,
-} from "./utilities/ComponentUtils";
-import AutocompleteCustom from "./components/AutocompleteCustom";
+} from "../../utilities/ComponentUtils";
+import AutocompleteCustom from "../AutocompleteCustom";
 import { Trans } from "@lingui/react";
 import { NotificationManager } from "react-notifications";
-import OrderRepository from "./repository/OrderRepository";
+import OrderRepository from "../../repository/OrderRepository";
 import Typography from "@material-ui/core/Typography";
 // import { connect } from "react-redux";
 // import { addTodo } from "./redux/actions";

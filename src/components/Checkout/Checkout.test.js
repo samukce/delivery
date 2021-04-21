@@ -1,9 +1,9 @@
 import React from "react";
 import Checkout from "./Checkout";
 import { shallow, mount } from "enzyme";
-import Cart from "./Cart";
+import Cart from "../../Cart";
 import TestUtils from "react-dom/test-utils";
-import OrderRepository from "./repository/OrderRepository";
+import OrderRepository from "../../repository/OrderRepository";
 
 describe("Checkout component load", () => {
   it("should focus in the phonenumber field", () => {

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import Checkout from "./Checkout";
+import Checkout from "./components/Checkout/Checkout";
 import "react-notifications/lib/notifications.css";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
