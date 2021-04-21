@@ -62,8 +62,6 @@ describe("Checkout place order", () => {
 
   it("should not continue if address is empty", () => {
     wrapper
-      .find("#modal-order-summary")
-      .shallow()
       .find("#place-order-button")
       .simulate("click");
 
@@ -78,8 +76,6 @@ describe("Checkout place order", () => {
       .simulate("change", { target: { name: "address", value: "101 Street" } });
 
     wrapper
-      .find("#modal-order-summary")
-      .shallow()
       .find("#place-order-button")
       .simulate("click");
 
@@ -98,19 +94,15 @@ describe("Checkout place order", () => {
     ]);
 
     wrapper
-      .find("#modal-order-summary")
-      .shallow()
       .find("#place-order-button")
       .simulate("click");
 
-    expect(spySaveValidOrder).to.have.been.called;
+    expect(wrapper.state("modal_opened")).to.be.true;
   });
 
   it("should disable placeOrder button if not valid", () => {
     expect(
       wrapper
-        .find("#modal-order-summary")
-        .shallow()
         .find("#place-order-button")
         .props().disabled
     ).to.be.true;
@@ -129,8 +121,6 @@ describe("Checkout place order", () => {
 
     expect(
       wrapper
-        .find("#modal-order-summary")
-        .shallow()
         .find("#place-order-button")
         .props().disabled
     ).to.be.false;
@@ -351,8 +341,6 @@ describe("Checkout place order", () => {
 
       expect(
         wrapper
-          .find("#modal-order-summary")
-          .shallow()
           .find("#place-order-button")
           .props().disabled
       ).to.be.true;
@@ -704,8 +692,6 @@ describe("Checkout place order", () => {
       wrapper.setState(order);
 
       wrapper
-        .find("#modal-order-summary")
-        .shallow()
         .find("#place-order-button")
         .simulate("click");
 
@@ -722,8 +708,6 @@ describe("Checkout place order", () => {
       const spyClearAllFields = sandbox.spy(componentRender, "clearAllFieds");
 
       wrapper
-        .find("#modal-order-summary")
-        .shallow()
         .find("#place-order-button")
         .simulate("click");
 
