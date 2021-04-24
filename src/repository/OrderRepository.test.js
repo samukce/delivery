@@ -1,5 +1,6 @@
 import OrderRepository from "./OrderRepository";
 import DbFactory from "./DbFactory";
+import "../assertSetupChai"
 
 describe("OrderRepository", () => {
   let orderRepository, dbTest, entity, entityClientLastOrder;

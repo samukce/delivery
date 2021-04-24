@@ -2,6 +2,7 @@ import React from "react";
 import Cart from "./Cart";
 import { shallow, mount } from "enzyme";
 import ProductRepository from "./repository/ProductRepository";
+import "./assertSetupChai";
 
 describe("Cart", () => {
   let spyAddProduct,
@@ -30,7 +31,7 @@ describe("Cart", () => {
 
     spyOnProductChange = sandbox.spy();
 
-    wrapper = shallow(<Cart onProductsChange={spyOnProductChange} />);
+    wrapper = shallow(<Cart onProductsChange={ spyOnProductChange }/>);
     componentRender = wrapper.instance();
 
     spyAddProduct = sandbox.spy(componentRender, "addProduct");
@@ -42,7 +43,7 @@ describe("Cart", () => {
 
   describe("add product", () => {
     it("should load products from repository on boot component", () => {
-      const output = mount(<Cart />);
+      const output = mount(<Cart/>);
 
       expect(stubProductRepositoryAll).to.have.been.called;
     });
@@ -54,7 +55,7 @@ describe("Cart", () => {
     });
 
     it("should focus product field if not selected product", () => {
-      const output = mount(<Cart />);
+      const output = mount(<Cart/>);
 
       output.instance().addProduct();
 

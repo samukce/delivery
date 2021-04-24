@@ -70,7 +70,7 @@ export default function OrderConfirmation({ modalOpen, order, handleFinish, hand
             tabIndex={ -1 }
           >
             <List disablePadding>
-              { order.products.map((product) => (
+              { (order.products ?? []).map((product) => (
                 <ListItem className={ classes.listItem } key={ product.product_id }>
                   <ListItemText primary={ product.description }/>
                   <Typography variant="body2">
@@ -92,7 +92,7 @@ export default function OrderConfirmation({ modalOpen, order, handleFinish, hand
                 </Typography>
                 <Typography gutterBottom>{ order.phonenumber }</Typography>
                 <Typography gutterBottom>{ (order.address + " " + order.complement).toUpperCase() }</Typography>
-                <Typography gutterBottom>{ order.notes.toUpperCase() }</Typography>
+                <Typography gutterBottom>{ order.notes?.toUpperCase() }</Typography>
               </Grid>
               <Grid item container direction="column" xs={ 12 } sm={ 6 }>
                 <Typography variant="h6" gutterBottom className={ classes.title }>
@@ -140,4 +140,8 @@ export default function OrderConfirmation({ modalOpen, order, handleFinish, hand
       </Dialog>
     </div>
   );
+}
+
+OrderConfirmation.defaultProps = {
+  order: {}
 }
