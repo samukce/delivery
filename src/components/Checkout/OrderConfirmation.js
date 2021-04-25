@@ -69,18 +69,18 @@ export default function OrderConfirmation({ modalOpen, order, handleFinish, hand
             ref={ descriptionElementRef }
             tabIndex={ -1 }
           >
-            <List disablePadding>
+            <List id="products" disablePadding>
               { (order.products ?? []).map((product) => (
                 <ListItem className={ classes.listItem } key={ product.product_id }>
-                  <ListItemText primary={ product.description }/>
-                  <Typography variant="body2">
+                  <ListItemText className="description" primary={ product.description }/>
+                  <Typography className="product_value" variant="body2">
                     { product.quantity } x { getValueFormatted(order.credit_card_payment ? product.card : product.cash) }
                   </Typography>
                 </ListItem>
               )) }
               <ListItem className={ classes.listItem }>
                 <ListItemText primary="Total"/>
-                <Typography variant="subtitle1" className={ classes.total }>
+                <Typography id="total_amount" variant="subtitle1" className={ classes.total }>
                   { getValueFormatted(order.total_amount) }
                 </Typography>
               </ListItem>
@@ -90,9 +90,10 @@ export default function OrderConfirmation({ modalOpen, order, handleFinish, hand
                 <Typography variant="h6" gutterBottom className={ classes.title }>
                   Dados para Entrega
                 </Typography>
-                <Typography gutterBottom>{ order.phonenumber }</Typography>
-                <Typography gutterBottom>{ (order.address + " " + order.complement).toUpperCase() }</Typography>
-                <Typography gutterBottom>{ order.notes?.toUpperCase() }</Typography>
+                <Typography id="phonenumber" gutterBottom>{ order.phonenumber }</Typography>
+                <Typography id="address"
+                            gutterBottom>{ (order.address + " " + (order.complement ?? "")).trim().toUpperCase() }</Typography>
+                <Typography id="notes" gutterBottom>{ order.notes?.toUpperCase() }</Typography>
               </Grid>
               <Grid item container direction="column" xs={ 12 } sm={ 6 }>
                 <Typography variant="h6" gutterBottom className={ classes.title }>
@@ -103,7 +104,7 @@ export default function OrderConfirmation({ modalOpen, order, handleFinish, hand
                     <Typography gutterBottom>Pagar com</Typography>
                   </Grid>
                   <Grid item xs={ 6 }>
-                    <Typography gutterBottom>{ order.credit_card_payment
+                    <Typography id="payment_type" gutterBottom>{ order.credit_card_payment
                       ? "Cartão"
                       : "Dinheiro" }</Typography>
                   </Grid>
@@ -113,13 +114,13 @@ export default function OrderConfirmation({ modalOpen, order, handleFinish, hand
                         <Typography gutterBottom>Troco para</Typography>
                       </Grid>
                       <Grid item xs={ 6 }>
-                        <Typography gutterBottom>{ order.change_to }</Typography>
+                        <Typography id="change_to" gutterBottom>{ order.change_to }</Typography>
                       </Grid>
                       <Grid item xs={ 6 }>
                         <Typography gutterBottom>Levar</Typography>
                       </Grid>
                       <Grid item xs={ 6 }>
-                        <Typography gutterBottom>{ order.change_difference }</Typography>
+                        <Typography id="change_difference" gutterBottom>{ order.change_difference }</Typography>
                       </Grid>
                     </React.Fragment>
                   }
@@ -130,10 +131,10 @@ export default function OrderConfirmation({ modalOpen, order, handleFinish, hand
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={ handleClose } color="primary">
+          <Button id="back" onClick={ handleClose } color="primary">
             VOLTAR
           </Button>
-          <Button onClick={ handleFinishOrder } color="primary" variant="contained">
+          <Button id="finish" onClick={ handleFinishOrder } color="primary" variant="contained">
             FINALIZAR
           </Button>
         </DialogActions>
