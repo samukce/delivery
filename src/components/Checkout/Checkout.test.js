@@ -4,6 +4,7 @@ import { shallow, mount } from "enzyme";
 import Cart from "../../Cart";
 import TestUtils from "react-dom/test-utils";
 import OrderRepository from "../../repository/OrderRepository";
+import "../../assertSetupChai";
 
 describe("Checkout component load", () => {
   it("should focus in the phonenumber field", () => {
@@ -62,8 +63,6 @@ describe("Checkout place order", () => {
 
   it("should not continue if address is empty", () => {
     wrapper
-      .find("#modal-order-summary")
-      .shallow()
       .find("#place-order-button")
       .simulate("click");
 
@@ -78,8 +77,6 @@ describe("Checkout place order", () => {
       .simulate("change", { target: { name: "address", value: "101 Street" } });
 
     wrapper
-      .find("#modal-order-summary")
-      .shallow()
       .find("#place-order-button")
       .simulate("click");
 
@@ -98,19 +95,15 @@ describe("Checkout place order", () => {
     ]);
 
     wrapper
-      .find("#modal-order-summary")
-      .shallow()
       .find("#place-order-button")
       .simulate("click");
 
-    expect(spySaveValidOrder).to.have.been.called;
+    expect(wrapper.state("modal_opened")).to.be.true;
   });
 
   it("should disable placeOrder button if not valid", () => {
     expect(
       wrapper
-        .find("#modal-order-summary")
-        .shallow()
         .find("#place-order-button")
         .props().disabled
     ).to.be.true;
@@ -129,8 +122,6 @@ describe("Checkout place order", () => {
 
     expect(
       wrapper
-        .find("#modal-order-summary")
-        .shallow()
         .find("#place-order-button")
         .props().disabled
     ).to.be.false;
@@ -351,8 +342,6 @@ describe("Checkout place order", () => {
 
       expect(
         wrapper
-          .find("#modal-order-summary")
-          .shallow()
           .find("#place-order-button")
           .props().disabled
       ).to.be.true;
@@ -681,68 +670,5 @@ describe("Checkout place order", () => {
           .to.eql([]);
       });
     });
-  });
-
-  describe("save order", () => {
-    it("should save by order repository", () => {
-      const order = {
-        address: "ADDRESS NEW",
-        change_difference: null,
-        complement: "....",
-        credit_card_payment: false,
-        notes: "NOTES..",
-        phonenumber: "998887766",
-        change_to: 100,
-        products: [{ product_id: 1, description: "", cash: 10, quantity: 1 }],
-        total_amount: 10,
-        previous_pendencies: [{
-          order_id: "2",
-          pendent: {},
-          created: "2021-01-01"
-        }]
-      };
-      wrapper.setState(order);
-
-      wrapper
-        .find("#modal-order-summary")
-        .shallow()
-        .find("#place-order-button")
-        .simulate("click");
-
-      expect(stubOrderRespositorySave).to.have.been.calledWith(order);
-    });
-
-    it("should trigger on clean after place order", () => {
-      const order = {
-        address: "address new",
-        products: [{ product_id: 1, description: "", value: 10, quantity: 1 }],
-      };
-      wrapper.setState(order);
-
-      const spyClearAllFields = sandbox.spy(componentRender, "clearAllFieds");
-
-      wrapper
-        .find("#modal-order-summary")
-        .shallow()
-        .find("#place-order-button")
-        .simulate("click");
-
-      expect(spyClearAllFields).to.have.been.called;
-    });
-
-    // TOFIX: added modal
-    // it('should focus in the phonenumber field', () => {
-    //   const output = mount(<Checkout />);
-    //   const order = {
-    //     address: 'address new',
-    //     products: [ { product_id: 1, description: '', value: 10, quantity: 1 } ],
-    //   };
-    //   output.setState(order);
-    //   output.instance().setFocusOnChargeTo();
-
-    //   output.instance().buttonClickPlaceOrder();
-
-    //   expect(document.activeElement.id).to.be.equal('phonenumber');
-    // });
   });
 });

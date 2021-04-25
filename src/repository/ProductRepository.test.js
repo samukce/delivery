@@ -1,5 +1,6 @@
 import DbFactory from "./DbFactory";
 import ProductRepository from "./ProductRepository";
+import "../assertSetupChai"
 
 describe("ProductRepository", () => {
   describe("list all", () => {

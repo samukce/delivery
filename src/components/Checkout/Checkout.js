@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Input, Row, Icon, Button, Card, Modal, Col } from "react-materialize";
+import { Input, Row, Icon, Button, Card } from "react-materialize";
 import Cart from "../../Cart";
 import {
   handleInputChangeBind,
@@ -10,6 +10,7 @@ import { Trans } from "@lingui/react";
 import { NotificationManager } from "react-notifications";
 import OrderRepository from "../../repository/OrderRepository";
 import Typography from "@material-ui/core/Typography";
+import OrderConfirmation from "./OrderConfirmation";
 // import { connect } from "react-redux";
 // import { addTodo } from "./redux/actions";
 
@@ -34,10 +35,6 @@ class Checkout extends Component {
       modal_opened: false,
       previous_pendencies: [],
     };
-  };
-
-  buttonClickPlaceOrder = () => {
-    this.placeOrder();
   };
 
   clearAllFieds = () =>
@@ -78,9 +75,11 @@ class Checkout extends Component {
 
   placeOrder = () => {
     if (!this.isValid()) return;
-    if (!this.summaryOrderModal) return;
+    this.setState({ modal_opened: true });
+  };
 
-    this.summaryOrderModal.showModal();
+  closedOrderConfirmation = () => {
+    this.setState({ modal_opened: false });
   };
 
   saveValidOrder = () => {
@@ -89,9 +88,6 @@ class Checkout extends Component {
 
     this.saveOrder();
     this.clearAllFieds();
-
-    if (!this.summaryOrderModal) return;
-    this.summaryOrderModal.hideModal();
 
     //TODO: add translation
     const product = products.reduce(
@@ -102,7 +98,7 @@ class Checkout extends Component {
       change_difference == null
         ? ""
         : ` [Levar R$ ${ change_difference } de Troco]`;
-    const fifteen_seconds = 15 * 1000;
+    const fifteen_seconds = 10 * 1000;
 
     NotificationManager.success(
       `${ address } ${ complement }${ change_text } ${ product }`.toUpperCase(),
@@ -259,11 +255,7 @@ class Checkout extends Component {
 
   handleKeyDownNotes = (event) => {
     if (event.key === "Enter") {
-      if (this.state.modal_opened) {
-        this.saveValidOrder();
-      } else {
-        this.placeOrder();
-      }
+      this.placeOrder();
     }
   };
 
@@ -464,140 +456,22 @@ class Checkout extends Component {
             <Icon left>clear_all</Icon>
           </Button>
 
-          <Modal
-            actions={ [
-              <Button flat modal="close" node="button" waves="green">
-                { <Trans id="checkout.back">Voltar</Trans> }
-              </Button>,
-              <Button
-                id="place-order-button"
-                onClick={ this.saveValidOrder }
-                disabled={ !this.isValid() }
-                ref={ (el) => (this.buttonPlaceOrderFinal = el) }
-                className="col s12 m3 offset-m7"
-              >
-                { <Trans id="checkout.place_order">Place Order</Trans> }
-                <Icon left>motorcycle</Icon>
-              </Button>,
-            ] }
-            fixedFooter
-            header={ <Trans id="checkout.order_summary">Order Summary</Trans> }
-            id="modal-order-summary"
-            ref={ (el) => (this.summaryOrderModal = el) }
-            modalOptions={ {
-              ready: () => this.setState({ modal_opened: true }),
-              complete: () => this.setState({ modal_opened: false }),
-            } }
-            root={ [this.checkoutSection] }
-            trigger={
-              <Button
-                id="modal-open-modal"
-                node="button"
-                className="col s12 m3 offset-m7"
-                disabled={ !this.isValid() }
-              >
-                { <Trans id="checkout.place_order">Place Order</Trans> }
-                <Icon left>motorcycle</Icon>
-              </Button>
-            }
+          <Button
+            id="place-order-button"
+            onClick={ this.placeOrder }
+            disabled={ !this.isValid() }
+            className="col s12 m3 offset-m7"
           >
-            <Row>
-              <Row></Row>
-              <Col s={ 12 } m={ 6 }>
-                <Row>
-                  <Col s={ 12 } m={ 12 }>
-                    <Icon small left>
-                      phone
-                    </Icon>
-                    { this.state.phonenumber }
-                  </Col>
-                </Row>
-                <Row>
-                  <Col s={ 12 } m={ 12 }>
-                    <Icon small left>
-                      home
-                    </Icon>
-                    { this.state.address.toUpperCase() }{ " " }
-                    { this.state.complement.toUpperCase() }
-                  </Col>
-                </Row>
-                <Row>
-                  { this.state.notes.trim() === "" ? null : (
-                    <Col s={ 12 } m={ 12 }>
-                      <Icon small left>
-                        speaker_notes
-                      </Icon>
-                      { this.state.notes.toUpperCase() }
-                    </Col>
-                  ) }
-                </Row>
+            { <Trans id="checkout.place_order">Place Order</Trans> }
+            <Icon left>motorcycle</Icon>
+          </Button>
 
-                { this.state.products.map((product) => (
-                  <Row key={ product.product_id }>
-                    <Col s={ 1 } m={ 1 }>
-                      <Icon tinny left>
-                        local_grocery_store
-                      </Icon>
-                    </Col>
-                    <Col s={ 11 } m={ 11 }>
-                      { product.quantity } x{ " " }
-                      { product.description
-                        ? product.description.toUpperCase()
-                        : "" }
-                    </Col>
-                  </Row>
-                )) }
-
-                <Row>
-                  <Col s={ 1 }>
-                    <Icon>attach_money</Icon>
-                  </Col>
-                  <Col s={ 11 }>
-                    {
-                      <Trans
-                        id={
-                          this.state.credit_card_payment
-                            ? "checkout.payment_with_card"
-                            : "checkout.payment_with_cash"
-                        }
-                      >
-                        Total
-                      </Trans>
-                    }
-                    { ` ${ getValueFormatted(this.state.total_amount) }` }
-                  </Col>
-                </Row>
-
-                { this.state.change_to === "" ? null : (
-                  <Row>
-                    <Col s={ 1 } m={ 1 }>
-                      <Icon>attach_money</Icon>
-                    </Col>
-                    <Col s={ 11 } m={ 11 }>
-                      { <Trans id={ "checkout.change_to" }>Change to</Trans> }
-                      { ` ${ getValueFormatted(this.state.change_to) }` }
-                    </Col>
-                  </Row>
-                ) }
-
-                { this.state.change_difference == null ? null : (
-                  <Row>
-                    <Col s={ 1 } m={ 1 }>
-                      <Icon>attach_money</Icon>
-                    </Col>
-                    <Col s={ 11 }>
-                      {
-                        <Trans id={ "checkout.change_difference" }>
-                          Cash change
-                        </Trans>
-                      }
-                      { ` ${ getValueFormatted(this.state.change_difference) }` }
-                    </Col>
-                  </Row>
-                ) }
-              </Col>
-            </Row>
-          </Modal>
+          <OrderConfirmation
+            modalOpen={ this.state.modal_opened }
+            order={ this.state }
+            handleFinish={ this.saveValidOrder }
+            handleCloseExternal={ this.closedOrderConfirmation }
+          />
         </Row>
         <Typography variant="caption" display="block"
                     gutterBottom>Version: { process.env.REACT_APP_CURRENT_GIT_SHA }</Typography>
