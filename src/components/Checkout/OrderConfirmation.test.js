@@ -86,8 +86,24 @@ describe('render order', () => {
           products: [{ product_id: "1", quantity: 1, description: "Product 1" }]
         }
       });
-      expect(products.at(0).find(".description").props().primary)
+      expect(products.find(".description").props().primary)
         .toEqual("Product 1");
+    });
+
+    it('multiple products', () => {
+      const { products } = setup({
+        order: {
+          products: [
+            { product_id: "1", quantity: 1, description: "Product 1" },
+            { product_id: "2", quantity: 1, description: "Product 2" }
+          ]
+        }
+      });
+      expect(products.find(".description").length).toEqual(2);
+      expect(products.find(".description").at(0).props().primary)
+        .toEqual("Product 1");
+      expect(products.find(".description").at(1).props().primary)
+        .toEqual("Product 2");
     });
 
     it('quantity and card value', () => {
@@ -97,7 +113,7 @@ describe('render order', () => {
           products: [{ product_id: "1", quantity: 1, card: 10 }]
         }
       });
-      expect(products.at(0).find(".product_value").text())
+      expect(products.find(".product_value").text())
         .toEqual("1 x R$ 10.00");
     });
 
@@ -108,7 +124,7 @@ describe('render order', () => {
           products: [{ product_id: "1", quantity: 2, cash: 15 }]
         }
       });
-      expect(products.at(0).find(".product_value").text())
+      expect(products.find(".product_value").text())
         .toEqual("2 x R$ 15.00");
     });
   });
