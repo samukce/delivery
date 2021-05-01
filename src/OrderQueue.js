@@ -197,7 +197,7 @@ function OrderCard(props) {
               <Card variant="outlined">
                 <CardContent>
                   <FormControl component="fieldset" className={classesAccordion.root}>
-                    <FormLabel component="legend">Observações</FormLabel>
+                    <FormLabel component="legend">Pendências</FormLabel>
                     <FormGroup>
                       <FormControlLabel
                         control={<Checkbox name="pending_payment" checked={pendingPayment} onChange={(event) => isPendingPayment(event.target.checked)} />}
