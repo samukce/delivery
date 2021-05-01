@@ -12,6 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from "@material-ui/core/styles";
 import { getValueFormatted } from "../../utilities/ComponentUtils";
+import withWidth from '@material-ui/core/withWidth';
 
 const useStyles = makeStyles((theme) => ({
   listItem: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function OrderConfirmation({ modalOpen, order, handleFinish, handleCloseExternal }) {
+export function OrderConfirmation({ modalOpen, order, handleFinish, handleCloseExternal, width }) {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
 
@@ -53,6 +54,26 @@ export default function OrderConfirmation({ modalOpen, order, handleFinish, hand
     setOpen(modalOpen)
   }, [modalOpen]);
 
+  function previous_pendencies() {
+    return order.previous_pendencies ?? [];
+  }
+
+  const gridSizeCurrentOrder = () => {
+    if (previous_pendencies().length) {
+      return { xs: 12, sm: 8 }
+    }
+
+    return { xs: 12, sm: 12 }
+  }
+
+  const gridSizePendencies = () => {
+    if (previous_pendencies().length) {
+      return { xs: 12, sm: 4 }
+    }
+
+    return { xs: 12, sm: 12 }
+  }
+
   return (
     <div>
       <Dialog
@@ -69,63 +90,72 @@ export default function OrderConfirmation({ modalOpen, order, handleFinish, hand
             ref={ descriptionElementRef }
             tabIndex={ -1 }
           >
-            <List id="products" disablePadding>
-              { (order.products ?? []).map((product) => (
-                <ListItem className={ classes.listItem } key={ product.product_id }>
-                  <ListItemText className="description" primary={ product.description }/>
-                  <Typography className="product_value" variant="body2">
-                    { product.quantity } x { getValueFormatted(order.credit_card_payment ? product.card : product.cash) }
-                  </Typography>
-                </ListItem>
-              )) }
-              <ListItem className={ classes.listItem }>
-                <ListItemText primary="Total"/>
-                <Typography id="total_amount" variant="subtitle1" className={ classes.total }>
-                  { getValueFormatted(order.total_amount) }
-                </Typography>
-              </ListItem>
-            </List>
             <Grid container spacing={ 2 }>
-              <Grid item xs={ 12 } sm={ 6 }>
-                <Typography variant="h6" gutterBottom className={ classes.title }>
-                  Dados para Entrega
-                </Typography>
-                <Typography id="phonenumber" gutterBottom>{ order.phonenumber }</Typography>
-                <Typography id="address"
-                            gutterBottom>{ (order.address + " " + (order.complement ?? "")).trim().toUpperCase() }</Typography>
-                <Typography id="notes" gutterBottom>{ order.notes?.toUpperCase() }</Typography>
-              </Grid>
-              <Grid item container direction="column" xs={ 12 } sm={ 6 }>
-                <Typography variant="h6" gutterBottom className={ classes.title }>
-                  Detalhes do Pagamento
-                </Typography>
-                <Grid container>
-                  <Grid item xs={ 6 }>
-                    <Typography gutterBottom>Pagar com</Typography>
+              <Grid item { ...gridSizeCurrentOrder() }>
+                <List id="products" disablePadding>
+                  { (order.products ?? []).map((product) => (
+                    <ListItem className={ classes.listItem } key={ product.product_id }>
+                      <ListItemText className="description" primary={ product.description }/>
+                      <Typography className="product_value" variant="body2">
+                        { product.quantity } x { getValueFormatted(order.credit_card_payment ? product.card : product.cash) }
+                      </Typography>
+                    </ListItem>
+                  )) }
+                  <ListItem className={ classes.listItem }>
+                    <ListItemText primary="Total"/>
+                    <Typography id="total_amount" variant="subtitle1" className={ classes.total }>
+                      { getValueFormatted(order.total_amount) }
+                    </Typography>
+                  </ListItem>
+                </List>
+                <Grid container spacing={ 2 }>
+                  <Grid item xs={ 12 } sm={ 6 }>
+                    <Typography variant="h6" gutterBottom className={ classes.title }>
+                      Dados para Entrega
+                    </Typography>
+                    <Typography id="phonenumber" gutterBottom>{ order.phonenumber }</Typography>
+                    <Typography id="address"
+                                gutterBottom>{ (order.address + " " + (order.complement ?? "")).trim().toUpperCase() }</Typography>
+                    <Typography id="notes" gutterBottom>{ order.notes?.toUpperCase() }</Typography>
                   </Grid>
-                  <Grid item xs={ 6 }>
-                    <Typography id="payment_type" gutterBottom>{ order.credit_card_payment
-                      ? "Cartão"
-                      : "Dinheiro" }</Typography>
+                  <Grid item container direction="column" xs={ 12 } sm={ 6 }>
+                    <Typography variant="h6" gutterBottom className={ classes.title }>
+                      Detalhes do Pagamento
+                    </Typography>
+                    <Grid container>
+                      <Grid item xs={ 6 }>
+                        <Typography gutterBottom>Pagar com</Typography>
+                      </Grid>
+                      <Grid item xs={ 6 }>
+                        <Typography id="payment_type" gutterBottom>{ order.credit_card_payment
+                          ? "Cartão"
+                          : "Dinheiro" }</Typography>
+                      </Grid>
+                      { order.change_to === "" ? null :
+                        <React.Fragment>
+                          <Grid item xs={ 6 }>
+                            <Typography gutterBottom>Troco para</Typography>
+                          </Grid>
+                          <Grid item xs={ 6 }>
+                            <Typography id="change_to" gutterBottom>{ order.change_to }</Typography>
+                          </Grid>
+                          <Grid item xs={ 6 }>
+                            <Typography gutterBottom>Levar</Typography>
+                          </Grid>
+                          <Grid item xs={ 6 }>
+                            <Typography id="change_difference" gutterBottom>{ order.change_difference }</Typography>
+                          </Grid>
+                        </React.Fragment>
+                      }
+                    </Grid>
                   </Grid>
-                  { order.change_to === "" ? null :
-                    <React.Fragment>
-                      <Grid item xs={ 6 }>
-                        <Typography gutterBottom>Troco para</Typography>
-                      </Grid>
-                      <Grid item xs={ 6 }>
-                        <Typography id="change_to" gutterBottom>{ order.change_to }</Typography>
-                      </Grid>
-                      <Grid item xs={ 6 }>
-                        <Typography gutterBottom>Levar</Typography>
-                      </Grid>
-                      <Grid item xs={ 6 }>
-                        <Typography id="change_difference" gutterBottom>{ order.change_difference }</Typography>
-                      </Grid>
-                    </React.Fragment>
-                  }
                 </Grid>
               </Grid>
+              { previous_pendencies().length ?
+                <Grid id="previous_pendencies" item { ...gridSizePendencies() }>
+                  Bloh..
+                </Grid> : undefined
+              }
             </Grid>
 
           </DialogContentText>
@@ -146,3 +176,5 @@ export default function OrderConfirmation({ modalOpen, order, handleFinish, hand
 OrderConfirmation.defaultProps = {
   order: {}
 }
+
+export default withWidth()(OrderConfirmation);

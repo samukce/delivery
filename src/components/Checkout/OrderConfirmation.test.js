@@ -2,7 +2,7 @@ import React from 'react';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-import OrderConfirmation from "./OrderConfirmation";
+import { OrderConfirmation } from "./OrderConfirmation";
 import { shallow } from "enzyme";
 
 configure({ adapter: new Adapter() });
@@ -30,6 +30,7 @@ const setup = propOverrides => {
     change_to: wrapper.find('#change_to'),
     change_difference: wrapper.find('#change_difference'),
     products: wrapper.find('#products'),
+    previous_pendencies: wrapper.find('#previous_pendencies'),
   }
 }
 
@@ -126,6 +127,44 @@ describe('render order', () => {
       });
       expect(products.find(".product_value").text())
         .toEqual("2 x R$ 15.00");
+    });
+  });
+
+  describe('pendencies', () => {
+    it('not exist when null list', () => {
+      const { previous_pendencies } = setup({
+        order: {
+          previous_pendencies: null
+        }
+      });
+      expect(previous_pendencies.exists()).toBe(false);
+    });
+
+    it('not exist when empty list', () => {
+      const { previous_pendencies } = setup({
+        order: {
+          previous_pendencies: []
+        }
+      });
+      expect(previous_pendencies.exists()).toBe(false);
+    });
+
+    it('exist when any in the list', () => {
+      const { previous_pendencies } = setup({
+        order: {
+          previous_pendencies: [{ order_id: "1" }]
+        }
+      });
+      expect(previous_pendencies.exists()).toBe(true);
+    });
+
+    it('multiple', () => {
+      const { previous_pendencies } = setup({
+        order: {
+          previous_pendencies: [{ order_id: "1" }, { order_id: "2" }]
+        }
+      });
+      expect(previous_pendencies.find(".order_id").length).toEqual(2);
     });
   });
 });
