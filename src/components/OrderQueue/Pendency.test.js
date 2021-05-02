@@ -21,9 +21,10 @@ const setup = propOverrides => {
     props,
     wrapper,
     pending_payment: wrapper.find('#pending_payment').find('input'),
-    pending_payment_value: wrapper.find('#pending_payment_value'),
+    pending_payment_value: wrapper.find('#pending_payment_value').find('input'),
     pending_bottle: wrapper.find('#pending_bottle').find('input'),
-    pending_notes: wrapper.find('#pending_notes'),
+    pending_bottle_quantity: wrapper.find('#pending_bottle_quantity').find('input'),
+    pending_notes: wrapper.find('#pending_notes').find('input'),
   }
 }
 
@@ -117,5 +118,47 @@ describe('default value', () => {
     pending_bottle.simulate('change', { target: { checked: true } });
     expect(wrapper.find('#pending_bottle_quantity').find('input').props().value)
       .toBe(3);
+  });
+});
+
+describe('load pendent', () => {
+  it('pending payment checked', () => {
+    const { pending_payment } = setup({
+      pendent: { payment: { value: 50 } }
+    });
+
+    expect(pending_payment.props().checked).toBe(true);
+  });
+
+  it('pending payment value', () => {
+    const { pending_payment_value } = setup({
+      pendent: { payment: { value: 50 } }
+    });
+
+    expect(pending_payment_value.props().value).toBe(50);
+  });
+
+  it('pending bottle checked', () => {
+    const { pending_bottle } = setup({
+      pendent: { bottles: { quantity: 1 } }
+    });
+
+    expect(pending_bottle.props().checked).toBe(true);
+  });
+
+  it('pending bottle quantity', () => {
+    const { pending_bottle_quantity } = setup({
+      pendent: { bottles: { quantity: 2 } }
+    });
+
+    expect(pending_bottle_quantity.props().value).toBe(2);
+  });
+
+  it('pending generic note', () => {
+    const { pending_notes } = setup({
+      pendent: { note: "foo" }
+    });
+
+    expect(pending_notes.props().value).toBe("foo");
   });
 });

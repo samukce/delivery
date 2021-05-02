@@ -23,6 +23,7 @@ const useStylesAccordion = makeStyles((theme) => ({
 }));
 
 export default function Pendency({
+                                   pendent,
                                    total_amount,
                                    products,
                                    handlePendingGenericNote,
@@ -32,11 +33,29 @@ export default function Pendency({
                                    handleIsPendingBottle,
                                  }) {
   const classesAccordion = useStylesAccordion();
-  const [pendingPayment, isPendingPayment] = useState(false);
-  const [pendingBottle, isPendingBottle] = useState(false);
-  const [pendingPaymentValue, setPendingPaymentValue] = useState(total_amount);
-  const [pendingBottleQuantity, setPendingBottleQuantity] = useState(_getTotalBottle());
-  const [pendingGenericNote, setPendingGenericNote] = useState(null);
+
+  const [pendingPayment, isPendingPayment] = useState(!!(pendent ?? {}).payment);
+  const [pendingBottle, isPendingBottle] = useState(!!(pendent ?? {}).bottles);
+  const [pendingGenericNote, setPendingGenericNote] = useState((pendent ?? {}).note);
+
+  const [pendingPaymentValue, setPendingPaymentValue] = useState(initialPendingPaymentValue());
+  const [pendingBottleQuantity, setPendingBottleQuantity] = useState(initialPendingBottleQuantity());
+
+  function initialPendingPaymentValue() {
+    const payment = (pendent ?? {}).payment;
+    if (!!payment && payment.value) {
+      return payment.value;
+    }
+    return total_amount;
+  }
+
+  function initialPendingBottleQuantity() {
+    const bottles = (pendent ?? {}).bottles;
+    if (!!bottles && bottles.quantity) {
+      return bottles.quantity;
+    }
+    return _getTotalBottle();
+  }
 
   function _getTotalBottle() {
     if (products) {
