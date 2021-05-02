@@ -41,22 +41,30 @@ export default function Pendency(props) {
 
   const handlePendingPayment = (value) => {
     setPendingPaymentValue(value);
-    props.handlePendingPaymentValue(value);
+    if (props.handlePendingPaymentValue) {
+      props.handlePendingPaymentValue(value);
+    }
   }
 
   const handleIsPendingPayment = (checked) => {
     isPendingPayment(checked);
-    props.handleIsPendingPayment(checked);
+    if (props.handleIsPendingPayment) {
+      props.handleIsPendingPayment(checked);
+    }
   }
 
   const handlePendingBottleQuantity = (value) => {
     setPendingBottleQuantity(value);
-    props.handlePendingBottleQuantity(value);
+    if (props.handlePendingBottleQuantity) {
+      props.handlePendingBottleQuantity(value);
+    }
   }
 
   const handleIsPendingBottle = (checked) => {
     isPendingBottle(checked);
-    props.handleIsPendingBottle(checked);
+    if (props.handleIsPendingBottle) {
+      props.handleIsPendingBottle(checked);
+    }
   }
 
   return (
@@ -66,12 +74,15 @@ export default function Pendency(props) {
           <FormLabel component="legend">Pendências</FormLabel>
           <FormGroup>
             <FormControlLabel
-              control={ <Checkbox name="pending_payment" checked={ pendingPayment }
+              control={ <Checkbox id="pending_payment"
+                                  name="pending_payment"
+                                  checked={ pendingPayment }
                                   onChange={ (event) => handleIsPendingPayment(event.target.checked) }/> }
               label="Pagamento Pendente"
             />
             { pendingPayment ?
               <Input
+                id="pending_payment_value"
                 type="number"
                 label="Ficou devendo"
                 variant="outlined"
@@ -87,13 +98,16 @@ export default function Pendency(props) {
               </Input> : undefined }
 
             <FormControlLabel
-              control={ <Checkbox name="pending_bottle" checked={ pendingBottle }
+              control={ <Checkbox id="pending_bottle"
+                                  name="pending_bottle"
+                                  checked={ pendingBottle }
                                   onChange={ (event) => handleIsPendingBottle(event.target.checked) }/> }
               label="Garrafão Emprestado"
             />
             { pendingBottle ?
               <FormGroup>
                 <Input
+                  id="pending_bottle_quantity"
                   type="number"
                   label="Garrafões"
                   variant="outlined"
@@ -110,6 +124,7 @@ export default function Pendency(props) {
               </FormGroup> : undefined }
 
             <Input
+              id="pending_notes"
               label="Observações"
               variant="outlined"
               value={ pendingGenericNote }
