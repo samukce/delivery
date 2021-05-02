@@ -197,7 +197,8 @@ function OrderCard(props) {
             ) }
 
             { handleDeliveredOrder == null ? null : (
-              <Pendency order={ props.order }
+              <Pendency total_amount={ props.order.total_amount }
+                        products={ props.order.products }
                         handlePendingGenericNote={ setPendingGenericNote }
                         handleIsPendingBottle={ isPendingBottle }
                         handlePendingBottleQuantity={ setPendingBottleQuantity }

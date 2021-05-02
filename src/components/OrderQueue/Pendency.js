@@ -22,50 +22,58 @@ const useStylesAccordion = makeStyles((theme) => ({
   },
 }));
 
-export default function Pendency(props) {
+export default function Pendency({
+                                   total_amount,
+                                   products,
+                                   handlePendingGenericNote,
+                                   handlePendingPaymentValue,
+                                   handleIsPendingPayment,
+                                   handlePendingBottleQuantity,
+                                   handleIsPendingBottle,
+                                 }) {
   const classesAccordion = useStylesAccordion();
   const [pendingPayment, isPendingPayment] = useState(false);
   const [pendingBottle, isPendingBottle] = useState(false);
-  const [pendingPaymentValue, setPendingPaymentValue] = useState(props.order.total_amount);
+  const [pendingPaymentValue, setPendingPaymentValue] = useState(total_amount);
   const [pendingBottleQuantity, setPendingBottleQuantity] = useState(_getTotalBottle());
   const [pendingGenericNote, setPendingGenericNote] = useState(null);
 
   function _getTotalBottle() {
-    if (props.order.products) {
-      return props.order.products.reduce((total, prod) => (total + Number(prod.quantity)), 0);
+    if (products) {
+      return products.reduce((total, prod) => (total + Number(prod.quantity)), 0);
     }
   }
 
-  const handlePendingGenericNote = (value) => {
+  const _handlePendingGenericNote = (value) => {
     setPendingGenericNote(value);
-    props.handlePendingGenericNote(value);
+    handlePendingGenericNote(value);
   }
 
-  const handlePendingPayment = (value) => {
+  const _handlePendingPayment = (value) => {
     setPendingPaymentValue(value);
-    if (props.handlePendingPaymentValue) {
-      props.handlePendingPaymentValue(value);
+    if (handlePendingPaymentValue) {
+      handlePendingPaymentValue(value);
     }
   }
 
-  const handleIsPendingPayment = (checked) => {
+  const _handleIsPendingPayment = (checked) => {
     isPendingPayment(checked);
-    if (props.handleIsPendingPayment) {
-      props.handleIsPendingPayment(checked);
+    if (handleIsPendingPayment) {
+      handleIsPendingPayment(checked);
     }
   }
 
-  const handlePendingBottleQuantity = (value) => {
+  const _handlePendingBottleQuantity = (value) => {
     setPendingBottleQuantity(value);
-    if (props.handlePendingBottleQuantity) {
-      props.handlePendingBottleQuantity(value);
+    if (handlePendingBottleQuantity) {
+      handlePendingBottleQuantity(value);
     }
   }
 
-  const handleIsPendingBottle = (checked) => {
+  const _handleIsPendingBottle = (checked) => {
     isPendingBottle(checked);
-    if (props.handleIsPendingBottle) {
-      props.handleIsPendingBottle(checked);
+    if (handleIsPendingBottle) {
+      handleIsPendingBottle(checked);
     }
   }
 
@@ -79,7 +87,7 @@ export default function Pendency(props) {
               control={ <Checkbox id="pending_payment"
                                   name="pending_payment"
                                   checked={ pendingPayment }
-                                  onChange={ (event) => handleIsPendingPayment(event.target.checked) }/> }
+                                  onChange={ (event) => _handleIsPendingPayment(event.target.checked) }/> }
               label="Pagamento Pendente"
             />
             { pendingPayment ?
@@ -88,11 +96,11 @@ export default function Pendency(props) {
                 type="number"
                 label="Ficou devendo"
                 variant="outlined"
-                defaultValue={ props.order.total_amount }
+                defaultValue={ total_amount }
                 value={ pendingPaymentValue }
-                onChange={ (event) => handlePendingPayment(Number(event.target.value)) }
+                onChange={ (event) => _handlePendingPayment(Number(event.target.value)) }
                 min={ 0.01 }
-                max={ props.order.total_amount }
+                max={ total_amount }
                 step="0.01"
                 validate
                 placeholder="...">
@@ -103,7 +111,7 @@ export default function Pendency(props) {
               control={ <Checkbox id="pending_bottle"
                                   name="pending_bottle"
                                   checked={ pendingBottle }
-                                  onChange={ (event) => handleIsPendingBottle(event.target.checked) }/> }
+                                  onChange={ (event) => _handleIsPendingBottle(event.target.checked) }/> }
               label="Garrafão Emprestado"
             />
             { pendingBottle ?
@@ -115,7 +123,7 @@ export default function Pendency(props) {
                   variant="outlined"
                   defaultValue={ _getTotalBottle() }
                   value={ pendingBottleQuantity }
-                  onChange={ (event) => handlePendingBottleQuantity(Number(event.target.value)) }
+                  onChange={ (event) => _handlePendingBottleQuantity(Number(event.target.value)) }
                   min={ 1 }
                   max={ _getTotalBottle() }
                   step="1"
@@ -130,7 +138,7 @@ export default function Pendency(props) {
               label="Observações"
               variant="outlined"
               value={ pendingGenericNote }
-              onChange={ (event) => handlePendingGenericNote(event.target.value) }
+              onChange={ (event) => _handlePendingGenericNote(event.target.value) }
               placeholder="..."/>
           </FormGroup>
         </FormControl>

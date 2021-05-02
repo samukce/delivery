@@ -9,7 +9,6 @@ configure({ adapter: new Adapter() });
 
 const setup = propOverrides => {
   const props = Object.assign({
-    order: { products: [] },
     handleIsPendingPayment: jest.fn(),
     handlePendingPaymentValue: jest.fn(),
     handleIsPendingBottle: jest.fn(),
@@ -104,7 +103,7 @@ describe('when value change trigger', () => {
 describe('default value', () => {
   it('pending payment as total amount', () => {
     const { pending_payment, wrapper } = setup({
-      order: { total_amount: 100 }
+      total_amount: 100
     });
     pending_payment.simulate('change', { target: { checked: true } });
     expect(wrapper.find('#pending_payment_value').find('input').props().value)
@@ -113,11 +112,10 @@ describe('default value', () => {
 
   it('pending bottle as total quantity', () => {
     const { pending_bottle, wrapper } = setup({
-      order: { products: [{ quantity: 1 }, { quantity: 2 }] }
+      products: [{ quantity: 1 }, { quantity: 2 }]
     });
     pending_bottle.simulate('change', { target: { checked: true } });
     expect(wrapper.find('#pending_bottle_quantity').find('input').props().value)
       .toBe(3);
   });
-
 });
