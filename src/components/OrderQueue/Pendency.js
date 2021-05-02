@@ -31,7 +31,9 @@ export default function Pendency(props) {
   const [pendingGenericNote, setPendingGenericNote] = useState(null);
 
   function _getTotalBottle() {
-    return props.order.products.reduce((total, prod) => (total + Number(prod.quantity)), 0);
+    if (props.order.products) {
+      return props.order.products.reduce((total, prod) => (total + Number(prod.quantity)), 0);
+    }
   }
 
   const handlePendingGenericNote = (value) => {

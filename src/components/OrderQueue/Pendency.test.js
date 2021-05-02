@@ -100,3 +100,24 @@ describe('when value change trigger', () => {
     expect(props.handlePendingBottleQuantity).toBeCalledWith(2);
   });
 });
+
+describe('default value', () => {
+  it('pending payment as total amount', () => {
+    const { pending_payment, wrapper } = setup({
+      order: { total_amount: 100 }
+    });
+    pending_payment.simulate('change', { target: { checked: true } });
+    expect(wrapper.find('#pending_payment_value').find('input').props().value)
+      .toBe(100);
+  });
+
+  it('pending bottle as total quantity', () => {
+    const { pending_bottle, wrapper } = setup({
+      order: { products: [{ quantity: 1 }, { quantity: 2 }] }
+    });
+    pending_bottle.simulate('change', { target: { checked: true } });
+    expect(wrapper.find('#pending_bottle_quantity').find('input').props().value)
+      .toBe(3);
+  });
+
+});
