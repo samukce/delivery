@@ -31,6 +31,7 @@ export default function Pendency({
                                    handleIsPendingPayment,
                                    handlePendingBottleQuantity,
                                    handleIsPendingBottle,
+                                   readOnly
                                  }) {
   const classesAccordion = useStylesAccordion();
 
@@ -65,7 +66,9 @@ export default function Pendency({
 
   const _handlePendingGenericNote = (value) => {
     setPendingGenericNote(value);
-    handlePendingGenericNote(value);
+    if (handlePendingGenericNote) {
+      handlePendingGenericNote(value);
+    }
   }
 
   const _handlePendingPayment = (value) => {
@@ -99,7 +102,7 @@ export default function Pendency({
   return (
     <Card variant="outlined">
       <CardContent>
-        <FormControl component="fieldset" className={ classesAccordion.root }>
+        <FormControl component="fieldset" className={ classesAccordion.root } disabled={ readOnly }>
           <FormLabel component="legend">Pendências</FormLabel>
           <FormGroup>
             <FormControlLabel
@@ -122,7 +125,9 @@ export default function Pendency({
                 max={ total_amount }
                 step="0.01"
                 validate
-                placeholder="...">
+                placeholder="..."
+                disabled={ readOnly }
+              >
                 <Icon>attach_money</Icon>
               </Input> : undefined }
 
@@ -134,23 +139,24 @@ export default function Pendency({
               label="Garrafão Emprestado"
             />
             { pendingBottle ?
-              <FormGroup>
-                <Input
-                  id="pending_bottle_quantity"
-                  type="number"
-                  label="Garrafões"
-                  variant="outlined"
-                  defaultValue={ _getTotalBottle() }
-                  value={ pendingBottleQuantity }
-                  onChange={ (event) => _handlePendingBottleQuantity(Number(event.target.value)) }
-                  min={ 1 }
-                  max={ _getTotalBottle() }
-                  step="1"
-                  validate
-                  placeholder="...">
-                  <Icon>invert_colors</Icon>
-                </Input>
-              </FormGroup> : undefined }
+              <Input
+                id="pending_bottle_quantity"
+                type="number"
+                label="Garrafões"
+                variant="outlined"
+                defaultValue={ _getTotalBottle() }
+                value={ pendingBottleQuantity }
+                onChange={ (event) => _handlePendingBottleQuantity(Number(event.target.value)) }
+                min={ 1 }
+                max={ _getTotalBottle() }
+                step="1"
+                validate
+                placeholder="..."
+                disabled={ readOnly }
+              >
+                <Icon>invert_colors</Icon>
+              </Input>
+              : undefined }
 
             <Input
               id="pending_notes"
@@ -158,10 +164,16 @@ export default function Pendency({
               variant="outlined"
               value={ pendingGenericNote }
               onChange={ (event) => _handlePendingGenericNote(event.target.value) }
-              placeholder="..."/>
+              placeholder="..."
+              disabled={ readOnly }
+            />
           </FormGroup>
         </FormControl>
       </CardContent>
     </Card>
   );
+}
+
+Pendency.defaultProps = {
+  readOnly: false
 }

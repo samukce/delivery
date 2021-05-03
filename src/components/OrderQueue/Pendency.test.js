@@ -13,6 +13,7 @@ const setup = propOverrides => {
     handlePendingPaymentValue: jest.fn(),
     handleIsPendingBottle: jest.fn(),
     handlePendingBottleQuantity: jest.fn(),
+    handlePendingGenericNote: jest.fn(),
   }, propOverrides)
 
   const wrapper = mount(<Pendency { ...props } />)
@@ -99,6 +100,12 @@ describe('when value change trigger', () => {
       .simulate('change', { target: { value: 2 } });
     expect(props.handlePendingBottleQuantity).toBeCalledWith(2);
   });
+
+  it('pending note handler', () => {
+    const { pending_notes, props } = setup();
+    pending_notes.simulate('change', { target: { value: "foo" } });
+    expect(props.handlePendingGenericNote).toBeCalledWith("foo");
+  });
 });
 
 describe('default value', () => {
@@ -160,5 +167,84 @@ describe('load pendent', () => {
     });
 
     expect(pending_notes.props().value).toBe("foo");
+  });
+});
+
+describe('load read only', () => {
+  it('pending payment disabled', () => {
+    const { pending_payment } = setup({
+      readOnly: true
+    });
+
+    expect(pending_payment.props().disabled).toBe(true);
+  });
+
+  it('pending payment value disabled', () => {
+    const { pending_payment_value } = setup({
+      readOnly: true,
+      pendent: { payment: { value: 50 } }
+    });
+
+    expect(pending_payment_value.props().disabled).toBe(true);
+  });
+
+  it('pending bottle checked', () => {
+    const { pending_bottle } = setup({
+      readOnly: true
+    });
+
+    expect(pending_bottle.props().disabled).toBe(true);
+  });
+
+  it('pending bottle quantity', () => {
+    const { pending_bottle_quantity } = setup({
+      readOnly: true,
+      pendent: { bottles: { quantity: 2 } }
+    });
+
+    expect(pending_bottle_quantity.props().disabled).toBe(true);
+  });
+
+  it('pending generic note', () => {
+    const { pending_notes } = setup({
+      readOnly: true,
+    });
+
+    expect(pending_notes.props().disabled).toBe(true);
+  });
+});
+
+describe('load not read only', () => {
+  it('pending payment disabled', () => {
+    const { pending_payment } = setup();
+
+    expect(pending_payment.props().disabled).toBe(false);
+  });
+
+  it('pending payment value disabled', () => {
+    const { pending_payment_value } = setup({
+      pendent: { payment: { value: 50 } }
+    });
+
+    expect(pending_payment_value.props().disabled).toBe(false);
+  });
+
+  it('pending bottle checked', () => {
+    const { pending_bottle } = setup();
+    expect(pending_bottle.props().disabled).toBe(false);
+  });
+
+  it('pending bottle quantity', () => {
+    const { pending_bottle_quantity } = setup({
+      pendent: { bottles: { quantity: 2 } }
+    });
+
+    expect(pending_bottle_quantity.props().disabled).toBe(false);
+  });
+
+  it('pending generic note', () => {
+    const { pending_notes } = setup();
+
+    expect(pending_notes.props().disabled).toBe(false);
   });
 });
