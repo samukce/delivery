@@ -5,7 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { List } from "@material-ui/core";
+import { GridList, List } from "@material-ui/core";
 import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -13,6 +13,7 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from "@material-ui/core/styles";
 import { getValueFormatted } from "../../utilities/ComponentUtils";
 import withWidth from '@material-ui/core/withWidth';
+import Pendency from "../OrderQueue/Pendency";
 
 const useStyles = makeStyles((theme) => ({
   listItem: {
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function OrderConfirmation({ modalOpen, order, handleFinish, handleCloseExternal, width }) {
+export function OrderConfirmation({ modalOpen, order, handleFinish, handleCloseExternal }) {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
 
@@ -82,6 +83,8 @@ export function OrderConfirmation({ modalOpen, order, handleFinish, handleCloseE
         scroll="paper"
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
+        maxWidth="md"
+        fullWidth={ true }
       >
         <DialogTitle id="scroll-dialog-title">Resumo do pedido</DialogTitle>
         <DialogContent dividers>
@@ -153,7 +156,8 @@ export function OrderConfirmation({ modalOpen, order, handleFinish, handleCloseE
               </Grid>
               { previous_pendencies().length ?
                 <Grid id="previous_pendencies" item { ...gridSizePendencies() }>
-                  Bloh..
+                  { previous_pendencies().map(p =>
+                    <Pendency key={ p.order_id } pendent={ p.pendent } readOnly={ true }/>) }
                 </Grid> : undefined
               }
             </Grid>

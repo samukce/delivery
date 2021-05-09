@@ -159,12 +159,14 @@ describe('render order', () => {
     });
 
     it('multiple', () => {
-      const { previous_pendencies } = setup({
+      const { wrapper } = setup({
         order: {
-          previous_pendencies: [{ order_id: "1" }, { order_id: "2" }]
+          previous_pendencies: [{ order_id: "pend_1" }, { order_id: "pend_2" }]
         }
       });
-      expect(previous_pendencies.find(".order_id").length).toEqual(2);
+
+      expect(wrapper.findWhere(node => node.key() === 'pend_1').length).toEqual(1);
+      expect(wrapper.findWhere(node => node.key() === 'pend_2').length).toEqual(1);
     });
   });
 });
