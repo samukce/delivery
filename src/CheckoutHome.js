@@ -3,7 +3,7 @@ import Checkout from "./components/Checkout/Checkout";
 import "react-notifications/lib/notifications.css";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-import OrderQueue from "./OrderQueue";
+import OrderQueue from "./components/OrderQueue/OrderQueue";
 import { withFirebase } from "./components/Firebase";
 import NetworkLockedIcon from "@material-ui/icons/NetworkLocked";
 import { AuthUserContext } from "./components/Session";

@@ -1,10 +1,10 @@
 import React, { useState, Component } from "react";
-import OrderRepository from "./repository/OrderRepository";
+import OrderRepository from "../../repository/OrderRepository";
 import { Trans } from "@lingui/react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import Typography from "@material-ui/core/Typography";
-import { getValueFormatted } from "./utilities/ComponentUtils";
+import { getValueFormatted } from "../../utilities/ComponentUtils";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -24,10 +24,13 @@ import CloseOutlinedIcon from "@material-ui/icons/CloseOutlined";
 import Hidden from "@material-ui/core/Hidden";
 import Fab from "@material-ui/core/Fab";
 import Pagination from "@material-ui/lab/Pagination";
-import { Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, isWidthDown, withWidth } from "@material-ui/core";
+import {
+  Grid,
+  isWidthDown,
+  withWidth
+} from "@material-ui/core";
 import { compose } from "recompose";
-import Input from "react-materialize/lib/Input";
-import {Icon} from "react-materialize";
+import Pendency from "./Pendency";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -35,16 +38,16 @@ function TabPanel(props) {
   return (
     <div
       role="tabpanel"
-      hidden={value !== index}
-      id={`scrollable-auto-tabpanel-${index}`}
-      aria-labelledby={`scrollable-auto-tab-${index}`}
-      {...other}
+      hidden={ value !== index }
+      id={ `scrollable-auto-tabpanel-${ index }` }
+      aria-labelledby={ `scrollable-auto-tab-${ index }` }
+      { ...other }
     >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
+      { value === index && (
+        <Box p={ 3 }>
+          <Typography>{ children }</Typography>
         </Box>
-      )}
+      ) }
     </div>
   );
 }
@@ -83,16 +86,16 @@ function OrderCard(props) {
 
     var diffDays = Math.floor(diffMs / 86400000);
     if (diffDays >= 1) {
-      return `${diffDays}d`;
+      return `${ diffDays }d`;
     }
 
     var diffHrs = Math.floor((diffMs % 86400000) / 3600000);
     var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
     if (diffHrs >= 1) {
-      return `${diffHrs}h ${diffMins}min`;
+      return `${ diffHrs }h ${ diffMins }min`;
     }
 
-    return `${diffMins}min`;
+    return `${ diffMins }min`;
   }
 
   function _getLocalDate(utcDate) {
@@ -114,8 +117,8 @@ function OrderCard(props) {
 
   function handleDeliveredClick() {
     handleDeliveredOrder(props.order.id, {
-      pending_payment: pendingPaymentValue ? pendingPaymentValue : undefined,
-      pending_bottles: pendingBottleQuantity ? pendingBottleQuantity : undefined,
+      pending_payment: pendingPayment ? pendingPaymentValue : undefined,
+      pending_bottles: pendingBottle ? pendingBottleQuantity : undefined,
       pending_generic_note: pendingGenericNote
     });
   }
@@ -123,55 +126,55 @@ function OrderCard(props) {
   return (
     <Accordion>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
+        expandIcon={ <ExpandMoreIcon/> }
         aria-controls="panel1a-content"
-        id={`panel-header-${props.order.id}`}
+        id={ `panel-header-${ props.order.id }` }
       >
-        <Typography className={classesAccordion.heading}>
-          {props.order.address} {props.order.complement}
+        <Typography className={ classesAccordion.heading }>
+          { props.order.address } { props.order.complement }
         </Typography>
         <Typography
-          className={classesAccordion.title}
+          className={ classesAccordion.title }
           color="textSecondary"
           gutterBottom
         >
-          ({_getMinutesOnQueue(props.order.created)})
+          ({ _getMinutesOnQueue(props.order.created) })
         </Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Card className={classesAccordion.root} variant="outlined">
+        <Card className={ classesAccordion.root } variant="outlined">
           <CardContent>
             <Typography
-              className={classesAccordion.title}
+              className={ classesAccordion.title }
               color="textSecondary"
               gutterBottom
             >
-              {_getLocalDate(props.order.created)}
+              { _getLocalDate(props.order.created) }
             </Typography>
             <Typography variant="h7" component="h7" display="block">
-              {props.order.address} {props.order.complement}
+              { props.order.address } { props.order.complement }
             </Typography>
 
-            {props.order.phonenumber === "" ? null : (
+            { props.order.phonenumber === "" ? null : (
               <Typography variant="overline" display="block">
-                TEL.: {props.order.phonenumber}
+                TEL.: { props.order.phonenumber }
               </Typography>
-            )}
+            ) }
 
-            {props.order.notes === "" ? null : (
+            { props.order.notes === "" ? null : (
               <Typography variant="overline" display="block">
-                OBS.: {props.order.notes}
+                OBS.: { props.order.notes }
               </Typography>
-            )}
+            ) }
 
-            {props.order.products.map((prod) => (
+            { props.order.products.map((prod) => (
               <Typography color="textSecondary" gutterBottom>
-                {prod.quantity} {prod.description}
+                { prod.quantity } { prod.description }
               </Typography>
-            ))}
+            )) }
 
             <Typography variant="body2" component="p">
-              Total em{" "}
+              Total em{ " " }
               {
                 <Trans
                   id={
@@ -183,114 +186,64 @@ function OrderCard(props) {
                   Total
                 </Trans>
               }
-              : {getValueFormatted(props.order.total_amount)}
+              : { getValueFormatted(props.order.total_amount) }
             </Typography>
 
-            {props.order.change_difference == null ? null : (
+            { props.order.change_difference == null ? null : (
               <Typography variant="body2" component="p">
-                Levar troco de{" "}
-                {getValueFormatted(props.order.change_difference)}
+                Levar troco de{ " " }
+                { getValueFormatted(props.order.change_difference) }
               </Typography>
-            )}
+            ) }
 
-            {handleDeliveredOrder == null ? null : (
-              <Card variant="outlined">
-                <CardContent>
-                  <FormControl component="fieldset" className={classesAccordion.root}>
-                    <FormLabel component="legend">Observações</FormLabel>
-                    <FormGroup>
-                      <FormControlLabel
-                        control={<Checkbox name="pending_payment" checked={pendingPayment} onChange={(event) => isPendingPayment(event.target.checked)} />}
-                        label="Pagamento Pendente"
-                      />
-                      {pendingPayment ?
-                          <Input
-                                 type="number"
-                                 label="Ficou devendo"
-                                 variant="outlined"
-                                 defaultValue={props.order.total_amount}
-                                 value={pendingPaymentValue}
-                                 onChange={(event) => setPendingPaymentValue(Number(event.target.value))}
-                                 min={0.01}
-                                 max={props.order.total_amount}
-                                 step="0.01"
-                                 validate
-                                 placeholder="...">
-                            <Icon>attach_money</Icon>
-                          </Input> : undefined}
-
-                     
-                      <FormControlLabel
-                        control={<Checkbox name="pending_bottle" checked={pendingBottle} onChange={(event) => isPendingBottle(event.target.checked)} />}
-                        label="Garrafão Emprestado"
-                      />
-                      {pendingBottle ?
-                          <FormGroup>
-                            <Input
-                                   type="number"
-                                   label="Garrafões"
-                                   variant="outlined"
-                                   defaultValue={_getTotalBottle()}
-                                   value={pendingBottleQuantity}
-                                   onChange={(event) => setPendingBottleQuantity(Number(event.target.value))}
-                                   min={1}
-                                   max={_getTotalBottle()}
-                                   step="1"
-                                   validate
-                                   placeholder="...">
-                              <Icon>invert_colors</Icon>
-                            </Input>
-                          </FormGroup>: undefined}
-
-                      <Input
-                        label="Observações" 
-                        variant="outlined"
-                        value={pendingGenericNote}
-                        onChange={(event) => setPendingGenericNote(event.target.value)}
-                        placeholder="..." />
-                    </FormGroup>
-                  </FormControl>
-                </CardContent>
-              </Card>
+            { handleDeliveredOrder == null ? null : (
+              <Pendency total_amount={ props.order.total_amount }
+                        products={ props.order.products }
+                        handlePendingGenericNote={ setPendingGenericNote }
+                        handleIsPendingBottle={ isPendingBottle }
+                        handlePendingBottleQuantity={ setPendingBottleQuantity }
+                        handleIsPendingPayment={ isPendingPayment }
+                        handlePendingPaymentValue={ setPendingPaymentValue }
+              />
             )
-          }
+            }
           </CardContent>
           <CardActions>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
+            <Grid container spacing={ 1 }>
+              <Grid item xs={ 6 }>
                 <Button
                   size="small"
                   variant="outlined"
-                  onClick={handleCancelClick}
+                  onClick={ handleCancelClick }
                   fullWidth
                 >
                   Cancelar
                 </Button>
               </Grid>
 
-              <Grid item xs={6}>
-                {handleShippedOrder == null ? null : (
+              <Grid item xs={ 6 }>
+                { handleShippedOrder == null ? null : (
                   <Button
                     size="small"
                     color="primary"
                     variant="contained"
-                    onClick={handleShippedClick}
+                    onClick={ handleShippedClick }
                     fullWidth
                   >
                     Entregar
                   </Button>
-                )}
-                {handleDeliveredOrder == null ? null : (
+                ) }
+                { handleDeliveredOrder == null ? null : (
                   <Button
                     size="small"
                     color="primary"
                     variant="contained"
-                    onClick={handleDeliveredClick}
+                    onClick={ handleDeliveredClick }
                     fullWidth
                   >
                     Entregue
                   </Button>
-                )}
+                ) }
               </Grid>
             </Grid>
           </CardActions>
@@ -313,7 +266,7 @@ const useStyles = (theme) => ({
     }),
   },
   appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
+    width: `calc(100% - ${ drawerWidth }px)`,
     marginRight: drawerWidth,
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
@@ -487,20 +440,20 @@ class OrderQueue extends Component {
       <div>
         <Paper square>
           <Tabs
-            value={this.state.value}
+            value={ this.state.value }
             indicatorColor="primary"
             textColor="primary"
             variant="scrollable"
             scrollButtons="auto"
-            onChange={this.handleChange}
+            onChange={ this.handleChange }
           >
             <Tab
               label={
                 <Badge
-                  className={classes.badgePadding}
+                  className={ classes.badgePadding }
                   color="primary"
-                  badgeContent={this.state.ordersQueueSize}
-                  max={999}
+                  badgeContent={ this.state.ordersQueueSize }
+                  max={ 999 }
                 >
                   Fila
                 </Badge>
@@ -509,51 +462,51 @@ class OrderQueue extends Component {
             <Tab
               label={
                 <Badge
-                  className={classes.badgePadding}
+                  className={ classes.badgePadding }
                   color="primary"
-                  badgeContent={this.state.ordersShippedSize}
-                  max={999}
+                  badgeContent={ this.state.ordersShippedSize }
+                  max={ 999 }
                 >
                   Rota
                 </Badge>
               }
             />
           </Tabs>
-          <TabPanel value={this.state.value} index={orderQueueTab}>
-            {this.state.ordersQueue.map((order) => (
+          <TabPanel value={ this.state.value } index={ orderQueueTab }>
+            { this.state.ordersQueue.map((order) => (
               <OrderCard
-                key={`order-${order.id}`}
-                order={order}
-                handleCancelOrder={this.handleCancelOrder}
-                handleShippedOrder={this.handleShippedOrder}
+                key={ `order-${ order.id }` }
+                order={ order }
+                handleCancelOrder={ this.handleCancelOrder }
+                handleShippedOrder={ this.handleShippedOrder }
               />
-            ))}
-            <Box hidden={this.state.ordersQueueSize < ordersPerPage}>
+            )) }
+            <Box hidden={ this.state.ordersQueueSize < ordersPerPage }>
               <Pagination
-                count={Math.ceil(this.state.ordersQueueSize / ordersPerPage)}
+                count={ Math.ceil(this.state.ordersQueueSize / ordersPerPage) }
                 size="small"
-                className={classes.pagination}
-                page={this.state.ordersQueuePage}
-                onChange={this.handleQueuePageChange}
+                className={ classes.pagination }
+                page={ this.state.ordersQueuePage }
+                onChange={ this.handleQueuePageChange }
               />
             </Box>
           </TabPanel>
-          <TabPanel value={this.state.value} index={orderShippedTab}>
-            {this.state.ordersShipped.map((order) => (
+          <TabPanel value={ this.state.value } index={ orderShippedTab }>
+            { this.state.ordersShipped.map((order) => (
               <OrderCard
-                key={`order-${order.id}`}
-                order={order}
-                handleCancelOrder={this.handleCancelOrder}
-                handleDeliveredOrder={this.handleDeliveredOrder}
+                key={ `order-${ order.id }` }
+                order={ order }
+                handleCancelOrder={ this.handleCancelOrder }
+                handleDeliveredOrder={ this.handleDeliveredOrder }
               />
-            ))}
-            <Box hidden={this.state.ordersShippedSize < ordersPerPage}>
+            )) }
+            <Box hidden={ this.state.ordersShippedSize < ordersPerPage }>
               <Pagination
-                count={Math.ceil(this.state.ordersShippedSize / ordersPerPage)}
+                count={ Math.ceil(this.state.ordersShippedSize / ordersPerPage) }
                 size="small"
-                className={classes.pagination}
-                page={this.state.ordersShippedPage}
-                onChange={this.handleShippedPageChange}
+                className={ classes.pagination }
+                page={ this.state.ordersShippedPage }
+                onChange={ this.handleShippedPageChange }
               />
             </Box>
           </TabPanel>
@@ -566,19 +519,19 @@ class OrderQueue extends Component {
         <Hidden xsDown implementation="css">
           <Drawer
             id="drawer-regular-size"
-            container={this.container}
-            className={classes.drawer}
+            container={ this.container }
+            className={ classes.drawer }
             variant="persistent"
             anchor="right"
-            open={this.state.open}
-            classes={{
+            open={ this.state.open }
+            classes={ {
               paper: classes.drawerPaper,
-            }}
-            ModalProps={{
+            } }
+            ModalProps={ {
               keepMounted: true, // Better open performance on mobile.
-            }}
+            } }
           >
-            {drawer}
+            { drawer }
           </Drawer>
         </Hidden>
         <Hidden mdUp>
@@ -587,36 +540,36 @@ class OrderQueue extends Component {
               size="small"
               color="primary"
               aria-label="list"
-              className={classes.marginFloatButton}
-              onClick={() => this.setState({ open: true })}
+              className={ classes.marginFloatButton }
+              onClick={ () => this.setState({ open: true }) }
             >
-              <ListIcon />
+              <ListIcon/>
             </Fab>
           </Box>
 
           <Drawer
             id="drawer-small-size"
-            container={this.container}
-            className={classes.drawer}
+            container={ this.container }
+            className={ classes.drawer }
             variant="variant"
             anchor="right"
-            open={this.state.open}
-            classes={{
+            open={ this.state.open }
+            classes={ {
               paper: classes.drawerPaper,
-            }}
-            ModalProps={{
+            } }
+            ModalProps={ {
               keepMounted: true, // Better open performance on mobile.
-            }}
+            } }
           >
-            {drawer}
+            { drawer }
 
             <Fab
               size="small"
               aria-label="close"
-              className={classes.marginFloatCloseTabButton}
-              onClick={() => this.setState({ open: false })}
+              className={ classes.marginFloatCloseTabButton }
+              onClick={ () => this.setState({ open: false }) }
             >
-              <CloseOutlinedIcon />
+              <CloseOutlinedIcon/>
             </Fab>
           </Drawer>
         </Hidden>
