@@ -1,6 +1,6 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { Trans } from "@lingui/react";
-import { makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { getValueFormatted } from "../../utilities/ComponentUtils";
 import Card from "@material-ui/core/Card";
@@ -15,6 +15,7 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Grid, } from "@material-ui/core";
 import Pendency from "./Pendency";
+import { _getLocalDate, _getMinutesOnQueue } from "../../utilities/DateUtil"
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -62,30 +63,6 @@ export default function OrderCard(props) {
   const handleCancelOrder = props.handleCancelOrder;
   const handleShippedOrder = props.handleShippedOrder;
   const handleDeliveredOrder = props.handleDeliveredOrder;
-
-  function _getMinutesOnQueue(utcDate) {
-    var today = new Date();
-    var utcDateToCompare = new Date(utcDate);
-    var diffMs = today - utcDateToCompare;
-
-    var diffDays = Math.floor(diffMs / 86400000);
-    if (diffDays >= 1) {
-      return `${ diffDays }d`;
-    }
-
-    var diffHrs = Math.floor((diffMs % 86400000) / 3600000);
-    var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
-    if (diffHrs >= 1) {
-      return `${ diffHrs }h ${ diffMins }min`;
-    }
-
-    return `${ diffMins }min`;
-  }
-
-  function _getLocalDate(utcDate) {
-    var localDate = new Date(utcDate);
-    return localDate.toLocaleString();
-  }
 
   function _getTotalBottle() {
     return props.order.products.reduce((total, prod) => (total + Number(prod.quantity)), 0);
