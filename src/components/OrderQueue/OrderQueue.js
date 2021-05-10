@@ -1,36 +1,25 @@
-import React, { useState, Component } from "react";
+import React, { Component } from "react";
 import OrderRepository from "../../repository/OrderRepository";
-import { Trans } from "@lingui/react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import Typography from "@material-ui/core/Typography";
-import { getValueFormatted } from "../../utilities/ComponentUtils";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import PropTypes from "prop-types";
 import Badge from "@material-ui/core/Badge";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ListIcon from "@material-ui/icons/List";
 import CloseOutlinedIcon from "@material-ui/icons/CloseOutlined";
 import Hidden from "@material-ui/core/Hidden";
 import Fab from "@material-ui/core/Fab";
 import Pagination from "@material-ui/lab/Pagination";
 import {
-  Grid,
   isWidthDown,
   withWidth
 } from "@material-ui/core";
 import { compose } from "recompose";
-import Pendency from "./Pendency";
+import OrderCard from "./OrderCard";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -57,201 +46,6 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 };
-
-const useStylesAccordion = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
-  },
-}));
-
-function OrderCard(props) {
-  const classesAccordion = useStylesAccordion();
-  const [pendingPayment, isPendingPayment] = useState(false);
-  const [pendingBottle, isPendingBottle] = useState(false);
-  const [pendingPaymentValue, setPendingPaymentValue] = useState(props.order.total_amount);
-  const [pendingBottleQuantity, setPendingBottleQuantity] = useState(_getTotalBottle());
-  const [pendingGenericNote, setPendingGenericNote] = useState(null);
-  const handleCancelOrder = props.handleCancelOrder;
-  const handleShippedOrder = props.handleShippedOrder;
-  const handleDeliveredOrder = props.handleDeliveredOrder;
-
-  function _getMinutesOnQueue(utcDate) {
-    var today = new Date();
-    var utcDateToCompare = new Date(utcDate);
-    var diffMs = today - utcDateToCompare;
-
-    var diffDays = Math.floor(diffMs / 86400000);
-    if (diffDays >= 1) {
-      return `${ diffDays }d`;
-    }
-
-    var diffHrs = Math.floor((diffMs % 86400000) / 3600000);
-    var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
-    if (diffHrs >= 1) {
-      return `${ diffHrs }h ${ diffMins }min`;
-    }
-
-    return `${ diffMins }min`;
-  }
-
-  function _getLocalDate(utcDate) {
-    var localDate = new Date(utcDate);
-    return localDate.toLocaleString();
-  }
-
-  function _getTotalBottle() {
-    return props.order.products.reduce((total, prod) => (total + Number(prod.quantity)), 0);
-  }
-
-  function handleCancelClick() {
-    handleCancelOrder(props.order.id);
-  }
-
-  function handleShippedClick() {
-    handleShippedOrder(props.order.id);
-  }
-
-  function handleDeliveredClick() {
-    handleDeliveredOrder(props.order.id, {
-      pending_payment: pendingPayment ? pendingPaymentValue : undefined,
-      pending_bottles: pendingBottle ? pendingBottleQuantity : undefined,
-      pending_generic_note: pendingGenericNote
-    });
-  }
-
-  return (
-    <Accordion>
-      <AccordionSummary
-        expandIcon={ <ExpandMoreIcon/> }
-        aria-controls="panel1a-content"
-        id={ `panel-header-${ props.order.id }` }
-      >
-        <Typography className={ classesAccordion.heading }>
-          { props.order.address } { props.order.complement }
-        </Typography>
-        <Typography
-          className={ classesAccordion.title }
-          color="textSecondary"
-          gutterBottom
-        >
-          ({ _getMinutesOnQueue(props.order.created) })
-        </Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Card className={ classesAccordion.root } variant="outlined">
-          <CardContent>
-            <Typography
-              className={ classesAccordion.title }
-              color="textSecondary"
-              gutterBottom
-            >
-              { _getLocalDate(props.order.created) }
-            </Typography>
-            <Typography variant="h7" component="h7" display="block">
-              { props.order.address } { props.order.complement }
-            </Typography>
-
-            { props.order.phonenumber === "" ? null : (
-              <Typography variant="overline" display="block">
-                TEL.: { props.order.phonenumber }
-              </Typography>
-            ) }
-
-            { props.order.notes === "" ? null : (
-              <Typography variant="overline" display="block">
-                OBS.: { props.order.notes }
-              </Typography>
-            ) }
-
-            { props.order.products.map((prod) => (
-              <Typography color="textSecondary" gutterBottom>
-                { prod.quantity } { prod.description }
-              </Typography>
-            )) }
-
-            <Typography variant="body2" component="p">
-              Total em{ " " }
-              {
-                <Trans
-                  id={
-                    props.order.credit_card_payment
-                      ? "checkout.card"
-                      : "checkout.cash"
-                  }
-                >
-                  Total
-                </Trans>
-              }
-              : { getValueFormatted(props.order.total_amount) }
-            </Typography>
-
-            { props.order.change_difference == null ? null : (
-              <Typography variant="body2" component="p">
-                Levar troco de{ " " }
-                { getValueFormatted(props.order.change_difference) }
-              </Typography>
-            ) }
-
-            { handleDeliveredOrder == null ? null : (
-              <Pendency total_amount={ props.order.total_amount }
-                        products={ props.order.products }
-                        handlePendingGenericNote={ setPendingGenericNote }
-                        handleIsPendingBottle={ isPendingBottle }
-                        handlePendingBottleQuantity={ setPendingBottleQuantity }
-                        handleIsPendingPayment={ isPendingPayment }
-                        handlePendingPaymentValue={ setPendingPaymentValue }
-              />
-            )
-            }
-          </CardContent>
-          <CardActions>
-            <Grid container spacing={ 1 }>
-              <Grid item xs={ 6 }>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={ handleCancelClick }
-                  fullWidth
-                >
-                  Cancelar
-                </Button>
-              </Grid>
-
-              <Grid item xs={ 6 }>
-                { handleShippedOrder == null ? null : (
-                  <Button
-                    size="small"
-                    color="primary"
-                    variant="contained"
-                    onClick={ handleShippedClick }
-                    fullWidth
-                  >
-                    Entregar
-                  </Button>
-                ) }
-                { handleDeliveredOrder == null ? null : (
-                  <Button
-                    size="small"
-                    color="primary"
-                    variant="contained"
-                    onClick={ handleDeliveredClick }
-                    fullWidth
-                  >
-                    Entregue
-                  </Button>
-                ) }
-              </Grid>
-            </Grid>
-          </CardActions>
-        </Card>
-      </AccordionDetails>
-    </Accordion>
-  );
-}
 
 const drawerWidth = 380;
 
