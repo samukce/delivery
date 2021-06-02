@@ -129,7 +129,7 @@ export default function Pendency({
                 disabled={ readOnly }
               >
                 <Icon>attach_money</Icon>
-              </Input> : undefined }
+              </Input> : null }
 
             <FormControlLabel
               control={ <Checkbox id="pending_bottle"
@@ -156,7 +156,7 @@ export default function Pendency({
               >
                 <Icon>invert_colors</Icon>
               </Input>
-              : undefined }
+              : null }
 
             <Input
               id="pending_notes"

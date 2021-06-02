@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Trans } from "@lingui/react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { getValueFormatted } from "../../utilities/ComponentUtils";
@@ -65,7 +64,8 @@ export default function OrderCard(props) {
   const handleDeliveredOrder = props.handleDeliveredOrder;
 
   function _getTotalBottle() {
-    return props.order.products.reduce((total, prod) => (total + Number(prod.quantity)), 0);
+    return (props.order.products ?? [])
+      .reduce((total, prod) => (total + Number(prod.quantity)), 0);
   }
 
   function handleCancelClick() {
@@ -78,8 +78,8 @@ export default function OrderCard(props) {
 
   function handleDeliveredClick() {
     handleDeliveredOrder(props.order.id, {
-      pending_payment: pendingPayment ? pendingPaymentValue : undefined,
-      pending_bottles: pendingBottle ? pendingBottleQuantity : undefined,
+      pending_payment: pendingPayment ? pendingPaymentValue : null,
+      pending_bottles: pendingBottle ? pendingBottleQuantity : null,
       pending_generic_note: pendingGenericNote
     });
   }
@@ -112,53 +112,48 @@ export default function OrderCard(props) {
             >
               { _getLocalDate(props.order.created) }
             </Typography>
-            <Typography variant="h7" component="h7" display="block">
+            <Typography id="address" variant="h7" component="h7" display="block">
               { props.order.address } { props.order.complement }
             </Typography>
 
-            { props.order.phonenumber === "" ? null : (
-              <Typography variant="overline" display="block">
+            { props.order.phonenumber ? (
+              <Typography id="phonenumber" variant="overline" display="block">
                 TEL.: { props.order.phonenumber }
               </Typography>
-            ) }
+            ) : null }
 
-            { props.order.notes === "" ? null : (
-              <Typography variant="overline" display="block">
+            { props.order.notes ? (
+              <Typography id="notes" variant="overline" display="block">
                 OBS.: { props.order.notes }
               </Typography>
-            ) }
+            ) : null }
 
-            { props.order.products.map((prod) => (
-              <Typography color="textSecondary" gutterBottom>
+            { (props.order.products ?? []).map((prod) => (
+              <Typography key={ prod.product_id } className="product-description" color="textSecondary" gutterBottom>
                 { prod.quantity } { prod.description }
               </Typography>
             )) }
 
-            <Typography variant="body2" component="p">
+            <Typography id="total_amount" variant="body2" component="p">
               Total em{ " " }
               {
-                <Trans
-                  id={
-                    props.order.credit_card_payment
-                      ? "checkout.card"
-                      : "checkout.cash"
-                  }
-                >
-                  Total
-                </Trans>
+                props.order.credit_card_payment
+                  ? "Cartão"
+                  : "Dinheiro"
               }
               : { getValueFormatted(props.order.total_amount) }
             </Typography>
 
-            { props.order.change_difference == null ? null : (
-              <Typography variant="body2" component="p">
+            { props.order.change_difference ? (
+              <Typography id="change_difference" variant="body2" component="p">
                 Levar troco de{ " " }
                 { getValueFormatted(props.order.change_difference) }
               </Typography>
-            ) }
+            ) : null }
 
             { handleDeliveredOrder == null ? null : (
-              <Pendency total_amount={ props.order.total_amount }
+              <Pendency key={ props.order.id }
+                        total_amount={ props.order.total_amount }
                         products={ props.order.products }
                         handlePendingGenericNote={ setPendingGenericNote }
                         handleIsPendingBottle={ isPendingBottle }
@@ -173,6 +168,7 @@ export default function OrderCard(props) {
             <Grid container spacing={ 1 }>
               <Grid item xs={ 6 }>
                 <Button
+                  id="cancel"
                   size="small"
                   variant="outlined"
                   onClick={ handleCancelClick }
@@ -185,6 +181,7 @@ export default function OrderCard(props) {
               <Grid item xs={ 6 }>
                 { handleShippedOrder == null ? null : (
                   <Button
+                    id="shipped"
                     size="small"
                     color="primary"
                     variant="contained"
@@ -196,6 +193,7 @@ export default function OrderCard(props) {
                 ) }
                 { handleDeliveredOrder == null ? null : (
                   <Button
+                    id="delivered"
                     size="small"
                     color="primary"
                     variant="contained"
