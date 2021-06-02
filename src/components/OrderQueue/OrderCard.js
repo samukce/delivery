@@ -165,8 +165,11 @@ export default function OrderCard(props) {
 
                 { (props.order.previous_pendencies ?? []).length ?
                   <List id="previous_pendencies" disablePadding>
-                    { (props.order.previous_pendencies ?? []).map(pendency =>
-                      <Pendency key={ pendency.order_id }/>
+                    { (props.order.previous_pendencies ?? []).map(orderPendency =>
+                      <Pendency key={ orderPendency.order_id }
+                                readOnly={ true }
+                                pendent={ orderPendency.pendent }
+                      />
                     ) }
                   </List>
                   : null

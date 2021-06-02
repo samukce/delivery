@@ -265,6 +265,27 @@ describe('render order', () => {
       expect(previous_pendencies.findWhere(node => node.key() === 'pend_1').length).toEqual(1);
       expect(previous_pendencies.findWhere(node => node.key() === 'pend_2').length).toEqual(1);
     });
+
+    it('readOnly', () => {
+      const { previous_pendencies } = setup({
+        order: {
+          previous_pendencies: [{ order_id: "pend_1" }]
+        }
+      });
+
+      expect(previous_pendencies.find(Pendency).props().readOnly).toBe(true);
+    });
+
+    it('set pendency item', () => {
+      let pendentBottle = { bottles: { quantity: 2 } };
+      const { previous_pendencies } = setup({
+        order: {
+          previous_pendencies: [{ order_id: "pend_1", pendent: pendentBottle }]
+        }
+      });
+
+      expect(previous_pendencies.find(Pendency).props().pendent).toBe(pendentBottle);
+    });
   });
 });
 
