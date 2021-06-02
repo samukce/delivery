@@ -214,6 +214,57 @@ describe('render order', () => {
 
       expect(wrapper.find(Pendency).exists()).toBe(false);
     });
+
+    it('not exist when null list', () => {
+      const { previous_pendencies } = setup({
+        order: {
+          previous_pendencies: null
+        }
+      });
+      expect(previous_pendencies.exists()).toBe(false);
+    });
+
+    it('not exist when empty list', () => {
+      const { previous_pendencies } = setup({
+        order: {
+          previous_pendencies: []
+        }
+      });
+      expect(previous_pendencies.exists()).toBe(false);
+    });
+
+    it('exist when any in the list', () => {
+      const { previous_pendencies } = setup({
+        order: {
+          previous_pendencies: [{ order_id: "1" }]
+        }
+      });
+      expect(previous_pendencies.exists()).toBe(true);
+    });
+
+    it('multiple', () => {
+      const { previous_pendencies } = setup({
+        order: {
+          previous_pendencies: [{ order_id: "pend_1" }, { order_id: "pend_2" }]
+        }
+      });
+
+      expect(previous_pendencies.find(Pendency).length).toBe(2);
+      expect(previous_pendencies.findWhere(node => node.key() === 'pend_1').length).toEqual(1);
+      expect(previous_pendencies.findWhere(node => node.key() === 'pend_2').length).toEqual(1);
+    });
+
+    it('multiple', () => {
+      const { previous_pendencies } = setup({
+        order: {
+          previous_pendencies: [{ order_id: "pend_1" }, { order_id: "pend_2" }]
+        }
+      });
+
+      expect(previous_pendencies.find(Pendency).length).toBe(2);
+      expect(previous_pendencies.findWhere(node => node.key() === 'pend_1').length).toEqual(1);
+      expect(previous_pendencies.findWhere(node => node.key() === 'pend_2').length).toEqual(1);
+    });
   });
 });
 

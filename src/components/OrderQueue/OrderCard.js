@@ -12,7 +12,7 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { Grid, } from "@material-ui/core";
+import { Grid, List, } from "@material-ui/core";
 import Pendency from "./Pendency";
 import { _getLocalDate, _getMinutesOnQueue } from "../../utilities/DateUtil"
 
@@ -151,17 +151,28 @@ export default function OrderCard(props) {
               </Typography>
             ) : null }
 
-            { handleDeliveredOrder == null ? null : (
-              <Pendency key={ props.order.id }
-                        total_amount={ props.order.total_amount }
-                        products={ props.order.products }
-                        handlePendingGenericNote={ setPendingGenericNote }
-                        handleIsPendingBottle={ isPendingBottle }
-                        handlePendingBottleQuantity={ setPendingBottleQuantity }
-                        handleIsPendingPayment={ isPendingPayment }
-                        handlePendingPaymentValue={ setPendingPaymentValue }
-              />
-            )
+            { handleDeliveredOrder ? (
+              <React.Fragment>
+                <Pendency key={ props.order.id }
+                          total_amount={ props.order.total_amount }
+                          products={ props.order.products }
+                          handlePendingGenericNote={ setPendingGenericNote }
+                          handleIsPendingBottle={ isPendingBottle }
+                          handlePendingBottleQuantity={ setPendingBottleQuantity }
+                          handleIsPendingPayment={ isPendingPayment }
+                          handlePendingPaymentValue={ setPendingPaymentValue }
+                />
+
+                { (props.order.previous_pendencies ?? []).length ?
+                  <List id="previous_pendencies" disablePadding>
+                    { (props.order.previous_pendencies ?? []).map(pendency =>
+                      <Pendency key={ pendency.order_id }/>
+                    ) }
+                  </List>
+                  : null
+                }
+              </React.Fragment>
+            ) : null
             }
           </CardContent>
           <CardActions>
