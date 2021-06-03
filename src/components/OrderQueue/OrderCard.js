@@ -12,7 +12,7 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { Grid, List, } from "@material-ui/core";
+import { Grid, List, ListSubheader, } from "@material-ui/core";
 import Pendency from "./Pendency";
 import { _getLocalDate, _getMinutesOnQueue } from "../../utilities/DateUtil"
 
@@ -173,7 +173,13 @@ export default function OrderCard(props) {
                 />
 
                 { (props.order.previous_pendencies ?? []).length ?
-                  <List id="previous_pendencies" disablePadding>
+                  <List id="previous_pendencies"
+                        subheader={
+                          <ListSubheader component="div" id="previous-pendencies">
+                            Pendências anteriores
+                          </ListSubheader>
+                        }
+                  >
                     { (props.order.previous_pendencies ?? []).map(orderPendency =>
                       <Pendency key={ orderPendency.order_id }
                                 readOnly={ true }
