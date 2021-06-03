@@ -286,6 +286,17 @@ describe('render order', () => {
 
       expect(previous_pendencies.find(Pendency).props().pendent).toBe(pendentBottle);
     });
+
+    it('set pendency resolved handler', () => {
+      const { previous_pendencies } = setup({
+        order: {
+          previous_pendencies: [{ order_id: "pend_1", pendent: {} }]
+        }
+      });
+
+      expect(previous_pendencies.find(Pendency).props().handlePendencyResolved)
+        .toBeDefined();
+    });
   });
 });
 
@@ -306,7 +317,7 @@ describe('delivery button', () => {
       pending_payment: null,
       pending_bottles: null,
       pending_generic_note: null
-    });
+    }, []);
   });
 
   describe('pendency', () => {
@@ -324,7 +335,7 @@ describe('delivery button', () => {
         pending_payment: null,
         pending_bottles: null,
         pending_generic_note: "something here"
-      });
+      }, []);
     })
 
     it('delivery order with a pendency bottle', () => {
@@ -342,7 +353,7 @@ describe('delivery button', () => {
         pending_payment: null,
         pending_bottles: 2,
         pending_generic_note: null
-      });
+      }, []);
     })
 
     it('delivery order with a pendency payment', () => {
@@ -360,7 +371,104 @@ describe('delivery button', () => {
         pending_payment: 20,
         pending_bottles: null,
         pending_generic_note: null
-      });
+      }, []);
+    })
+
+    describe('pendency resolved', () => {
+      it('with a pendency payment resolved', () => {
+        const { delivered, props, previous_pendencies } = setup({
+          order: {
+            id: 1,
+            previous_pendencies: [{ order_id: "pend_1", pendent: { bottles: { quantity: 2 } } }]
+          }
+        }, mount);
+
+
+        let pendencyResolved = previous_pendencies.find(Pendency)
+          .find("#pendency_resolved").hostNodes();
+        pendencyResolved.simulate('change', { target: { checked: true } });
+
+        delivered.hostNodes().simulate('click');
+
+        expect(props.handleDeliveredOrder).toBeCalledWith(1, {
+          pending_payment: null,
+          pending_bottles: null,
+          pending_generic_note: null
+        }, ["pend_1"]);
+      })
+
+      it('with a pendency payment unresolved', () => {
+        const { delivered, props, previous_pendencies } = setup({
+          order: {
+            id: 1,
+            previous_pendencies: [{ order_id: "pend_1", pendent: { bottles: { quantity: 2 } } }]
+          }
+        }, mount);
+
+
+        let pendencyResolved = previous_pendencies.find(Pendency)
+          .find("#pendency_resolved").hostNodes();
+        pendencyResolved.simulate('change', { target: { checked: false } });
+
+        delivered.hostNodes().simulate('click');
+
+        expect(props.handleDeliveredOrder).toBeCalledWith(1, {
+          pending_payment: null,
+          pending_bottles: null,
+          pending_generic_note: null
+        }, []);
+      })
+
+      it('with multiple pendency payment resolved', () => {
+        const { delivered, props, previous_pendencies } = setup({
+          order: {
+            id: 1,
+            previous_pendencies: [
+              { order_id: "pend_1", pendent: { bottles: { quantity: 2 } } },
+              { order_id: "pend_2", pendent: { bottles: { quantity: 2 } } }]
+          }
+        }, mount);
+
+
+        let pendencyResolvedOne = previous_pendencies.find(Pendency).at(0)
+          .find("#pendency_resolved").hostNodes();
+        pendencyResolvedOne.simulate('change', { target: { checked: true } });
+
+        let pendencyResolvedTwo = previous_pendencies.find(Pendency).at(1)
+          .find("#pendency_resolved").hostNodes();
+        pendencyResolvedTwo.simulate('change', { target: { checked: true } });
+
+        delivered.hostNodes().simulate('click');
+
+        expect(props.handleDeliveredOrder).toBeCalledWith(1, {
+          pending_payment: null,
+          pending_bottles: null,
+          pending_generic_note: null
+        }, ["pend_1", "pend_2"]);
+      })
+
+      it('with empty pendency payment after uncheck', () => {
+        const { delivered, props, previous_pendencies } = setup({
+          order: {
+            id: 1,
+            previous_pendencies: [{ order_id: "pend_1", pendent: { bottles: { quantity: 2 } } }]
+          }
+        }, mount);
+
+
+        let pendencyResolved = previous_pendencies.find(Pendency)
+          .find("#pendency_resolved").hostNodes();
+        pendencyResolved.simulate('change', { target: { checked: true } });
+        pendencyResolved.simulate('change', { target: { checked: false } });
+
+        delivered.hostNodes().simulate('click');
+
+        expect(props.handleDeliveredOrder).toBeCalledWith(1, {
+          pending_payment: null,
+          pending_bottles: null,
+          pending_generic_note: null
+        }, []);
+      })
     })
   });
 });

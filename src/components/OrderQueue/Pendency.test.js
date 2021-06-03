@@ -14,6 +14,7 @@ const setup = propOverrides => {
     handleIsPendingBottle: jest.fn(),
     handlePendingBottleQuantity: jest.fn(),
     handlePendingGenericNote: jest.fn(),
+    handlePendencyResolved: jest.fn(),
   }, propOverrides)
 
   const wrapper = mount(<Pendency { ...props } />)
@@ -26,6 +27,7 @@ const setup = propOverrides => {
     pending_bottle: wrapper.find('#pending_bottle').find('input'),
     pending_bottle_quantity: wrapper.find('#pending_bottle_quantity').find('input'),
     pending_notes: wrapper.find('#pending_notes').find('input'),
+    pendency_resolved: wrapper.find('#pendency_resolved'),
   }
 }
 
@@ -43,6 +45,34 @@ describe('render checkbox for pendencies', () => {
   it('pending notes input', () => {
     const { pending_notes } = setup();
     expect(pending_notes.exists()).toBe(true);
+  });
+});
+
+describe('render checkbox for pendency resolved', () => {
+  it('show component if handlePendencyResolved handler', () => {
+    const { pendency_resolved } = setup();
+    expect(pendency_resolved.exists()).toBe(true);
+  });
+
+  it('hide component if handleResolved handler', () => {
+    const { pendency_resolved } = setup({ handlePendencyResolved: null });
+    expect(pendency_resolved.exists()).toBe(false);
+  });
+});
+
+describe('when checkbox pendency resolved', () => {
+  it('trigger handler for checked resolved', () => {
+    const { pendency_resolved, props } = setup({ pendent: {} });
+    pendency_resolved.hostNodes().simulate('change', { target: { checked: true } });
+
+    expect(props.handlePendencyResolved).toBeCalledWith(true);
+  });
+
+  it('trigger handler for not checked resolved', () => {
+    const { pendency_resolved, props } = setup({ pendent: {} });
+    pendency_resolved.hostNodes().simulate('change', { target: { checked: false } });
+
+    expect(props.handlePendencyResolved).toBeCalledWith(false);
   });
 });
 

@@ -9,8 +9,10 @@ import {
   FormGroup,
   FormLabel,
 } from "@material-ui/core";
+import CheckBoxOutlineBlankSharpIcon from '@material-ui/icons/CheckBoxOutlineBlankSharp';
 import Input from "react-materialize/lib/Input";
 import { Icon } from "react-materialize";
+import { Done } from "@material-ui/icons";
 
 const useStylesAccordion = makeStyles((theme) => ({
   root: {
@@ -31,12 +33,14 @@ export default function Pendency({
                                    handleIsPendingPayment,
                                    handlePendingBottleQuantity,
                                    handleIsPendingBottle,
-                                   readOnly
+                                   readOnly,
+                                   handlePendencyResolved,
                                  }) {
   const classesAccordion = useStylesAccordion();
 
-  const [pendingPayment, isPendingPayment] = useState(!!(pendent ?? {}).payment);
-  const [pendingBottle, isPendingBottle] = useState(!!(pendent ?? {}).bottles);
+  const [checkedResolved, setCheckedResolved] = useState(false);
+  const [pendingPayment, setPendingPayment] = useState(!!(pendent ?? {}).payment);
+  const [pendingBottle, setPendingBottle] = useState(!!(pendent ?? {}).bottles);
   const [pendingGenericNote, setPendingGenericNote] = useState((pendent ?? {}).note);
 
   const [pendingPaymentValue, setPendingPaymentValue] = useState(initialPendingPaymentValue());
@@ -79,7 +83,7 @@ export default function Pendency({
   }
 
   const _handleIsPendingPayment = (checked) => {
-    isPendingPayment(checked);
+    setPendingPayment(checked);
     if (handleIsPendingPayment) {
       handleIsPendingPayment(checked);
     }
@@ -93,14 +97,33 @@ export default function Pendency({
   }
 
   const _handleIsPendingBottle = (checked) => {
-    isPendingBottle(checked);
+    setPendingBottle(checked);
     if (handleIsPendingBottle) {
       handleIsPendingBottle(checked);
     }
   }
 
+  const _handlePendencyResolved = (checked) => {
+    setCheckedResolved(checked);
+    handlePendencyResolved(checked);
+  }
+
   return (
     <Card variant="outlined">
+      { handlePendencyResolved ?
+        <FormControlLabel
+          control={ <Checkbox id="pendency_resolved"
+                              name="pendency_resolved"
+                              checked={ checkedResolved }
+                              onChange={ (event) => _handlePendencyResolved(event.target.checked) }
+                              icon={ <CheckBoxOutlineBlankSharpIcon/> }
+                              checkedIcon={ <Done color="primary"/> }
+          /> }
+          label="Pendências Resolvidas?"
+        />
+        : null
+      }
+
       <CardContent>
         <FormControl component="fieldset" className={ classesAccordion.root } disabled={ readOnly }>
           <FormLabel component="legend">Pendências</FormLabel>

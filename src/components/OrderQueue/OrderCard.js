@@ -59,6 +59,7 @@ export default function OrderCard(props) {
   const [pendingPaymentValue, setPendingPaymentValue] = useState(props.order.total_amount);
   const [pendingBottleQuantity, setPendingBottleQuantity] = useState(_getTotalBottle());
   const [pendingGenericNote, setPendingGenericNote] = useState(null);
+  const [pendenciesResolved, setPendenciesResolved] = useState([]);
   const handleCancelOrder = props.handleCancelOrder;
   const handleShippedOrder = props.handleShippedOrder;
   const handleDeliveredOrder = props.handleDeliveredOrder;
@@ -66,6 +67,14 @@ export default function OrderCard(props) {
   function _getTotalBottle() {
     return (props.order.products ?? [])
       .reduce((total, prod) => (total + Number(prod.quantity)), 0);
+  }
+
+  function _handlePendencyResolved(order_id, checked) {
+    if (checked) {
+      setPendenciesResolved([...pendenciesResolved, order_id]);
+    } else {
+      setPendenciesResolved(pendenciesResolved.filter((id) => id !== order_id));
+    }
   }
 
   function handleCancelClick() {
@@ -81,7 +90,7 @@ export default function OrderCard(props) {
       pending_payment: pendingPayment ? pendingPaymentValue : null,
       pending_bottles: pendingBottle ? pendingBottleQuantity : null,
       pending_generic_note: pendingGenericNote
-    });
+    }, pendenciesResolved);
   }
 
   return (
@@ -169,6 +178,9 @@ export default function OrderCard(props) {
                       <Pendency key={ orderPendency.order_id }
                                 readOnly={ true }
                                 pendent={ orderPendency.pendent }
+                                handlePendencyResolved={ (value) => {
+                                  _handlePendencyResolved(orderPendency.order_id, value)
+                                } }
                       />
                     ) }
                   </List>
