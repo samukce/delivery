@@ -203,8 +203,8 @@ class OrderQueue extends Component {
     this.removeOrderShippedFromState(orderId);
   };
 
-  handleDeliveredOrder = (orderId, pendencies) => {
-    OrderRepository.markAsDelivered(orderId, pendencies);
+  handleDeliveredOrder = (orderId, pendencies, pendenciesResolved) => {
+    OrderRepository.markAsDelivered(orderId, pendencies, pendenciesResolved);
     this.removeOrderShippedFromState(orderId);
   };
 

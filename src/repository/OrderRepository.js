@@ -53,13 +53,13 @@ class OrderRepository {
       .value()
       .reduce((map, last_order) => {
         const phone_field =
-          last_order.phonenumber !== "" ? `${last_order.phonenumber} / ` : "";
+          last_order.phonenumber !== "" ? `${ last_order.phonenumber } / ` : "";
         const complement_field =
-          last_order.complement !== "" ? ` ${last_order.complement}` : "";
+          last_order.complement !== "" ? ` ${ last_order.complement }` : "";
 
         map[
-          `${phone_field}${last_order.address}${complement_field}`
-        ] = async () => {
+          `${ phone_field }${ last_order.address }${ complement_field }`
+          ] = async () => {
           var order = order_collection
             .getById(last_order.last_order_id)
             .value();
@@ -204,31 +204,45 @@ class OrderRepository {
     this._markStatusAs(orderId, "canceled_date", "CANCELED");
   }
 
-  markAsDelivered(orderId, pendencies) {
+  markAsDelivered(orderId, pendencies, pendenciesResolved) {
     this._addPendenciesToOrder(orderId, pendencies);
+    this._markPendenciesResolved(orderId, pendenciesResolved);
     this._markStatusAs(orderId, "delivered_date", "DELIVERED");
   }
 
+  _markPendenciesResolved(orderId, pendenciesResolved) {
+    let order = this.order_collection.getById(orderId).value();
+    if (!order.previous_pendencies) {
+      return;
+    }
+
+    order.previous_pendencies.forEach((pendency) => {
+      if (pendenciesResolved.includes(pendency.order_id)) {
+        pendency["resolved"] = true;
+      }
+    });
+    this._updateOrder(order);
+  }
+
   _addPendenciesToOrder(orderId, pendencies) {
-    if (pendencies) {
-      let pendent = {};
-      if (pendencies.pending_payment) {
-        pendent["payment"] = { value: pendencies.pending_payment };
-      }
+    if (!pendencies) {
+      return;
+    }
 
-      if (pendencies.pending_bottles) {
-        pendent["bottles"] = { quantity: pendencies.pending_bottles };
-      }
-
-      if (pendencies.pending_generic_note) {
-        pendent["note"] = pendencies.pending_generic_note;
-      }
-
-      if (Object.keys(pendent).length > 0) {
-        this.order_collection.getById(orderId)
-          .set("pendent", pendent)
-          .write();
-      }
+    let pendent = {};
+    if (pendencies.pending_payment) {
+      pendent["payment"] = { value: pendencies.pending_payment };
+    }
+    if (pendencies.pending_bottles) {
+      pendent["bottles"] = { quantity: pendencies.pending_bottles };
+    }
+    if (pendencies.pending_generic_note) {
+      pendent["note"] = pendencies.pending_generic_note;
+    }
+    if (Object.keys(pendent).length > 0) {
+      this.order_collection.getById(orderId)
+        .set("pendent", pendent)
+        .write();
     }
   }
 

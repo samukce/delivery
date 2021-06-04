@@ -70,11 +70,13 @@ export default function OrderCard(props) {
   }
 
   function _handlePendencyResolved(order_id, checked) {
+    let resolved;
     if (checked) {
-      setPendenciesResolved([...pendenciesResolved, order_id]);
+      resolved = [...pendenciesResolved, order_id];
     } else {
-      setPendenciesResolved(pendenciesResolved.filter((id) => id !== order_id));
+      resolved = pendenciesResolved.filter((id) => id !== order_id);
     }
+    setPendenciesResolved(resolved);
   }
 
   function handleCancelClick() {

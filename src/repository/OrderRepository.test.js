@@ -322,7 +322,7 @@ describe("OrderRepository", () => {
         });
       });
 
-      it("with pending payment", () => {
+      it("with pending bottle", () => {
         dbTest
           .get(entity)
           .push({
@@ -381,6 +381,29 @@ describe("OrderRepository", () => {
             quantity: 2
           },
         });
+      });
+
+      it("check resolved pendency", () => {
+        dbTest
+          .get(entity)
+          .push({
+            id: 1,
+            address: "St Abc Cde Agh",
+            previous_pendencies: [
+              { order_id: "pend1" },
+              { order_id: "pend2" }
+            ]
+          })
+          .write();
+
+        orderRepository.markAsDelivered(1, {}, ["pend2"]);
+
+        const order = dbTest.get(entity).getById(1).value();
+
+        expect(order.previous_pendencies).to.be.eql([
+          { order_id: "pend1" },
+          { order_id: "pend2", resolved: true }
+        ]);
       });
     });
   });
