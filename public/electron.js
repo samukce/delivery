@@ -9,9 +9,12 @@ const isDev = require('electron-is-dev');
 let mainWindow;
 
 const local_database = `${app.getPath('userData')}/db.json`
-global.settings = { 
+global.settings = {
   database_path: local_database,
 };
+
+const whatsapp = require('./whatsapp');
+whatsapp.client();
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -40,6 +43,7 @@ function createWindow() {
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
+  whatsapp.stopClient();
   if (process.platform !== 'darwin') {
     app.quit();
   }

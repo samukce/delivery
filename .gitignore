@@ -86,4 +86,6 @@ yarn-error.log*
 dist/
 src/locales/_build/
 
+session/
+tokens/
 .idea/
