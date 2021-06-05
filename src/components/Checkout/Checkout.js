@@ -11,26 +11,15 @@ import { NotificationManager } from "react-notifications";
 import OrderRepository from "../../repository/OrderRepository";
 import Typography from "@material-ui/core/Typography";
 import OrderConfirmation from "./OrderConfirmation";
+import WhatsAppSales from "./WhatsAppSales";
 // import { connect } from "react-redux";
 // import { addTodo } from "./redux/actions";
 
-let ipcRenderer;
-if (window && window.require) {
-  ipcRenderer = window.require('electron').ipcRenderer;
-  ipcRenderer.send('whatsappBot-start', 'bloh...');
-}
 
 class Checkout extends Component {
   constructor(props) {
     super(props);
     this.state = this.getInitialState();
-    ipcRenderer.on('whatsappBot-qrCode', this.updateWhatsAppQrCode);
-    ipcRenderer.on('whatsappBot-status', this.updateWhatsAppStatus);
-    ipcRenderer.on('whatsapp-message', this.updateWhatsAppMessage);
-  }
-
-  componentWillUnmount() {
-    ipcRenderer.removeAllListeners(['whatsappBot-qrCode', 'whatsappBot-status', 'whatsapp-message']);
   }
 
   getInitialState = () => {
@@ -47,26 +36,8 @@ class Checkout extends Component {
       change_difference: null,
       modal_opened: false,
       previous_pendencies: [],
-      whatsapp_qrCode: "",
-      whatsapp_status: "",
-      whatsapp_message: ""
     };
   };
-
-  updateWhatsAppQrCode = (event, qrCode) => {
-    console.log(qrCode);
-    this.setState({ whatsapp_qrCode: qrCode })
-  }
-
-  updateWhatsAppStatus = (event, status) => {
-    console.log(status);
-    this.setState({ whatsapp_status: status })
-  }
-
-  updateWhatsAppMessage = (event, message) => {
-    console.log(message);
-    this.setState({ whatsapp_message: message })
-  }
 
   clearAllFieds = () =>
     this.setState(this.getInitialState(), () => {
@@ -506,14 +477,8 @@ class Checkout extends Component {
         </Row>
         <Typography variant="caption" display="block"
                     gutterBottom>Version: { process.env.REACT_APP_CURRENT_GIT_SHA }</Typography>
-        <Typography variant="caption" display="block"
-                    gutterBottom>WhatsApp Status: { this.state.whatsapp_status }</Typography>
-        <Typography variant="caption" display="block"
-                    gutterBottom>WhatsApp Message: { this.state.whatsapp_message }</Typography>
-        { this.state.whatsapp_status === "notLogged"
-          ? <img src={ this.state.whatsapp_qrCode } alt="WhatsApp QrCode"/>
-          : null }
 
+        <WhatsAppSales/>
       </div>
     );
   }
