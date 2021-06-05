@@ -12,11 +12,12 @@ import OrderRepository from "../../repository/OrderRepository";
 import Typography from "@material-ui/core/Typography";
 import OrderConfirmation from "./OrderConfirmation";
 import WhatsAppSales from "./WhatsAppSales";
+import { withAuthorization } from "../Session";
 // import { connect } from "react-redux";
 // import { addTodo } from "./redux/actions";
 
 
-class Checkout extends Component {
+export class Checkout extends Component {
   constructor(props) {
     super(props);
     this.state = this.getInitialState();
@@ -490,4 +491,6 @@ class Checkout extends Component {
 //   { addTodo }
 // )(Checkout);
 
-export default Checkout;
+const condition = (authUser) => !!authUser;
+
+export default withAuthorization(condition)(Checkout);

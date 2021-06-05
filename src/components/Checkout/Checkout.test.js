@@ -1,5 +1,5 @@
 import React from "react";
-import Checkout from "./Checkout";
+import { Checkout } from "./Checkout";
 import { shallow, mount } from "enzyme";
 import Cart from "../../Cart";
 import TestUtils from "react-dom/test-utils";
