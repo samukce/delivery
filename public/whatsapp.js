@@ -1,6 +1,4 @@
-const fs = require('fs');
 const { create } = require('venom-bot');
-const path = require('path')
 
 let venom_client;
 let status;
@@ -21,37 +19,28 @@ const sendImage = async (telephone, url, nameImg) => {
 
 const stopClient = async () => {
   if (venom_client) {
-    return await venom_client.close().then(() => console.log('Cliente Desativado'))
+    return await venom_client.close().then(() => console.log('WhatsApp Client deactivated'))
   }
-  return console.log('client ainda não criado!');
+  return console.log('WhatsApp Client not created!');
 }
 
-async function client() {
+async function client(qrCodeUpdate, statusUpdate, messageReceived) {
   venom_client = await create('Delivery', (base64Qr, asciiQR) => {
-      console.log(asciiQR);
-
-      let dir = path.resolve(__dirname, '..', 'public', 'images', 'tmp', 'qrCode.png')
-      exportQR(base64Qr, dir);
+      qrCodeUpdate(base64Qr);
     },
     (statusSession) => {
       status = statusSession
       console.log('Status Session: ', statusSession);
+      statusUpdate(statusSession);
     }, {
-      logQR: true,
       browserArgs: ['--no-sandbox'],
-      autoClose: false,
+      autoClose: 0,
     });
 
-  function exportQR(qrCode, path) {
-    qrCode = qrCode.replace('data:image/png;base64,', '');
-    const imageBuffer = Buffer.from(qrCode, 'base64');
-    fs.writeFileSync(path, imageBuffer);
-  }
-
-  await start(venom_client);
+  await start(venom_client, messageReceived);
 }
 
-async function start(client) {
+async function start(client, messageReceived) {
   console.log('Whatsapp boot started.');
 
   client.onStateChange((state) => {
@@ -62,6 +51,8 @@ async function start(client) {
   });
 
   client.onMessage(async (message) => {
+    messageReceived(message.body);
+
     console.log('**** logs begin ***')
     console.log(message.type)
     console.log(message.body)

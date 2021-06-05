@@ -49,7 +49,7 @@
     "redux": "^4.0.5",
     "shortid": "^2.2.14",
     "update-electron-app": "^1.3.0",
-    "venom-bot": "^3.0.17"
+    "venom-bot": "^3.0.18"
   },
   "scripts": {
     "add-locale": "lingui add-locale",
