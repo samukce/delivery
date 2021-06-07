@@ -51,7 +51,7 @@ async function start(client, messageReceived) {
   });
 
   client.onMessage(async (message) => {
-    messageReceived(message.body);
+    messageReceived(message);
 
     console.log('**** logs begin ***')
     console.log(message.type)

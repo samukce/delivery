@@ -11,7 +11,7 @@ import { NotificationManager } from "react-notifications";
 import OrderRepository from "../../repository/OrderRepository";
 import Typography from "@material-ui/core/Typography";
 import OrderConfirmation from "./OrderConfirmation";
-import WhatsAppSales from "./WhatsAppSales";
+import WhatsAppSales from "../WhatsApp/WhatsAppSales";
 import { withAuthorization } from "../Session";
 // import { connect } from "react-redux";
 // import { addTodo } from "./redux/actions";

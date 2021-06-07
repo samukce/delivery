@@ -18,6 +18,7 @@ const whatsappBot = require('./whatsapp');
 
 ipcMain.once('whatsappBot-start', (event, arg) => {
   console.log('whatsappBot-start', arg);
+
   whatsappBot.client(
     (qrCode) => {
       event.reply('whatsappBot-qrCode', qrCode);
@@ -29,6 +30,12 @@ ipcMain.once('whatsappBot-start', (event, arg) => {
       event.reply('whatsapp-message', message);
     }
   );
+})
+
+ipcMain.on('whatsappBot-sendMessage', (event, arg) => {
+  console.log('whatsappBot-sendMessage', arg);
+
+  whatsappBot.sendText(arg.telephone, arg.msg);
 })
 
 function createWindow() {

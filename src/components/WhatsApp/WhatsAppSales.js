@@ -1,20 +1,21 @@
 import React, { Component } from "react";
 import Typography from "@material-ui/core/Typography";
+import OrderRepository from "../../repository/OrderRepository";
 
 let ipcRenderer;
 if (window && window.require) {
   ipcRenderer = window.require('electron').ipcRenderer;
-  ipcRenderer.send('whatsappBot-start', 'bloh...');
 }
 
 class WhatsAppSales extends Component {
   constructor(props) {
     super(props);
     this.state = this.getInitialState();
-    this.bindWhatspEvents();
+    this.bindWhatsAppEvents();
+    ipcRenderer.send('whatsappBot-start');
   }
 
-  bindWhatspEvents() {
+  bindWhatsAppEvents() {
     if (!ipcRenderer) return;
 
     ipcRenderer.on('whatsappBot-qrCode', this.updateWhatsAppQrCode);
@@ -37,18 +38,40 @@ class WhatsAppSales extends Component {
   };
 
   updateWhatsAppQrCode = (event, qrCode) => {
-    console.log(qrCode);
     this.setState({ whatsapp_qrCode: qrCode })
   }
 
   updateWhatsAppStatus = (event, status) => {
-    console.log(status);
     this.setState({ whatsapp_status: status })
   }
 
   updateWhatsAppMessage = (event, message) => {
-    console.log(message);
-    this.setState({ whatsapp_message: message })
+    this.setState({ whatsapp_message: message.body });
+    if (message.isGroupMsg) return;
+
+    const phoneNumber = message.from;
+    const phoneNumberParts = phoneNumber.split("@");
+    if (!phoneNumberParts.length) return;
+
+    const rawNumber = phoneNumberParts[0].substr(-8);
+    const searchByPhone = OrderRepository.searchByPhone(rawNumber);
+    if (Object.keys(searchByPhone).length > 0) {
+      let orderPromise = Object.values(searchByPhone)[0];
+
+      Promise.resolve(orderPromise()).then((lastOrder) => {
+        const products = lastOrder.products.reduce(
+          (full_list, prod) => `${ full_list } (${ prod.quantity })${ prod.description }`,
+          ""
+        );
+
+        let messageBack =
+          `Olá! Seu último pedido foi ${ products }, entregue no endereço ${ lastOrder.address }${ lastOrder.complement }. Gostaria de repetir o pedido?`;
+
+        ipcRenderer.send('whatsappBot-sendMessage', { telephone: phoneNumber, msg: messageBack });
+      }).catch((erro) => {
+        console.error('Error when sending: ', erro);
+      });
+    }
   }
 
   render() {
