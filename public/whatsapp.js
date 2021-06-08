@@ -10,6 +10,20 @@ const sendText = async (telephone, msg) => {
   return await venom_client.sendText(telephone, msg);
 }
 
+const getAllChats = async () => {
+  if (!venom_client) {
+    return;
+  }
+  return await venom_client.getAllChats();
+}
+
+const getProfilePicFromServer = async (chatId) => {
+  if (!venom_client) {
+    return;
+  }
+  return await venom_client.getProfilePicFromServer(chatId);
+}
+
 const sendImage = async (telephone, url, nameImg) => {
   if (!venom_client) {
     return;
@@ -52,21 +66,14 @@ async function start(client, messageReceived) {
 
   client.onMessage(async (message) => {
     messageReceived(message);
-
-    console.log('**** logs begin ***')
-    console.log(message.type)
-    console.log(message.body)
-    console.log(message.from)
-    console.log(message.to)
-    console.log(message.chat.contact)
-    console.log(message.isGroupMsg)
-    console.log('**** logs end ***')
   });
 }
 
 
 exports.sendImage = sendImage
 exports.sendText = sendText
+exports.getAllChats = getAllChats
+exports.getProfilePicFromServer = getProfilePicFromServer
 exports.client = client
 exports.venom_client = venom_client
 exports.stopClient = stopClient

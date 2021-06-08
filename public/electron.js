@@ -17,8 +17,6 @@ const { ipcMain } = require('electron')
 const whatsappBot = require('./whatsapp');
 
 ipcMain.once('whatsappBot-start', (event, arg) => {
-  console.log('whatsappBot-start', arg);
-
   whatsappBot.client(
     (qrCode) => {
       event.reply('whatsappBot-qrCode', qrCode);
@@ -33,9 +31,26 @@ ipcMain.once('whatsappBot-start', (event, arg) => {
 })
 
 ipcMain.on('whatsappBot-sendMessage', (event, arg) => {
-  console.log('whatsappBot-sendMessage', arg);
-
   whatsappBot.sendText(arg.telephone, arg.msg);
+})
+
+ipcMain.on('whatsappBot-getAllChats', (event, arg) => {
+  whatsappBot.getAllChats()
+    .then((allChats) => event.reply('whatsappBot-setAllChats', allChats))
+    .catch((error) => {
+      console.log(error);
+      event.reply('whatsappBot-setAllChats', [])
+    });
+})
+
+ipcMain.on('whatsappBot-getProfilePicFromServer', (event, chatId) => {
+  const setProfilePicFromServer = `whatsappBot-setProfilePicFromServer-${ chatId._serialized }`;
+  whatsappBot.getProfilePicFromServer(chatId._serialized)
+    .then((profileUrl) => event.reply(setProfilePicFromServer, chatId, profileUrl))
+    .catch((error) => {
+      console.log(error);
+      event.reply(setProfilePicFromServer, chatId, "")
+    });
 })
 
 function createWindow() {

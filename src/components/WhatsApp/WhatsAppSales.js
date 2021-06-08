@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Typography from "@material-ui/core/Typography";
 import OrderRepository from "../../repository/OrderRepository";
+import { Button } from "@material-ui/core";
+import Chats from "./Chats";
 
 let ipcRenderer;
 if (window && window.require) {
@@ -12,7 +14,16 @@ class WhatsAppSales extends Component {
     super(props);
     this.state = this.getInitialState();
     this.bindWhatsAppEvents();
+    this.startWhatsAppBot();
+  }
+
+  startWhatsAppBot() {
+    if (!ipcRenderer) return;
     ipcRenderer.send('whatsappBot-start');
+  }
+
+  loadChats = () => {
+    ipcRenderer.send('whatsappBot-getAllChats');
   }
 
   bindWhatsAppEvents() {
@@ -21,19 +32,26 @@ class WhatsAppSales extends Component {
     ipcRenderer.on('whatsappBot-qrCode', this.updateWhatsAppQrCode);
     ipcRenderer.on('whatsappBot-status', this.updateWhatsAppStatus);
     ipcRenderer.on('whatsapp-message', this.updateWhatsAppMessage);
+    ipcRenderer.on('whatsappBot-setAllChats', this.updateWhatsAppAllChats);
   }
 
   componentWillUnmount() {
     if (!ipcRenderer) return;
 
-    ipcRenderer.removeAllListeners(['whatsappBot-qrCode', 'whatsappBot-status', 'whatsapp-message']);
+    ipcRenderer.removeAllListeners([
+      'whatsappBot-qrCode',
+      'whatsappBot-status',
+      'whatsapp-message',
+      'whatsappBot-setAllChats',
+    ]);
   }
 
   getInitialState = () => {
     return {
       whatsapp_qrCode: "",
       whatsapp_status: "",
-      whatsapp_message: ""
+      whatsapp_message: "",
+      whatsapp_allChats: []
     };
   };
 
@@ -43,6 +61,13 @@ class WhatsAppSales extends Component {
 
   updateWhatsAppStatus = (event, status) => {
     this.setState({ whatsapp_status: status })
+  }
+
+  updateWhatsAppAllChats = (event, chats) => {
+    const onlyClients = chats.filter(chat => !chat.isGroup).sort((a,b) => b.t - a.t);
+    onlyClients.forEach((message) => console.log(message));
+
+    this.setState({ whatsapp_allChats: onlyClients })
   }
 
   updateWhatsAppMessage = (event, message) => {
@@ -86,10 +111,12 @@ class WhatsAppSales extends Component {
         { this.state.whatsapp_status === "notLogged"
           ? <img src={ this.state.whatsapp_qrCode } alt="WhatsApp QrCode"/>
           : null }
+
+        <Button onClick={ () => this.loadChats() } value="Load Chats">Load Chats</Button>
+        <Chats chats={ this.state.whatsapp_allChats }/>
       </div>
     );
   }
-
 }
 
 export default WhatsAppSales;
