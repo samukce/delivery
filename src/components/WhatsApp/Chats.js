@@ -25,20 +25,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Chat({ chat, img }) {
+function Chat({ chat, img, selectedChatId, handleChatClick }) {
   const classes = useStyles();
   const [urlPicture, setUrlPicture] = useState(img);
   const [lastMessage, setLastMessage] = useState("");
   const [markAsUnread, setMarkAsUnread] = useState(false);
+  const chatId = chat.id._serialized;
 
   useEffect(() => {
-    ipcRenderer.on(`whatsapp-message-${ chat.id._serialized }`, updateWhatsAppMessage);
+    ipcRenderer.on(`whatsapp-message-${ chatId }`, updateWhatsAppMessage);
   }, [chat]);
 
   useEffect(() => {
     if (img) return;
-    ipcRenderer.on(`whatsappBot-setProfilePicFromServer-${ chat.id._serialized }`, updatePicProfile);
-    ipcRenderer.send('whatsappBot-getProfilePicFromServer', chat.id);
+    ipcRenderer.on(`whatsappBot-setProfilePicFromServer-${ chatId }`, updatePicProfile);
+    ipcRenderer.send('whatsappBot-getProfilePicFromServer', chatId);
   }, [chat, img]);
 
   const updatePicProfile = (event, chatId, url) => {
@@ -50,8 +51,16 @@ function Chat({ chat, img }) {
     setMarkAsUnread(true);
   }
 
+  const isSelected = () => {
+    return selectedChatId === chatId;
+  }
+
   return (
-    <ListItem alignItems="flex-start">
+    <ListItem alignItems="flex-start"
+              button
+              selected={ isSelected() }
+              onClick={ (event) => handleChatClick(event, chatId) }
+    >
       <ListItemAvatar>
         <Avatar alt={ chat.name } src={ urlPicture }/>
       </ListItemAvatar>
@@ -63,7 +72,7 @@ function Chat({ chat, img }) {
             className={ classes.inline }
             color="textPrimary"
           >
-            <Box fontWeight={ markAsUnread ? "fontWeightBold" : "" } m={ 1 }>
+            <Box fontWeight={ markAsUnread || isSelected() ? "fontWeightBold" : "" } m={ 1 }>
               { chat.contact.name ?? chat.contact.pushname ?? chat.contact.formattedName }
             </Box>
           </Typography>
@@ -80,12 +89,21 @@ function Chat({ chat, img }) {
 
 export default function Chats({ chats }) {
   const classes = useStyles();
+  const [selectedChatId, setSelectedChatId] = useState("");
+
+  const handleChatClick = (event, chatId) => {
+    setSelectedChatId(chatId);
+  }
 
   return (
     <List className={ classes.root }>
       { chats.map((chat) =>
         <React.Fragment key={ chat.id._serialized }>
-          <Chat chat={ chat } img={ chat.contact.profilePicThumbObj.eurl }/>
+          <Chat chat={ chat }
+                img={ chat.contact.profilePicThumbObj.eurl }
+                selectedChatId={ selectedChatId }
+                handleChatClick={ handleChatClick }
+          />
           <Divider variant="inset" component="li"/>
         </React.Fragment>
       )

@@ -110,7 +110,7 @@ class WhatsAppSales extends Component {
         let messageBack =
           `Olá! Seu último pedido foi ${ products }, entregue no endereço ${ lastOrder.address }${ lastOrder.complement }. Gostaria de repetir o pedido?`;
 
-        ipcRenderer.send('whatsappBot-sendMessage', { telephone: phoneNumber, msg: messageBack });
+        // ipcRenderer.send('whatsappBot-sendMessage', { telephone: phoneNumber, msg: messageBack });
       }).catch((erro) => {
         console.error('Error when sending: ', erro);
       });

@@ -48,8 +48,8 @@ ipcMain.on('whatsappBot-getAllChats', (event, arg) => {
 })
 
 ipcMain.on('whatsappBot-getProfilePicFromServer', (event, chatId) => {
-  const setProfilePicFromServer = `whatsappBot-setProfilePicFromServer-${ chatId._serialized }`;
-  whatsappBot.getProfilePicFromServer(chatId._serialized)
+  const setProfilePicFromServer = `whatsappBot-setProfilePicFromServer-${ chatId }`;
+  whatsappBot.getProfilePicFromServer(chatId)
     .then((profileUrl) => event.reply(setProfilePicFromServer, chatId, profileUrl))
     .catch((error) => {
       console.log(error);
