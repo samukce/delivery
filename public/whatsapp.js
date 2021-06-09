@@ -38,27 +38,27 @@ const stopClient = async () => {
   return console.log('WhatsApp Client not created!');
 }
 
-async function client(qrCodeUpdate, statusUpdate, messageReceived) {
+async function client(qrCodeUpdate, statusSessionUpdate, statusClientUpdate, messageReceived) {
   venom_client = await create('Delivery', (base64Qr, asciiQR) => {
       qrCodeUpdate(base64Qr);
     },
     (statusSession) => {
       status = statusSession
       console.log('Status Session: ', statusSession);
-      statusUpdate(statusSession);
+      statusSessionUpdate(statusSession);
     }, {
       browserArgs: ['--no-sandbox'],
       autoClose: 0,
     });
 
-  await start(venom_client, messageReceived);
+  await start(venom_client, statusClientUpdate, messageReceived);
 }
 
-async function start(client, messageReceived) {
+async function start(client, statusClientUpdate, messageReceived) {
   console.log('Whatsapp boot started.');
 
   client.onStateChange((state) => {
-    console.log(state);
+    statusClientUpdate(state);
     if (state === 'CONFLICT' || state === 'UNPAIRED' || state === 'UNLAUNCHED') {
       client.useHere();
     }

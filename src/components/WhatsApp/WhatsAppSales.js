@@ -31,6 +31,7 @@ class WhatsAppSales extends Component {
 
     ipcRenderer.on('whatsappBot-qrCode', this.updateWhatsAppQrCode);
     ipcRenderer.on('whatsappBot-status', this.updateWhatsAppStatus);
+    ipcRenderer.on('whatsapp-statusClient', this.updateWhatsAppStatusClient);
     ipcRenderer.on('whatsapp-message', this.updateWhatsAppMessage);
     ipcRenderer.on('whatsappBot-setAllChats', this.updateWhatsAppAllChats);
   }
@@ -41,6 +42,7 @@ class WhatsAppSales extends Component {
     ipcRenderer.removeAllListeners([
       'whatsappBot-qrCode',
       'whatsappBot-status',
+      'whatsapp-statusClient',
       'whatsapp-message',
       'whatsappBot-setAllChats',
     ]);
@@ -50,6 +52,7 @@ class WhatsAppSales extends Component {
     return {
       whatsapp_qrCode: "",
       whatsapp_status: "",
+      whatsapp_status_client: "",
       whatsapp_message: "",
       whatsapp_allChats: []
     };
@@ -60,11 +63,23 @@ class WhatsAppSales extends Component {
   }
 
   updateWhatsAppStatus = (event, status) => {
-    this.setState({ whatsapp_status: status })
+    this.setState({ whatsapp_status: status }, () => {
+      if (status === "chatsAvailable") {
+        this.loadChats();
+      }
+    })
+  }
+
+  updateWhatsAppStatusClient = (event, status) => {
+    this.setState({ whatsapp_status_client: status }, () => {
+      if (status === "CONNECTED") {
+        this.loadChats();
+      }
+    })
   }
 
   updateWhatsAppAllChats = (event, chats) => {
-    const onlyClients = chats.filter(chat => !chat.isGroup).sort((a,b) => b.t - a.t);
+    const onlyClients = chats.filter(chat => !chat.isGroup).sort((a, b) => b.t - a.t);
     onlyClients.forEach((message) => console.log(message));
 
     this.setState({ whatsapp_allChats: onlyClients })
