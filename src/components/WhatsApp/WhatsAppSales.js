@@ -79,6 +79,9 @@ class WhatsAppSales extends Component {
   }
 
   updateWhatsAppAllChats = (event, chats) => {
+    if (!chats) {
+      return;
+    }
     const onlyClients = chats.filter(chat => !chat.isGroup).sort((a, b) => b.t - a.t);
     onlyClients.forEach((message) => console.log(message));
 

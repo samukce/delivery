@@ -6,6 +6,7 @@ import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
+import { Box, Typography } from "@material-ui/core";
 
 
 let ipcRenderer;
@@ -27,20 +28,26 @@ const useStyles = makeStyles((theme) => ({
 function Chat({ chat, img }) {
   const classes = useStyles();
   const [urlPicture, setUrlPicture] = useState(img);
-  // const [lastMessage, setLastMessage] = useState(message);
+  const [lastMessage, setLastMessage] = useState("");
+  const [markAsUnread, setMarkAsUnread] = useState(false);
 
   useEffect(() => {
-    if (img) return;
-    ipcRenderer.on(`whatsappBot-setProfilePicFromServer-${ chat.id._serialized }`, updatePicProfile);
+    ipcRenderer.on(`whatsapp-message-${ chat.id._serialized }`, updateWhatsAppMessage);
   }, [chat]);
 
   useEffect(() => {
     if (img) return;
+    ipcRenderer.on(`whatsappBot-setProfilePicFromServer-${ chat.id._serialized }`, updatePicProfile);
     ipcRenderer.send('whatsappBot-getProfilePicFromServer', chat.id);
   }, [chat, img]);
 
   const updatePicProfile = (event, chatId, url) => {
     setUrlPicture(url);
+  }
+
+  const updateWhatsAppMessage = (event, message) => {
+    setLastMessage(message.body);
+    setMarkAsUnread(true);
   }
 
   return (
@@ -49,18 +56,21 @@ function Chat({ chat, img }) {
         <Avatar alt={ chat.name } src={ urlPicture }/>
       </ListItemAvatar>
       <ListItemText
-        primary={ `${ chat.contact.name ?? chat.contact.pushname ?? chat.contact.formattedName }` }
+        primary={
+          <Typography
+            component="span"
+            variant="body1"
+            className={ classes.inline }
+            color="textPrimary"
+          >
+            <Box fontWeight={ markAsUnread ? "fontWeightBold" : "" } m={ 1 }>
+              { chat.contact.name ?? chat.contact.pushname ?? chat.contact.formattedName }
+            </Box>
+          </Typography>
+        }
         secondary={
           <React.Fragment>
-            {/*<Typography*/ }
-            {/*  component="span"*/ }
-            {/*  variant="body2"*/ }
-            {/*  className={ classes.inline }*/ }
-            {/*  color="textPrimary"*/ }
-            {/*>*/ }
-            {/*  Ali Connors*/ }
-            {/*</Typography>*/ }
-            {/*{ lastMessage }*/ }
+            { lastMessage }
           </React.Fragment>
         }
       />

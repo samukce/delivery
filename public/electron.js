@@ -29,6 +29,7 @@ ipcMain.once('whatsappBot-start', (event, arg) => {
     },
     (message) => {
       event.reply('whatsapp-message', message);
+      event.reply(`whatsapp-message-${ message.from }`, message);
     }
   );
 })
@@ -37,9 +38,9 @@ ipcMain.on('whatsappBot-sendMessage', (event, arg) => {
   whatsappBot.sendText(arg.telephone, arg.msg);
 })
 
-ipcMain.once('whatsappBot-getAllChats', (event, arg) => {
+ipcMain.on('whatsappBot-getAllChats', (event, arg) => {
   whatsappBot.getAllChats()
-    .then((allChats) => event.reply('whatsappBot-setAllChats', allChats))
+    .then((allChats) => event.reply('whatsappBot-setAllChats', (allChats ?? [])))
     .catch((error) => {
       console.log(error);
       event.reply('whatsappBot-setAllChats', [])
