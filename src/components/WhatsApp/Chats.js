@@ -6,8 +6,8 @@ import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { Box, Typography } from "@material-ui/core";
-
+import { Box, Grid, Input, Paper, Typography } from "@material-ui/core";
+import SendIcon from '@material-ui/icons/Send';
 
 let ipcRenderer;
 if (window && window.require) {
@@ -34,15 +34,15 @@ function Chat({ chat, img, selectedChatId, handleChatClick }) {
 
   useEffect(() => {
     ipcRenderer.on(`whatsapp-message-${ chatId }`, updateWhatsAppMessage);
-  }, [chat]);
+  }, [chatId]);
 
   useEffect(() => {
     if (img) return;
     ipcRenderer.on(`whatsappBot-setProfilePicFromServer-${ chatId }`, updatePicProfile);
     ipcRenderer.send('whatsappBot-getProfilePicFromServer', chatId);
-  }, [chat, img]);
+  }, [chatId, img]);
 
-  const updatePicProfile = (event, chatId, url) => {
+  const updatePicProfile = (event, url) => {
     setUrlPicture(url);
   }
 
@@ -87,8 +87,131 @@ function Chat({ chat, img, selectedChatId, handleChatClick }) {
   )
 }
 
+
+const chatTextStyles = makeStyles((theme) => ({
+  root: {
+    margin: '8px',
+    height: 'calc(100% - 80px)',
+  },
+  chatInputPaper: {
+    height: 'calc(100% - 64px)'
+  },
+  chatInput: {
+    overflowY: 'scroll',
+    height: '100%',
+    padding: '16px',
+  },
+  composeInputPaper: {
+    marginTop: '16px'
+  },
+  composeInput: {
+    padding: '16px'
+  },
+  sendIcon: {
+    color: '#2196f3'
+  },
+  chatRoomMessage: {
+    display: 'flex',
+    marginBottom: '8px'
+  },
+  messageText: {
+    padding: '8px 0px 0px 16px'
+  },
+  divider: {
+    marginBottom: '8px'
+  },
+  searchIcon: {
+    color: '#FFF',
+    marginTop: '3px'
+  }
+}));
+
+function ChatText({ chatId }) {
+  const classes = chatTextStyles();
+  const [textMessage, setTextMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  const sendMessage = () => {
+    ipcRenderer.send('whatsappBot-sendMessage', { telephone: chatId, msg: textMessage });
+    setTextMessage("");
+  }
+
+  useEffect(() => {
+    console.log("ChatText", "useEffect", chatId);
+    if (!chatId) return;
+    const messageListener = `whatsapp-message-${ chatId }`;
+    const messageSenderListener = `whatsappBot-sendMessage-${ chatId }`;
+
+    ipcRenderer.on(messageListener, (event, message) => setMessages([...messages, message]));
+    ipcRenderer.on(messageSenderListener, (event, message) => {
+      console.log("whatsappBot-sendMessage:", message.text)
+      setMessages([...messages, { body: message.text, fromMe: true }])
+    });
+
+    return () => {
+      ipcRenderer.removeAllListeners([messageListener, messageSenderListener]);
+    };
+  }, [chatId, setMessages, messages])
+
+  return (
+    <section className={ classes.root }>
+      <Paper className={ classes.chatInputPaper } elevation={ 4 }>
+        <div className={ classes.chatInput }>
+
+          { messages.map((message, index) => {
+            return (
+              <React.Fragment>
+                <div key={ `${ chatId }-${ index }` } className={ classes.chatRoomMessage }>
+                  <Avatar alt='' src=''/>
+                  <div className={ classes.messageText }>
+                    { message.body }
+                  </div>
+                </div>
+                <Divider className={ classes.divider } key={ index }/>
+              </React.Fragment>
+            );
+          }) }
+
+        </div>
+      </Paper>
+      <Paper className={ classes.composeInputPaper } elevation={ 4 }>
+        <Input classes={ { root: classes.composeInput } } multiline={ true } fullWidth={ true }
+               disableUnderline={ true } placeholder={ "Send a message!" }
+               value={ textMessage }
+               onChange={ (event) => setTextMessage(event.target.value) }
+               endAdornment={ <SendIcon onClick={ sendMessage }/> }
+        />
+      </Paper>
+    </section>
+  );
+}
+
+
+const useStylesChats = makeStyles((theme) => ({
+  root: {
+    margin: '16px',
+    height: 'calc(100vh - 32px)'
+  },
+  paper: {
+    height: '100%'
+  },
+  gridContainer: {
+    height: 'inherit'
+  },
+  gridItem: {
+    height: '100%',
+    overflowY: 'scroll',
+  },
+  '@global': {
+    'body': {
+      fontFamily: '"Roboto"'
+    }
+  }
+}));
+
+
 export default function Chats({ chats }) {
-  const classes = useStyles();
+  const classes = useStylesChats();
   const [selectedChatId, setSelectedChatId] = useState("");
 
   const handleChatClick = (event, chatId) => {
@@ -96,18 +219,29 @@ export default function Chats({ chats }) {
   }
 
   return (
-    <List className={ classes.root }>
-      { chats.map((chat) =>
-        <React.Fragment key={ chat.id._serialized }>
-          <Chat chat={ chat }
-                img={ chat.contact.profilePicThumbObj.eurl }
-                selectedChatId={ selectedChatId }
-                handleChatClick={ handleChatClick }
-          />
-          <Divider variant="inset" component="li"/>
-        </React.Fragment>
-      )
-      }
-    </List>
+    <div className={ classes.root }>
+      <Paper className={ classes.paper } elevation={ 2 }>
+        <Grid container spacing={ 0 } className={ classes.gridContainer }>
+          <Grid item md={ 2 } className={ classes.gridItem }>
+            <List className={ classes.root }>
+              { chats.map((chat) =>
+                <React.Fragment key={ chat.id._serialized }>
+                  <Chat chat={ chat }
+                        img={ chat.contact.profilePicThumbObj.eurl }
+                        selectedChatId={ selectedChatId }
+                        handleChatClick={ handleChatClick }
+                  />
+                  <Divider variant="inset" component="li"/>
+                </React.Fragment>
+              )
+              }
+            </List>
+          </Grid>
+          <Grid item xs={ 12 } md={ 10 } className={ classes.gridItem }>
+            <ChatText chatId={ selectedChatId }/>
+          </Grid>
+        </Grid>
+      </Paper>
+    </div>
   );
 }

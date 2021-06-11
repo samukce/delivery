@@ -24,6 +24,13 @@ const getProfilePicFromServer = async (chatId) => {
   return await venom_client.getProfilePicFromServer(chatId);
 }
 
+const loadAndGetAllMessagesInChat = async (chatId) => {
+  if (!venom_client) {
+    return;
+  }
+  return await venom_client.loadAndGetAllMessagesInChat(chatId);
+}
+
 const sendImage = async (telephone, url, nameImg) => {
   if (!venom_client) {
     return;
@@ -74,6 +81,7 @@ exports.sendImage = sendImage
 exports.sendText = sendText
 exports.getAllChats = getAllChats
 exports.getProfilePicFromServer = getProfilePicFromServer
+exports.loadAndGetAllMessagesInChat = loadAndGetAllMessagesInChat
 exports.client = client
 exports.venom_client = venom_client
 exports.stopClient = stopClient

@@ -35,7 +35,17 @@ ipcMain.once('whatsappBot-start', (event, arg) => {
 })
 
 ipcMain.on('whatsappBot-sendMessage', (event, arg) => {
-  whatsappBot.sendText(arg.telephone, arg.msg);
+  const notifySendMessage = `whatsappBot-sendMessage-${ arg.telephone }`;
+  whatsappBot.sendText(arg.telephone, arg.msg)
+    .then((messageSent) => {
+      console.log("return message sent:", messageSent);
+      event.reply(notifySendMessage, (messageSent))
+    })
+    .catch((error) => {
+      console.log(error);
+      event.reply(notifySendMessage, {})
+    });
+  ;
 })
 
 ipcMain.on('whatsappBot-getAllChats', (event, arg) => {
@@ -50,10 +60,23 @@ ipcMain.on('whatsappBot-getAllChats', (event, arg) => {
 ipcMain.on('whatsappBot-getProfilePicFromServer', (event, chatId) => {
   const setProfilePicFromServer = `whatsappBot-setProfilePicFromServer-${ chatId }`;
   whatsappBot.getProfilePicFromServer(chatId)
-    .then((profileUrl) => event.reply(setProfilePicFromServer, chatId, profileUrl))
+    .then((profileUrl) => event.reply(setProfilePicFromServer, profileUrl))
     .catch((error) => {
       console.log(error);
-      event.reply(setProfilePicFromServer, chatId, "")
+      event.reply(setProfilePicFromServer, "")
+    });
+})
+
+ipcMain.on('whatsappBot-loadAndGetAllMessagesInChat', (event, chatId) => {
+  const setAllMessagesInChat = `whatsappBot-setAllMessagesInChat-${ chatId }`;
+  whatsappBot.loadAndGetAllMessagesInChat(chatId)
+    .then((messages) => {
+      console.log(messages);
+      event.reply(setAllMessagesInChat, messages)
+    })
+    .catch((error) => {
+      console.log(error);
+      event.reply(setAllMessagesInChat, [])
     });
 })
 
