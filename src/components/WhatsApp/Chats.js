@@ -33,13 +33,25 @@ function Chat({ chat, img, selectedChatId, handleChatClick }) {
   const chatId = chat.id._serialized;
 
   useEffect(() => {
-    ipcRenderer.on(`whatsapp-message-${ chatId }`, updateWhatsAppMessage);
+    const messageListener = `whatsapp-message-${ chatId }`;
+    console.log("Chat.register:", messageListener);
+    ipcRenderer.on(messageListener, updateWhatsAppMessage);
+
+    return () => {
+      console.log("Chat.removeAllListeners:", messageListener);
+      ipcRenderer.removeAllListeners([messageListener]);
+    }
   }, [chatId]);
 
   useEffect(() => {
     if (img) return;
-    ipcRenderer.on(`whatsappBot-setProfilePicFromServer-${ chatId }`, updatePicProfile);
+    const setProfileListener = `whatsappBot-setProfilePicFromServer-${ chatId }`;
+    ipcRenderer.on(setProfileListener, updatePicProfile);
     ipcRenderer.send('whatsappBot-getProfilePicFromServer', chatId);
+
+    return () => {
+      ipcRenderer.removeAllListeners([setProfileListener]);
+    }
   }, [chatId, img]);
 
   const updatePicProfile = (event, url) => {
@@ -137,21 +149,21 @@ function ChatText({ chatId }) {
   }
 
   useEffect(() => {
-    console.log("ChatText", "useEffect", chatId);
     if (!chatId) return;
     const messageListener = `whatsapp-message-${ chatId }`;
-    const messageSenderListener = `whatsappBot-sendMessage-${ chatId }`;
+    const messageSenderListener = `whatsappBot-sendMessage-response-${ chatId }`;
+    console.log("ChatText.register:", messageListener);
 
     ipcRenderer.on(messageListener, (event, message) => setMessages([...messages, message]));
     ipcRenderer.on(messageSenderListener, (event, message) => {
-      console.log("whatsappBot-sendMessage:", message.text)
       setMessages([...messages, { body: message.text, fromMe: true }])
     });
 
     return () => {
+      console.log("ChatText.removeAllListeners:", messageListener);
       ipcRenderer.removeAllListeners([messageListener, messageSenderListener]);
     };
-  }, [chatId, setMessages, messages])
+  }, [chatId, messages])
 
   return (
     <section className={ classes.root }>
@@ -160,8 +172,8 @@ function ChatText({ chatId }) {
 
           { messages.map((message, index) => {
             return (
-              <React.Fragment>
-                <div key={ `${ chatId }-${ index }` } className={ classes.chatRoomMessage }>
+              <React.Fragment key={ `${ chatId }-${ index }` }>
+                <div className={ classes.chatRoomMessage }>
                   <Avatar alt='' src=''/>
                   <div className={ classes.messageText }>
                     { message.body }

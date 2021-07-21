@@ -479,7 +479,6 @@ export class Checkout extends Component {
         <Typography variant="caption" display="block"
                     gutterBottom>Version: { process.env.REACT_APP_CURRENT_GIT_SHA }</Typography>
 
-        <WhatsAppSales/>
       </div>
     );
   }

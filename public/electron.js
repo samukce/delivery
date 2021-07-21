@@ -28,6 +28,7 @@ ipcMain.once('whatsappBot-start', (event, arg) => {
       event.reply('whatsapp-statusClient', statusClient);
     },
     (message) => {
+      console.log(message);
       event.reply('whatsapp-message', message);
       event.reply(`whatsapp-message-${ message.from }`, message);
     }
@@ -35,17 +36,19 @@ ipcMain.once('whatsappBot-start', (event, arg) => {
 })
 
 ipcMain.on('whatsappBot-sendMessage', (event, arg) => {
-  const notifySendMessage = `whatsappBot-sendMessage-${ arg.telephone }`;
+  const notifyGenericSendMessage = `whatsappBot-sendMessage-response`;
+  const notifySendMessage = `whatsappBot-sendMessage-response-${ arg.telephone }`;
   whatsappBot.sendText(arg.telephone, arg.msg)
     .then((messageSent) => {
-      console.log("return message sent:", messageSent);
-      event.reply(notifySendMessage, (messageSent))
+      console.log(messageSent);
+      event.reply(notifyGenericSendMessage, messageSent)
+      event.reply(notifySendMessage, messageSent)
     })
     .catch((error) => {
       console.log(error);
+      event.reply(notifyGenericSendMessage, {})
       event.reply(notifySendMessage, {})
     });
-  ;
 })
 
 ipcMain.on('whatsappBot-getAllChats', (event, arg) => {

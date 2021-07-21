@@ -16,6 +16,7 @@ import SignInPage from "./components/SignIn";
 import PasswordForgetPage from "./components/PasswordForget";
 import AccountPage from "./components/Account";
 import { withAuthentication } from "./components/Session";
+import WhatsAppSales from "./components/WhatsApp/WhatsAppSales";
 
 function App(props) {
   const { language } = props;
@@ -77,12 +78,21 @@ function App(props) {
     }
   }, [newVersionAvailableAndWorker, enqueueSnackbar]);
 
+  const DefaultFirstPage = () => {
+    if (window && window.require) {
+      return <WhatsAppSales />
+    }
+    return <CheckoutHome />
+  }
+
   return (
     <I18nProvider language={language} catalogs={{ [language]: localeMessage }}>
       <CssBaseline />
 
       <Switch>
-        <Route exact path={["/", "/checkout"]} component={CheckoutHome} />
+        <Route exact path="/" component={DefaultFirstPage} />
+        <Route exact path="/checkout" component={CheckoutHome} />
+        <Route exact path="/whatsapp" component={WhatsAppSales} />
         <Route exact path="/products" component={Products} />
         <Route exact path="/products/add" component={EditOrAddProduct} />
         <Route path="/products/:id" component={EditOrAddProduct} />

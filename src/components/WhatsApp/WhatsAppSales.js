@@ -3,6 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import OrderRepository from "../../repository/OrderRepository";
 import { Button } from "@material-ui/core";
 import Chats from "./Chats";
+import { withAuthorization } from "../Session";
 
 let ipcRenderer;
 if (window && window.require) {
@@ -89,8 +90,8 @@ class WhatsAppSales extends Component {
   }
 
   updateWhatsAppMessage = (event, message) => {
-    this.setState({ whatsapp_message: message.body });
     if (message.isGroupMsg) return;
+    this.setState({ whatsapp_message: message.body });
 
     const phoneNumber = message.from;
     const phoneNumberParts = phoneNumber.split("@");
@@ -99,7 +100,7 @@ class WhatsAppSales extends Component {
     const rawNumber = phoneNumberParts[0].substr(-8);
     const searchByPhone = OrderRepository.searchByPhone(rawNumber);
     if (Object.keys(searchByPhone).length > 0) {
-      let orderPromise = Object.values(searchByPhone)[0];
+      const orderPromise = Object.values(searchByPhone)[0];
 
       Promise.resolve(orderPromise()).then((lastOrder) => {
         const products = lastOrder.products.reduce(
@@ -137,4 +138,6 @@ class WhatsAppSales extends Component {
   }
 }
 
-export default WhatsAppSales;
+const condition = (authUser) => !!authUser;
+
+export default withAuthorization(condition)(WhatsAppSales);
