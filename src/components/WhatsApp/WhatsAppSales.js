@@ -4,6 +4,7 @@ import OrderRepository from "../../repository/OrderRepository";
 import { Button } from "@material-ui/core";
 import Chats from "./Chats";
 import { withAuthorization } from "../Session";
+import { WhatsApp } from "@material-ui/icons";
 
 let ipcRenderer;
 if (window && window.require) {
@@ -119,7 +120,7 @@ class WhatsAppSales extends Component {
   }
 
   render() {
-    if (!ipcRenderer) return null;
+    if (!ipcRenderer) return <h3><WhatsApp fontSize="large"/>Not supported...</h3>;
 
     return (
       <div ref={ (el) => (this.checkoutSection = el) }>

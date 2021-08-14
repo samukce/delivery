@@ -9,9 +9,7 @@ import AutocompleteCustom from "../AutocompleteCustom";
 import { Trans } from "@lingui/react";
 import { NotificationManager } from "react-notifications";
 import OrderRepository from "../../repository/OrderRepository";
-import Typography from "@material-ui/core/Typography";
 import OrderConfirmation from "./OrderConfirmation";
-import WhatsAppSales from "../WhatsApp/WhatsAppSales";
 import { withAuthorization } from "../Session";
 // import { connect } from "react-redux";
 // import { addTodo } from "./redux/actions";
@@ -476,8 +474,6 @@ export class Checkout extends Component {
             handleCloseExternal={ this.closedOrderConfirmation }
           />
         </Row>
-        <Typography variant="caption" display="block"
-                    gutterBottom>Version: { process.env.REACT_APP_CURRENT_GIT_SHA }</Typography>
 
       </div>
     );

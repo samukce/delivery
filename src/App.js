@@ -17,6 +17,7 @@ import PasswordForgetPage from "./components/PasswordForget";
 import AccountPage from "./components/Account";
 import { withAuthentication } from "./components/Session";
 import WhatsAppSales from "./components/WhatsApp/WhatsAppSales";
+import { Checkout } from "./components/Checkout/Checkout";
 
 function App(props) {
   const { language } = props;
@@ -80,9 +81,9 @@ function App(props) {
 
   const DefaultFirstPage = () => {
     if (window && window.require) {
-      return <WhatsAppSales />
+      return <CheckoutHome><WhatsAppSales /></CheckoutHome>
     }
-    return <CheckoutHome />
+    return <CheckoutHome><Checkout /></CheckoutHome>
   }
 
   return (
